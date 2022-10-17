@@ -1,0 +1,1 @@
+export const chips = require('./chips.jpg'); 
