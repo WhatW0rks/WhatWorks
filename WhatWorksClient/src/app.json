@@ -2,6 +2,7 @@
   "expo": {
     "name": "src",
     "slug": "src",
+    "privacy": "hidden",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +19,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.WhatWorks1.WhatWorks"
     },
     "android": {
       "adaptiveIcon": {
