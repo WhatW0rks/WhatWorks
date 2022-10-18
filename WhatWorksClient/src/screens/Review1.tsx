@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, View, SafeAreaView, Text, Button, Image } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text, Button, Image, ScrollView } from 'react-native';
 import { Card, Icon } from '@rneui/themed';
 import { chips } from '../assets';
 
 export default function Review1({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView>
       <View>
         <Text style={styles.Title} >Cape Cod Chips</Text>
       </View>
@@ -26,12 +27,25 @@ export default function Review1({navigation}) {
             Ut enim ad minim veniam, quis nostrud exercitation ullamco 
             laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
             irure dolor in reprehenderit in voluptate velit esse cillum
+            dolore eu fugiat nulla pariatur."
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+            incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco 
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
+            irure dolor in reprehenderit in voluptate velit esse cillum
+            dolore eu fugiat nulla pariatur."
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+            incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco 
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
+            irure dolor in reprehenderit in voluptate velit esse cillum
             dolore eu fugiat nulla pariatur."</Text>
         </View>
       </View>
       <View style={{marginBottom: 10, marginTop:150}}></View>
       <Button title="Go to Home" onPress={() => navigation.navigate('MainScreen')} />
       <Button title="Go back" onPress={() => navigation.goBack()} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
