@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MainScreen from "./screens/Main";
 import Review1 from "./screens/Review1";
 import Review2 from "./screens/Review2";
-
+import ProductReviewForm from "./components/ProductReviewForm"; 
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
@@ -37,6 +37,11 @@ export default function AppNavigator() {
             name="Review2"
             component={Review2}
             options={{ headerShown: false, title: "Review 2" }}
+        />
+        <Stack.Screen
+            name="Post form"
+            component={ProductReviewForm}
+            options={{ headerShown: false, title: "Product Review Form" }}
         />
     </Stack.Navigator>
   </NavigationContainer>       

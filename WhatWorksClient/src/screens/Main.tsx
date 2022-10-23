@@ -9,6 +9,8 @@ export default function Main({navigation}) {
     onPress={() => navigation.navigate('Review1')}/>
     <Button title="Cape Cod Potato Chips Part 2"
     onPress={() => navigation.navigate('Review2')}/>
+    <Button title="Post product review"
+    onPress={() => navigation.navigate('Post form')}/>
   </SafeAreaView>
 );
 
