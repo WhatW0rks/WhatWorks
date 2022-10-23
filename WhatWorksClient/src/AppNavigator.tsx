@@ -36,7 +36,7 @@ export default function AppNavigator() {
 <Stack.Screen
             name="Review2"
             component={Review2}
-            options={{ headerShown: false, title: "Review 2" }}
+            options={{ title: "" }}
         />
     </Stack.Navigator>
   </NavigationContainer>       
