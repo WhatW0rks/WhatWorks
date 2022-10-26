@@ -4,7 +4,6 @@ import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar } f
 import { Avatar } from '@rneui/themed';
 import { Image } from '@rneui/themed';
 import { Icon } from '@rneui/themed';
-// import { Chip } from '@rneui/themed';
 
 interface ProductProperties { 
     heading: string; 
@@ -95,7 +94,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                         </Text>
                     </View>
                     
-                    <Text style={{color: "#808080"}}>View 1000 Comments</Text>
+                    <Text style={{color: "#808080", marginTop: 15}}>View 1000 Comments</Text>
                 </View>
                 <View style={{marginBottom: 10, marginTop:10}}></View>
                 {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />
