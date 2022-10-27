@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, Button, SafeAreaView, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, Image, Button, SafeAreaView, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
-import { AsyncStorage } from 'react-native';
-
-import ContextCount from '../countContext';
 
 interface ProductPostProperties { 
     navigation: any;
@@ -43,39 +40,9 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
         }
     };
 
-    // access the context value
-    const {setCount, count} = React.useContext(ContextCount);
-
 
     // Submission
     const onPressPostReview = async () => { 
-        // console.log("Title:", title); 
-        // console.log("Review:", review);
-        // console.log("The Count", count);
-
-        // Try/Error for local storage persistance
-        try {
-            await  AsyncStorage.setItem(
-                `${count}`,
-                JSON.stringify({
-                    title: `${title}`, 
-                    user: "Jane Doe",
-                    link: undefined,
-                    image: imageArray[randomIntFromInterval(0, 3)],
-                    review: `${review}`,
-                    context: `${count}`,
-                  })
-              );
-
-            // Update the contexts
-            setCount(count + 1);
-            
-
-        } catch (e) {
-            console.log("Error: ", e);
-        }
-
-        console.log("Retrieved data: ", await AsyncStorage.getItem(`${count}`));
         props.navigation.navigate('MainScreen');
     } 
     

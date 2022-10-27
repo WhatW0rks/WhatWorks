@@ -49,16 +49,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 </View>
 
                 {/* Tags */}
-                {/* <ScrollView>
-                <View style={styles.tagContainer}>
-                        <Chip title="Solid Chip" style={{marginLeft: 5, marginRight: 5}}/>
-                        <Chip title="Solid Chip" style={{marginLeft: 5, marginRight: 5}}/>
-                        <Chip title="Solid Chip" style={{marginLeft: 5, marginRight: 5}}/>
-                        <Chip title="Solid Chip" style={{marginLeft: 5, marginRight: 5}}/>
-                        <Chip title="Solid Chip" style={{marginLeft: 5, marginRight: 5}}/>
-                        <Chip title="Solid Chip" style={{marginLeft: 5, marginRight: 5}}/>
-                </View>
-                </ScrollView> */}
+                
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.description}>
                         {props.description}
