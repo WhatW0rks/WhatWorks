@@ -6,12 +6,17 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MainScreen from "./screens/Main";
 import PostScreen from "./screens/PostScreen";
 import ProductReviewForm from "./components/ProductReviewForm"; 
+
+//React Contexts
+import ReviewContext from './reviewSelectorContext';
+
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
+  const [review, setReview] = React.useState(0);
 
   return (
-
+    <ReviewContext.Provider value={{ review, setReview}}>
       <NavigationContainer>
       <Stack.Navigator
         initialRouteName="MainScreen"
@@ -37,6 +42,7 @@ export default function AppNavigator() {
               options={{ title: "Product Review Form" }}
           />
       </Stack.Navigator>
-    </NavigationContainer>       
+    </NavigationContainer> 
+  </ReviewContext.Provider>      
   );
 }

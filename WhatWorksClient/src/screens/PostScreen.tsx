@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import UserProductReviewPage from '../components/UserProductReviewPage';
 
+// Firebase
+import { database } from '../firebase';
+import { child, get, ref } from "firebase/database";
+
+// Firebase DB
+const db = database;
+
+// React Contexts
+import ReviewContext from '../reviewSelectorContext'
+
 export default function PostScreen({navigation}) {
+  const {setReview, review} = React.useContext(ReviewContext);
 
   // Default Data
   const [data, setData] = useState({
@@ -10,7 +21,33 @@ export default function PostScreen({navigation}) {
     imageLink: "https://www.capecodchips.com/wp-content/uploads/2020/05/sea-salt_vinegar-1.jpg"
   });
 
+  const fetchReview = () => {
+    const dbReviewRoute = ref(db, 'userCreatedReviews/');
+  get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
+    if (snapshot.exists()) {
+      console.log(snapshot.val());
+
+      let reviewData = snapshot.val();
+
+      setData(
+        {
+          heading: reviewData.title, 
+          user: reviewData.username,
+          description: reviewData.review,
+          imageLink: reviewData.imageURL
+        }
+      );
+
+    } else {
+      console.log("Review Missing!");
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
+  }
+
   useEffect( () => {
+    fetchReview();
   }, []);
 
   return (

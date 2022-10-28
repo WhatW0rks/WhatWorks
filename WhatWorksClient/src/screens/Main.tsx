@@ -1,11 +1,55 @@
 import * as React from 'react';
 import { StyleSheet, SafeAreaView, Text, AsyncStorage, ScrollView } from 'react-native';
 import { Button } from "@rneui/themed";
+// Firebase
+import { database } from '../firebase';
+import { onValue, ref } from "firebase/database";
+
+// Firebase DB
+const db = database;
+
+// React Contexts
+import ReviewContext from '../reviewSelectorContext';
 
 export default function Main({navigation}) {
+  const [reviewData, setReviewData] = React.useState([]);
+  const {setReview, review} = React.useContext(ReviewContext);
 
-    // Render "x" amount of reviews
+  const fetchReviewData = async() => {
+    try {
+      const userIndexReviewsRoute = ref(db, 'userReviewIndex/');
+      onValue(userIndexReviewsRoute, (snapshot) => {
+        const data = snapshot.val();
+        console.log("The Review Count from DB:", data);
+
+        let parsedData = [];
+
+        // Retrieve data fields and parsing JSON object
+        for (let key in data) {
+          if (!data.hasOwnProperty(key)) continue;
+          // console.log(key);
+          // console.log(data[key].title);
+          // console.log(data[key].userReviewID);
+
+          let temp = [data[key].userReviewID, data[key].title];
+
+          parsedData.push(temp);
+
+        }
+
+        setReviewData(parsedData);
+        console.log("THE REACT STATE DATA: ", reviewData);
+      });
+
+    } catch (e) {
+      console.log("Error: ", e)
+    }
+    
+  }
+
+    // Render Reviews from DB
     React.useEffect(() => {
+      fetchReviewData();
     }, []);
 
   return (
@@ -13,21 +57,20 @@ export default function Main({navigation}) {
     {/* <ScrollView> */}
     
       <Text style={styles.Title}>Welcome to WhatWorks App Directory!</Text>
-      {/* <Button title="Cape Cod Potato Chips" type='clear'
-      onPress={() => navigation.navigate('Review1')}/> */}
 
-      {/* <Button title="Cape Cod Potato Chips" type='clear'
-      onPress={() => navigation.navigate('Review2')}/> */}
+    {reviewData.map((r) => {
+        let id = r[0];
+        let title = r[1];
 
-    {/* {reviews.map((r) => {
         return (
-          <Button type='clear'
+          <Button key={id} type='clear'
           onPress={() => {
-            setReview(r);
-            navigation.navigate('Review2')}}
-          >{`Review ${r + 1}`}</Button>
+            setReview(id);
+            navigation.navigate('PostScreen');
+          }}
+          >{`${title}`}</Button>
         );
-      })} */}
+      })}
 
       <Button title="Post product review"
       onPress={() => navigation.navigate('Post form')}/>
