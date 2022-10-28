@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, SafeAreaView, Text, AsyncStorage, ScrollView } from 'react-native';
+import { StyleSheet, SafeAreaView, Text} from 'react-native';
 import { Button } from "@rneui/themed";
 // Firebase
 import { database } from '../firebase';
