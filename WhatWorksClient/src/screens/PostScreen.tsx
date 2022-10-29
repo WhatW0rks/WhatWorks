@@ -21,11 +21,15 @@ export default function PostScreen({navigation}) {
     imageLink: "https://www.capecodchips.com/wp-content/uploads/2020/05/sea-salt_vinegar-1.jpg"
   });
 
+  // DB Routes
+  //> userCreatedReviews
+  //> DummyReviews
+
   const fetchReview = () => {
-    const dbReviewRoute = ref(db, 'userCreatedReviews/');
+    const dbReviewRoute = ref(db, 'DummyReviews/');
   get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
     if (snapshot.exists()) {
-      console.log(snapshot.val());
+      // console.log(snapshot.val());
 
       let reviewData = snapshot.val();
 
