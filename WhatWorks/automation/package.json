@@ -1,0 +1,20 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "full_data.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "firebase": "^9.13.0",
+    "firebase-admin": "^11.2.0",
+    "pexels": "^1.4.0",
+    "puppeteer": "^19.2.0",
+    "puppeteer-extra-plugin-stealth": "^2.11.1"
+  }
+}
