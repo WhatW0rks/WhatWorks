@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar, ImageSourcePropType } from 'react-native';
 
 // React Native UI Elements Import
 import { Avatar } from '@rneui/themed';
 import { Image } from '@rneui/themed';
 import { Icon } from '@rneui/themed';
+
 
 interface ProductProperties { 
     heading: string; 
@@ -15,7 +16,9 @@ interface ProductProperties {
 }
 
 export default function UserProductReviewPage(props: ProductProperties) {
-    const src = {uri: props.imageLink}; 
+
+    const src = { uri: props.imageLink }; 
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>

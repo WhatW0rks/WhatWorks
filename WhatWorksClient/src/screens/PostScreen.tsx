@@ -4,7 +4,6 @@ import UserProductReviewPage from '../components/UserProductReviewPage';
 // Firebase
 import { database } from '../firebase';
 import { child, get, ref } from "firebase/database";
-
 // Firebase DB
 const db = database;
 
@@ -28,6 +27,7 @@ export default function PostScreen({navigation}) {
       console.log(snapshot.val());
 
       let reviewData = snapshot.val();
+      console.log(reviewData.imageURL);
 
       setData(
         {

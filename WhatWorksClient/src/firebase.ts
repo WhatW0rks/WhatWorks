@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage";
 import environment from "./environment";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -16,12 +17,12 @@ const firebaseConfig = {
   storageBucket: environment.storageBucket,
   messagingSenderId: environment.messagingSenderId,
   appId: environment.appId,
-  measurementId: environment.measurementId
+  measurementId: environment.measurementId, 
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 const database = getDatabase(app);
-
-export { database }
+const storage = getStorage(app); 
+export { database, storage }

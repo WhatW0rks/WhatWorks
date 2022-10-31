@@ -17,7 +17,7 @@ export default function Main({navigation}) {
 
   const fetchReviewData = async() => {
     try {
-      const userIndexReviewsRoute = ref(db, 'userReviewIndex/');
+      const userIndexReviewsRoute = ref(db, 'userCreatedReviews/');
       onValue(userIndexReviewsRoute, (snapshot) => {
         const data = snapshot.val();
         console.log("The Review Count from DB:", data);
@@ -27,17 +27,14 @@ export default function Main({navigation}) {
         // Retrieve data fields and parsing JSON object
         for (let key in data) {
           if (!data.hasOwnProperty(key)) continue;
-          // console.log(key);
-          // console.log(data[key].title);
-          // console.log(data[key].userReviewID);
 
-          let temp = [data[key].userReviewID, data[key].title];
+          let temp = [key, data[key].title];
 
           parsedData.push(temp);
 
         }
 
-        setReviewData(parsedData);
+        setReviewData(old => (parsedData));
         console.log("THE REACT STATE DATA: ", reviewData);
       });
 
@@ -50,6 +47,7 @@ export default function Main({navigation}) {
     // Render Reviews from DB
     React.useEffect(() => {
       fetchReviewData();
+      //console.log(reviewData);
     }, []);
 
   return (
@@ -61,6 +59,8 @@ export default function Main({navigation}) {
     {reviewData.map((r) => {
         let id = r[0];
         let title = r[1];
+        console.log(id);
+        console.log(title);
 
         return (
           <Button key={id} type='clear'

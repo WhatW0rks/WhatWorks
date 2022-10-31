@@ -4,12 +4,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
 // Firebase 
-import { database } from '../firebase';
+import { database, storage } from '../firebase';
 import { ref, set } from "firebase/database";
-
+import { getDownloadURL, uploadBytes, ref as storageRef} from "firebase/storage"; 
 
 // Firebase DB
 const db = database;
+// Firebase storage
+const store = storage; 
 
 interface ProductPostProperties { 
     navigation: any;
@@ -60,28 +62,68 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
         }
     };
 
-    const writeReviewData = () => {
-        let randomReviewID = randomIntFromInterval(0,1000);
+    async function writeReviewData (randomReviewID:number) {
         let randomNumUser = randomIntFromInterval(0,6);
-        let randomNumImage = randomIntFromInterval(0,3);
+        //let randomNumImage = randomIntFromInterval(0,3);
+
         // Write the review index
         set(ref(db, 'userReviewIndex/' + randomReviewID), {
             userReviewID: `${randomReviewID}`,
             title: `${title}`
         });
+
         // Write the core review
         set(ref(db, 'userCreatedReviews/' + randomReviewID), {
             username: `${userArray[randomNumUser]}`,
             title: `${title}`,
-            imageURL: `${imageArray[randomNumImage]}`,
+            imageURL: image ? image : null,
             review: `${review}`
         });
+
+    }
+    
+    
+    // upload image 
+    async function uploadImageToStorage (randomReviewID: number) {
+        if (image) { 
+            const imageRef = storageRef(storage, randomReviewID.toString());
+            const blob = await new Promise<Blob>((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function (e) {
+                    console.log(e);
+                    reject(new TypeError("Network request failed"));
+                };
+                xhr.responseType = "blob";
+                xhr.open("GET", image, true);
+                xhr.send(null);
+                console.log("here");
+            });
+                
+            uploadBytes(imageRef, blob).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+                
+            }); 
+        }        
     }
 
+    // get image url 
+    async function getImageUrl(randomReviewID: number) {
+        const url = await getDownloadURL(storageRef(storage, randomReviewID.toString()));
+        setImage(prev => (url));
+    }
+
+    
 
     // Submission
     const onPressPostReview = async () => { 
-        writeReviewData();
+        let randomReviewID = randomIntFromInterval(0,1000);
+        // write image to firebase storage 
+        await uploadImageToStorage(randomReviewID);
+        await getImageUrl(randomReviewID);
+        await writeReviewData(randomReviewID);
         props.navigation.navigate('MainScreen');
     } 
     
