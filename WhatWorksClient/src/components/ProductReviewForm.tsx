@@ -60,17 +60,24 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
         }
     };
 
+    // Database Routes
+    //> userReviewIndex
+    //> DummyIndex
+    //> userCreatedReviews
+    //> DummyReviews
+
     const writeReviewData = () => {
         let randomReviewID = randomIntFromInterval(0,1000);
         let randomNumUser = randomIntFromInterval(0,6);
         let randomNumImage = randomIntFromInterval(0,3);
         // Write the review index
-        set(ref(db, 'userReviewIndex/' + randomReviewID), {
+        set(ref(db, 'DummyIndex/' + randomReviewID), {
             userReviewID: `${randomReviewID}`,
-            title: `${title}`
+            title: `${title}`,
+            imageURL: `${imageArray[randomNumImage]}`
         });
         // Write the core review
-        set(ref(db, 'userCreatedReviews/' + randomReviewID), {
+        set(ref(db, 'DummyReviews/' + randomReviewID), {
             username: `${userArray[randomNumUser]}`,
             title: `${title}`,
             imageURL: `${imageArray[randomNumImage]}`,

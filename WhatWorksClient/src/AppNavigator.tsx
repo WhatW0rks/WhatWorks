@@ -1,48 +1,41 @@
 import * as React from 'react';
 // import { View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import MainScreen from "./screens/Main";
-import PostScreen from "./screens/PostScreen";
-import ProductReviewForm from "./components/ProductReviewForm"; 
+// React Stack Screens
+import HomeStackNavigator from './tabroutes/HomeStackNavigator';
+import ExploreStackNavigator from './tabroutes/ExploreStackNavigator';
+import ProfileStackNavigator from './tabroutes/ProfileStackNavigator';
 
 //React Contexts
 import ReviewContext from './reviewSelectorContext';
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
   const [review, setReview] = React.useState(0);
 
   return (
-    <ReviewContext.Provider value={{ review, setReview}}>
-      <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="MainScreen"
-        screenOptions={{
-          gestureEnabled: false,
-          animationEnabled: true
-        }}
-      >
-          <Stack.Screen
-              name="MainScreen"
-              component={MainScreen}
-              options={{ headerShown: false, title: "Home Screen" }}
-          />
+    <ReviewContext.Provider value={{review, setReview}}>
 
-          <Stack.Screen
-              name="PostScreen"
-              component={PostScreen}
-              options={{ title: "" }}
+    <NavigationContainer>
+      <Tab.Navigator>
+          <Tab.Screen
+            name="HomeStack"
+            component={ HomeStackNavigator }  
           />
-          <Stack.Screen
-              name="Post form"
-              component={ProductReviewForm}
-              options={{ title: "Product Review Form" }}
+          <Tab.Screen
+            name="ExploreStack"
+            component={ ExploreStackNavigator }  
           />
-      </Stack.Navigator>
+          <Tab.Screen
+            name="ProfileStack"
+            component={ ProfileStackNavigator }  
+          />
+      </Tab.Navigator>
     </NavigationContainer> 
+
   </ReviewContext.Provider>      
   );
 }

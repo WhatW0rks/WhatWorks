@@ -27,7 +27,7 @@ export default function PostScreen({navigation}) {
 
   const fetchReview = () => {
     const dbReviewRoute = ref(db, 'DummyReviews/');
-  get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
+    get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
     if (snapshot.exists()) {
       // console.log(snapshot.val());
 
