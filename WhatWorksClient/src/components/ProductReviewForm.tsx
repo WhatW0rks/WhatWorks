@@ -20,7 +20,7 @@ interface ProductPostProperties {
 export default function UserProductReviewPage(props: ProductPostProperties) {
     const [title, onChangeTitle] = React.useState(null);
     const [review, onChangeReview] = React.useState(null);
-    const [image, setImage] = React.useState(null);
+    const [image, setImage] = React.useState(null as string | null);
 
     const imageArray = 
     [
@@ -110,9 +110,10 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
     }
 
     // get image url 
-    async function getImageUrl(randomReviewID: number) {
+    const getImageUrl = async function (randomReviewID: number) {
         const url = await getDownloadURL(storageRef(storage, randomReviewID.toString()));
-        setImage(prev => (url));
+        console.log(url); 
+        setImage(url);
     }
 
     
