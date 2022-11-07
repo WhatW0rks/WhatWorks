@@ -1,9 +1,13 @@
-import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar, TextInput } from 'react-native';
 
 // React Native UI Elements Import
 import { Avatar } from '@rneui/themed';
 import { Image } from '@rneui/themed';
 import { Icon } from '@rneui/themed';
+import { useState } from 'react';
+import { createComment, getComments } from '../comments/api';
+import CommentItem from './CommentItem';
+import React from 'react';
 
 interface ProductProperties { 
     heading: string; 
@@ -14,8 +18,20 @@ interface ProductProperties {
     navigation: any;
 }
 
+
+
+
 export default function UserProductReviewPage(props: ProductProperties) {
+    const [myComment, setMyComment] = useState("");
+    const [comments, setComments] = useState(getComments());
+
     const src = {uri: props.imageLink}; 
+
+    const addComment = (value: string)=>{
+        setComments(prev => [...prev, createComment(value)])
+        setMyComment("")
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
@@ -57,36 +73,10 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 </View>
                 {/* Comment Container */}
                 <View style={styles.commentContainer}>
-                    {/* Comment */}
-                    <View style={styles.commentHeader}>
-                        <Avatar size={24} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profilename}>{props.user}</Text>
-                        <Text style={{color: "gray"}}> 59 minutes </Text>
-                    </View>
-                    <View style={styles.commentDescription}>
-                        <Text>
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                            incididunt ut labore et dolore magna aliqua. 
-                            Ut enim ad minim veniam."   
-                        </Text>
-                    </View>
+                {/* Comment */}
+                {comments.map((comment, index) => <CommentItem comment={comment} addComment={addComment} key={index}/>) }
+         </View>
 
-                    {/* Comment */}
-                    <View style={styles.commentHeader}>
-                        <Avatar size={24} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profilename}>{props.user}</Text>
-                        <Text style={{color: "gray"}}> 1 day ago </Text>
-                    </View>
-                    <View style={styles.commentDescription}>
-                        <Text>
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                            incididunt ut labore et dolore magna aliqua. 
-                            Ut enim ad minim veniam."   
-                        </Text>
-                    </View>
-                    
-                    <Text style={{color: "#808080", marginTop: 15}}>View 1000 Comments</Text>
-                </View>
                 <View style={{marginBottom: 10, marginTop:10}}></View>
                 {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />
                 <Button title="Go back" onPress={() => props.navigation.goBack()} /> */}
@@ -183,6 +173,12 @@ const styles = StyleSheet.create({
     commentTime: {
         marginTop: 2,
         marginLeft: 35
-    }
+    },
+    input: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+      }
   });
 
