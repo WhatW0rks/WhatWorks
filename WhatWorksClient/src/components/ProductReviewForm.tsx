@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { StyleSheet, Text, Image, Button, SafeAreaView, TextInput } from 'react-native';
+import { StyleSheet, Text, Image, SafeAreaView, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
+import { TextInput, Button } from 'react-native-paper';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Firebase 
 import { database, storage } from '../firebase';
@@ -129,34 +131,35 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
     } 
     
     return (
-        <SafeAreaView>
-            <Text style={styles.heading}>
-                Post a review: 
-            </Text>
+        <SafeAreaView style={styles.background}>
+            <ScrollView>
             <Text style={styles.heading2}> 
-                Title: 
+                Title
             </Text>
             <TextInput
-                style={styles.input}
                 onChangeText={onChangeTitle}
                 value={title}
+                style={styles.input}
+                activeUnderlineColor="#42b0f5"
                 placeholder="Burger"
                 maxLength={30}
             />
-            <Text style={styles.heading2}>
-                Image:
-            </Text>
+            
             <Button 
-                title="Pick an image from camera roll" 
+                icon="camera"
                 onPress={pickImage} 
-            />
+                color="#42b0f5"
+            >
+                Select image
+            </Button>
             {image && <Image source={{ uri: image }} style={styles.image} />}
             <Text style={styles.heading2}>
-                Review:
+                Review
             </Text>
             <TextInput 
                 multiline={true}
                 style={styles.input}
+                activeUnderlineColor="#42b0f5"
                 onChangeText={onChangeReview}
                 value={review}
                 placeholder="I loved this burger..."
@@ -164,20 +167,26 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
             />
             <Button
                 onPress={onPressPostReview}
-                title="Post review"
-                color="#841584"
+                color="#007cba"
                 accessibilityLabel="Post your review"
-            />
+            >
+                Post review!
+                </Button>
+            </ScrollView>
         </SafeAreaView>
     ); 
 }
 
 const styles = StyleSheet.create({
     input: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-      padding: 10,
+      backgroundColor :'#bfeaff',
+      marginBottom:30
+       },
+    background: {
+        backgroundColor:'#bfeaff', 
+        flex: 1, 
+        height: "100%"
+
     },
     image: { 
         height: 200, 
@@ -192,9 +201,12 @@ const styles = StyleSheet.create({
         color: "black",
         paddingBottom: 5, 
         paddingTop: 5,
+
     },
     heading2: { 
-        fontSize: 18, 
+        fontSize: 20, 
+        padding:8,
+        fontFamily:"Helvetica",
         marginLeft: 5, 
         fontWeight: "bold", 
         color: "#42b0f5"
