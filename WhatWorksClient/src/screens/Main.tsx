@@ -1,16 +1,19 @@
 import * as React from 'react';
-import { StyleSheet, SafeAreaView, Text, ScrollView, View, FlatList, ActivityIndicator} from 'react-native';
-import { Button } from "@rneui/themed";
+import { StyleSheet, SafeAreaView, Text, View, FlatList, ActivityIndicator} from 'react-native';
 
 // React Screen Components
 import LoadingScreen from './LoadingScreen';
 
 // UI Component
 import { Image } from '@rneui/themed';
+import { SearchBar } from '@rneui/themed';
+import { Button } from "@rneui/themed";
+
+// Image Caching
 
 // Firebase
 import { database } from '../firebase';
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, query, orderByChild, startAt, endAt, get } from "firebase/database";
 
 // Firebase DB
 const db = database;
@@ -21,7 +24,9 @@ import ReviewContext from '../reviewSelectorContext';
 export default function Main({navigation}) {
   const [reviewData, setReviewData] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
+  const [querys, setQuery] = React.useState("");
   const {setReview, review} = React.useContext(ReviewContext);
+  
 
   // DB Routes
   //> userReviewIndex
@@ -39,17 +44,17 @@ export default function Main({navigation}) {
         for (let key in data) {
           if (!data.hasOwnProperty(key)) continue;
           let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
-
+          
           parsedData.push(temp);
 
         }
 
         setReviewData(parsedData);
-        // setLoading(false);
+        setLoading(false);
 
-        setTimeout(() => {
-          setLoading(false);
-        }, 7000);
+        // setTimeout(() => {
+        //   setLoading(false);
+        // }, 4000);
         
         // console.log("THE REACT STATE DATA: ", reviewData);
       });
@@ -57,6 +62,41 @@ export default function Main({navigation}) {
     } catch (e) {
       console.log("Error: ", e)
     }
+  }
+
+  const updateQuery = (search) => {
+    setQuery(search);
+    console.log(search);
+
+    if (search == "") {
+      fetchReviewData();
+    } else {
+      const tagPath = ref(db, 'TagReviews/');
+      // const dbTagQuery = query(tagPath, orderByChild("tags"), startAt(`${querys.toLowerCase()}`), endAt(`${querys.toLowerCase()}` + "\uf7ff"));
+      const dbTagQuery = query(tagPath, orderByChild("tags"));
+
+      get( dbTagQuery ).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+
+          let parsedData = [];
+
+          for (let key in data) {
+            if (!data.hasOwnProperty(key)) continue;
+            let temp = [data[key].review.userReviewID, data[key].review.title, data[key].review.imageURL];
+            parsedData.push(temp);
+          }
+
+          setReviewData(parsedData);
+
+        } else {
+          console.log("The Snapshot doesn't exist!");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    
   }
 
   // Render Reviews from DB
@@ -71,14 +111,17 @@ export default function Main({navigation}) {
   } else {
     return (
       <SafeAreaView style={styles.mainContainer}>
-            <Text style={styles.Title}>Welcome to WhatWorks App Directory!</Text>
-    
             <View style={styles.buttonContainer}>
-            <Button title="See Loading Screen"
-              onPress={() => navigation.navigate('LoadingScreen')}/>
-    
-              <Button title="Post product review"
-              onPress={() => navigation.navigate('PostForm')}/>
+            {/* <Button title="See Loading Screen"
+              onPress={() => navigation.navigate('LoadingScreen')}/> */}
+
+              <SearchBar
+                placeholder='Search'
+                onChangeText={updateQuery}
+                value={querys}
+                containerStyle={styles.searchBarContainer}
+                inputContainerStyle={styles.searchBarInput}
+              />
             </View>
     
             <View style={styles.exploreContainer}>
@@ -111,10 +154,13 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
-    Title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 20
+    searchBarContainer: {
+      width: 350,
+      height: 50,
+      borderRadius: 5,
+    },
+    searchBarInput: {
+      height: 10
     },
     exploreContainer: {
       width: "100%",

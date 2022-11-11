@@ -16,9 +16,11 @@ export default function PostScreen({navigation}) {
 
   // Default Data
   const [data, setData] = useState({
-    heading: "Cape Cod Chips", user:"Jane Doe",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco  laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    imageLink: "https://www.capecodchips.com/wp-content/uploads/2020/05/sea-salt_vinegar-1.jpg"
+    heading: "Loading...", 
+    user:"Loading...",
+    description: "Loading...",
+    imageLink: "https://upload.wikimedia.org/wikipedia/commons/4/41/Image_tagging_icon_03.svg"
+    
   });
 
   // DB Routes
@@ -62,6 +64,9 @@ export default function PostScreen({navigation}) {
       imageLink = {data.imageLink}
       link={undefined}
       navigation={navigation}
+      statistics = {[["Overall Rating", "5", "Sugar", "500mg"], 
+                     ["Calories", "180 cal","Fat", "20mg"], 
+                     ["Sodium", "200mg","",""]]}
     />
   );
 }

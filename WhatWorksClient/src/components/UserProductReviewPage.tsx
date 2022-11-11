@@ -1,60 +1,117 @@
-import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar, Pressable } from 'react-native';
 
 // React Native UI Elements Import
-import { Avatar } from '@rneui/themed';
+import { Avatar, withBadge } from '@rneui/themed';
 import { Image } from '@rneui/themed';
-import { Icon } from '@rneui/themed';
+import React, { useEffect, useRef } from 'react';
+
+// React Native Paper
+import { Chip } from 'react-native-paper';
+
+// Lottie Animations
+import Lottie from 'lottie-react-native';
+import Add from '../assets/LottieAnimations/add.json';
+import Share from '../assets/LottieAnimations/share.json';
+import Heart from '../assets/LottieAnimations/heart.json';
+import Like from '../assets/LottieAnimations/like.json';
 
 interface ProductProperties { 
     heading: string; 
     user: string;
     link: string | undefined;
-    imageLink:string; 
+    imageLink: string; 
     description: string; 
     navigation: any;
+    statistics: string[][];
 }
 
+
 export default function UserProductReviewPage(props: ProductProperties) {
+    const [statsData, setStatsData] = React.useState([
+    ["Overall Rating", "5/10", "Sugar", "500mg"], 
+    ["Calories", "180 cal", "Fat", "20mg"], 
+    ["Carbs", "270g", "Protein", "30mg"]]);
+    const animationRef1 = useRef<Lottie>(null);
+    const animationRef2 = useRef<Lottie>(null);
+    const animationRef3 = useRef<Lottie>(null);
+
+    useEffect( () => {
+        // console.log(props.heading, "Title --> Stats ", props.statistics);
+    }, []);
+
     const src = {uri: props.imageLink}; 
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
-                {/* Header Container */}
-                <View style={styles.usercontainer}>
-                    <View style={styles.usertagline}>
-                        <Avatar size={32} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profilename}>{props.user}</Text>
-                        <View style={{flex: 1}}></View>
-                        <Icon name="menu" style={styles.leftIcons}/>
-                    </View>
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.heading}>{props.heading}</Text>
-                    </View>
-                </View>
-
                 {/* Image Container */}
                 <Image style={styles.image}source={src}/>
 
-                {/* Gamification */}
-                <View style={styles.gamificationContainer}>
-                    {/* Left Side */}
-                    <Icon name="favorite" size={27} style={styles.leftIcons} />
-                    <Icon name="forum" size={27} style={styles.leftIcons} />
-                    <Icon name="send" size={27} style={styles.leftIcons} />
-
-                    <View style={{flex: 1}}></View>
-
-                    {/* Right Side */}
-                    <Icon name="bookmark" size={27} style={styles.leftIcons} />
+                {/* Stats Container */}
+                <View style={styles.statscontainer}>
+                    <View style={styles.statColumn}>
+                            {statsData.map((v) => {
+                                return(
+                                <View style={styles.miniBlock}>
+                                    <View style={styles.statTextBox}>
+                                        <Text style={styles.statsHeader}>{v[0]}</Text>
+                                        <Text style={styles.statsInfo}>{v[1]}</Text>
+                                    </View>
+                                    <View style={styles.statTextBox}>
+                                        <Text style={styles.statsHeader}>{v[2]}</Text>
+                                        <Text style={styles.statsInfo}>{v[3]}</Text>
+                                    </View>
+                                </View>
+                                )
+                            })}
+                    </View>
                 </View>
 
-                {/* Tags */}
-                
+                {/* Title and User Info */}
+                <View style={styles.headerContainer}>
+                    <View style={styles.profileContainer}>
+                        <Avatar size={40} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
+                        <Text style={styles.profileLink}>@JaneDoe</Text>
+                    </View>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.Title}>{props.heading}</Text>
+                    </View>
+                </View>
+
+                {/* Chips and Tagging */}
+                <View style={styles.chipContainer}>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Home Cooked</Chip>
+                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Popular</Chip>
+                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Top 10</Chip>
+                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Upvoted Most</Chip>
+                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Healthy</Chip>
+                    </ScrollView>
+                </View>
+
+                {/* Description */}
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.description}>
                         {props.description}
                     </Text>
                 </View>
+
+                {/* Function Bar */}
+                <View style={styles.functionContainer}>
+                    <Pressable onPress={() => {animationRef1.current?.play();}} style={styles.functionBtnContainer}>
+                        <Lottie style={{height: 35, width: 35}} ref={animationRef1} source={Share} loop={false}/>
+                        <Text style={styles.funcTitleShare}>Share</Text>
+                    </Pressable>
+                    <Pressable onPress={() => {animationRef2.current?.play();}} style={styles.functionBtnContainer}>
+                        <Lottie style={{height: 70, width: 70}} ref={animationRef2} source={Heart} loop={false}/>
+                        <Text style={styles.funcGeneric}>Favorite</Text>
+                    </Pressable>
+                    <Pressable onPress={() => {animationRef3.current?.play();}} style={styles.functionBtnContainer}>
+                        <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Like} loop={false}/>
+                        <Text style={styles.funcGeneric}>Like</Text>
+                    </Pressable>
+                </View>
+
                 {/* Comment Container */}
                 <View style={styles.commentContainer}>
                     {/* Comment */}
@@ -101,7 +158,110 @@ const styles = StyleSheet.create({
       backgroundColor: "white",
       flex: 1
     },
-    usercontainer: {
+    statscontainer: {
+        display: "flex",
+        height: 90,
+        maxWidth: "100%",
+        marginTop: 15,
+        marginLeft: 10,
+        marginRight: 10,
+        alignItems: "center"
+    },
+    statColumn: {
+        display: "flex",
+        flexDirection: "row",
+    },
+    miniBlock: {
+        height: 100,
+        width: 135
+    },
+    statTextBox: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    statsHeader: {
+        fontSize: 12,
+        fontWeight: "500",
+        color: "gray"
+    },
+    statsInfo: {
+        marginBottom: 10,
+        fontSize: 11,
+        fontWeight: "500"
+    },
+
+    headerContainer: {
+        display: 'flex',
+        flexDirection: "row",
+        marginLeft: 10,
+        width: "70%"
+    },
+    profileContainer: {
+        display:"flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 10
+    },
+    profileLink: {
+        fontSize: 10,
+        fontWeight: "bold"
+    },
+    titleContainer: {
+        display:"flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    Title: {
+        fontSize: 20,
+        fontWeight: "900",
+        paddingBottom: 13
+    },
+    chipContainer: {
+        display: "flex",
+        flexDirection: "row",
+        marginLeft: 5,
+        marginTop: 10,
+        height: 30
+    },
+    chip: {
+        marginRight: 2,
+        marginLeft: 2
+    },
+    functionContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+        height: 80,
+        maxWidth: "100%",
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 20,
+        // borderWidth: 1,
+        // borderStyle: "dashed",
+        // borderColor: "#33B3A6"
+    },
+    functionBtnContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row"
+    },
+    funcTitleShare: {
+        marginLeft: 15,
+        fontWeight: "600"
+    },
+    funcGeneric: {
+        fontWeight: "600"
+    },
+
+
+
+    list: {
+        width: "100%",
+        backgroundColor: 'white',
+        flex: 1
     },
     usertagline: {
         display: "flex",
@@ -114,14 +274,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.2,
         // borderTopWidth: 0.2,
         borderColor: "#A9A9A9"
-    },
-    headerContainer: {
-        display: 'flex',
-        flexDirection: "row",
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 20,
-        marginTop: 10
     },
     heading: {
       fontSize: 30,

@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { StyleSheet, Text, Image, Button, SafeAreaView, TextInput } from 'react-native';
+import { StyleSheet, Text, Image, SafeAreaView, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
+
+import { TextInput, Button } from 'react-native-paper';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Firebase 
 import { database } from '../firebase';
 import { ref, set } from "firebase/database";
-
 
 // Firebase DB
 const db = database;
@@ -22,10 +24,10 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
 
     const imageArray = 
     [
-        "https://upload.wikimedia.org/wikipedia/commons/6/65/Food_16.jpg",
-        "https://www.capecodchips.com/wp-content/uploads/2020/05/sea-salt_vinegar-1.jpg", 
-        "https://upload.wikimedia.org/wikipedia/commons/8/8e/Christmas_food_001.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/b/b1/Homemade_food_4.jpg"
+        "https://upload.wikimedia.org/wikipedia/commons/e/e2/Simpson_Burger%2C_XV_Burger%2C_Montparnasse%2C_Paris_002.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/a/a0/Bachi_Burger_-_Las_Vegas.jpg", 
+        "https://upload.wikimedia.org/wikipedia/commons/b/b7/Burger_King_double_cheeseburger.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/f/f5/Bulgogi_burger.jpg"
     ];
 
     const userArray = 
@@ -60,16 +62,43 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
         }
     };
 
+    const sendTags = async(randomReviewID, randomNumImage) => {
+         // Tag the appropriate image
+         const url = 'http://127.0.0.1:5001/whatworks-ac068/us-central1/widgets/tagReview';
+
+         let data = {
+            method: 'POST',
+            headers: {
+                'Accept':       'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userReviewID: `${randomReviewID}`,
+                title: `${title}`,
+                imageURL: `${imageArray[randomNumImage]}`
+            }),
+            
+          }
+
+        fetch(`${url}`, data)
+        .then((response) => response.text())
+        .then((responseJson) => {
+            console.log(responseJson);
+        });
+    };
+
     // Database Routes
     //> userReviewIndex
     //> DummyIndex
     //> userCreatedReviews
     //> DummyReviews
-
     const writeReviewData = () => {
         let randomReviewID = randomIntFromInterval(0,1000);
         let randomNumUser = randomIntFromInterval(0,6);
         let randomNumImage = randomIntFromInterval(0,3);
+
+        sendTags(randomReviewID, randomNumImage);
+
         // Write the review index
         set(ref(db, 'DummyIndex/' + randomReviewID), {
             userReviewID: `${randomReviewID}`,
@@ -89,59 +118,66 @@ export default function UserProductReviewPage(props: ProductPostProperties) {
     // Submission
     const onPressPostReview = async () => { 
         writeReviewData();
-        props.navigation.navigate('MainScreen');
+        // props.navigation.navigate('MainScreen');
     } 
     
     return (
-        <SafeAreaView>
-            <Text style={styles.heading}>
-                Post a review: 
-            </Text>
-            <Text style={styles.heading2}> 
-                Title: 
-            </Text>
-            <TextInput
-                style={styles.input}
-                onChangeText={onChangeTitle}
-                value={title}
-                placeholder="Burger"
-                maxLength={30}
-            />
-            <Text style={styles.heading2}>
-                Image:
-            </Text>
-            <Button 
-                title="Pick an image from camera roll" 
-                onPress={pickImage} 
-            />
-            {image && <Image source={{ uri: image }} style={styles.image} />}
-            <Text style={styles.heading2}>
-                Review:
-            </Text>
-            <TextInput 
-                multiline={true}
-                style={styles.input}
-                onChangeText={onChangeReview}
-                value={review}
-                placeholder="I loved this burger..."
-                maxLength={1000}
-            />
-            <Button
-                onPress={onPressPostReview}
-                title="Post review"
-                color="#841584"
-                accessibilityLabel="Post your review"
-            />
-        </SafeAreaView>
+        <SafeAreaView style={styles.background}>
+        <ScrollView>
+        <Text style={styles.heading2}> 
+            Title
+        </Text>
+        <TextInput
+            onChangeText={onChangeTitle}
+            value={title}
+            style={styles.input}
+            activeUnderlineColor="#42b0f5"
+            placeholder="Burger"
+            maxLength={30}
+        />
+        
+        <Button 
+            icon="camera"
+            onPress={pickImage} 
+            color="#42b0f5"
+        >
+            Select image
+        </Button>
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        <Text style={styles.heading2}>
+            Review
+        </Text>
+        <TextInput 
+            multiline={true}
+            style={styles.input}
+            activeUnderlineColor="#42b0f5"
+            onChangeText={onChangeReview}
+            value={review}
+            placeholder="I loved this burger..."
+            maxLength={1000}
+        />
+        <Button
+            onPress={onPressPostReview}
+            color="#007cba"
+            accessibilityLabel="Post your review"
+        >
+            Post review!
+            </Button>
+        </ScrollView>
+    </SafeAreaView>
     ); 
 }
 
 const styles = StyleSheet.create({
     input: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-      padding: 10,
+    //   backgroundColor :'#bfeaff',
+      marginBottom:30
+       },
+    background: {
+        // backgroundColor:'#bfeaff',
+        backgroundColor: "white", 
+        flex: 1, 
+        height: "100%"
     },
     image: { 
         height: 200, 
@@ -158,7 +194,9 @@ const styles = StyleSheet.create({
         paddingTop: 5,
     },
     heading2: { 
-        fontSize: 18, 
+        fontSize: 20, 
+        padding:8,
+        fontFamily:"Helvetica",
         marginLeft: 5, 
         fontWeight: "bold", 
         color: "#42b0f5"

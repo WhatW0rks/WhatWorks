@@ -23,7 +23,7 @@ export default function ExploreNavigator() {
           <Stack.Screen
               name="MainScreen"
               component={MainScreen}
-              options={{ headerShown: false, title: "Home Screen" }}
+              options={{ headerShown: false, title: ""}}
           />
 
           {/* Screen that handles posts/reviews */}
@@ -35,7 +35,7 @@ export default function ExploreNavigator() {
 
           {/* Content Creation Workflow */}
           <Stack.Screen
-              name="PostForm"
+              name="SubmitScreen"
               component={ProductReviewForm}
               options={{ title: "Product Review Form" }}
           />
