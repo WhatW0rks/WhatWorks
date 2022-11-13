@@ -44,7 +44,7 @@ app.post('/tagReview', async (req, res) => {
     let parseData = JSON.parse(response.body);
     // console.log(parseData.result.tags);
     
-    let tags = [];
+    let tags : string[] = []
 
     parseData.result.tags.forEach(element => {
       console.log(element.tag.en);
