@@ -10,9 +10,10 @@ import { Chip } from 'react-native-paper';
 
 // Lottie Animations
 import Lottie from 'lottie-react-native';
+import Add from '../assets/LottieAnimations/add.json';
+import Share from '../assets/LottieAnimations/share.json';
 import Heart from '../assets/LottieAnimations/heart.json';
-import List from '../assets/LottieAnimations/toDo.json';
-import Dislike from '../assets/LottieAnimations/dislike.json';
+import Like from '../assets/LottieAnimations/like.json';
 
 interface ProductProperties { 
     heading: string; 
@@ -43,28 +44,6 @@ export default function UserProductReviewPage(props: ProductProperties) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
-                {/* Image Container */}
-                <Image style={styles.image}source={src}/>
-
-                {/* Stats Container */}
-                <View style={styles.statscontainer}>
-                    <View style={styles.statColumn}>
-                            {statsData.map((v) => {
-                                return(
-                                <View style={styles.miniBlock}>
-                                    <View style={styles.statTextBox}>
-                                        <Text style={styles.statsHeader}>{v[0]}</Text>
-                                        <Text style={styles.statsInfo}>{v[1]}</Text>
-                                    </View>
-                                    <View style={styles.statTextBox}>
-                                        <Text style={styles.statsHeader}>{v[2]}</Text>
-                                        <Text style={styles.statsInfo}>{v[3]}</Text>
-                                    </View>
-                                </View>
-                                )
-                            })}
-                    </View>
-                </View>
 
                 {/* Title and User Info */}
                 <View style={styles.headerContainer}>
@@ -76,6 +55,9 @@ export default function UserProductReviewPage(props: ProductProperties) {
                         <Text style={styles.Title}>{props.heading}</Text>
                     </View>
                 </View>
+
+                {/* Image Container */}
+                <Image style={styles.image}source={src}/>
 
                 {/* Chips and Tagging */}
                 <View style={styles.chipContainer}>
@@ -96,25 +78,20 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 </View>
 
                 {/* Function Bar */}
-                <View style={styles.functionContainer}>
+                {/* <View style={styles.functionContainer}>
                     <Pressable onPress={() => {animationRef1.current?.play();}} style={styles.functionBtnContainer}>
-                        <Lottie style={{height: 44, width: 44}} ref={animationRef1} source={Dislike} loop={false}/>
-                        <Text style={styles.funcTitleShare}>Didn't Work!</Text>
+                        <Lottie style={{height: 35, width: 35}} ref={animationRef1} source={Share} loop={false}/>
+                        <Text style={styles.funcTitleShare}>Share</Text>
                     </Pressable>
                     <Pressable onPress={() => {animationRef2.current?.play();}} style={styles.functionBtnContainer}>
-                        <Lottie style={{height: 50, width: 50}} ref={animationRef2} source={List} loop={false}/>
-                        <Text style={styles.funcGeneric}>Going to try!</Text>
+                        <Lottie style={{height: 70, width: 70}} ref={animationRef2} source={Heart} loop={false}/>
+                        <Text style={styles.funcGeneric}>Favorite</Text>
                     </Pressable>
-                    <Pressable onPress={() => {animationRef3.current?.play();}} style={styles.functionBtnContainerWorks}>
-                        <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Heart} loop={false}/>
-                        <Text style={styles.funcTitleShare2}>Works!</Text>
+                    <Pressable onPress={() => {animationRef3.current?.play();}} style={styles.functionBtnContainer}>
+                        <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Like} loop={false}/>
+                        <Text style={styles.funcGeneric}>Like</Text>
                     </Pressable>
-                </View>
-
-                {/* Comment Title */}
-                <View style={styles.CommentTitleContainer}>
-                    <Text style={styles.CommentTitle}>Top Comments</Text>
-                </View>
+                </View> */}
 
                 {/* Comment Container */}
                 <View style={styles.commentContainer}>
@@ -123,20 +100,6 @@ export default function UserProductReviewPage(props: ProductProperties) {
                         <Avatar size={24} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
                         <Text style={styles.profilename}>{props.user}</Text>
                         <Text style={{color: "gray"}}> 59 minutes </Text>
-                    </View>
-                    <View style={styles.commentDescription}>
-                        <Text>
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                            incididunt ut labore et dolore magna aliqua. 
-                            Ut enim ad minim veniam."   
-                        </Text>
-                    </View>
-
-                    {/* Comment */}
-                    <View style={styles.commentHeader}>
-                        <Avatar size={24} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profilename}>{props.user}</Text>
-                        <Text style={{color: "gray"}}> 1 day ago </Text>
                     </View>
                     <View style={styles.commentDescription}>
                         <Text>
@@ -252,37 +215,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row"
     },
-    functionBtnContainerWorks: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "row",
-        marginLeft: -7
-    },
     funcTitleShare: {
-        fontWeight: "600",
-        marginRight: 5
-    },
-    funcTitleShare2: {
-        fontWeight: "600",
-        marginLeft: -15,
-        marginRight: 10
+        marginLeft: 15,
+        fontWeight: "600"
     },
     funcGeneric: {
         fontWeight: "600"
-    },
-    CommentTitleContainer: {
-        display: "flex",
-        marginLeft: 5,
-        marginTop: 10,
-        height: 30,
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    CommentTitle: {
-        fontSize: 20,
-        fontWeight: "bold",
-        textDecorationLine: "underline"
     },
 
 
@@ -366,4 +304,3 @@ const styles = StyleSheet.create({
         marginLeft: 35
     }
   });
-

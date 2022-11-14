@@ -1,13 +1,24 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppSelector } from '../hooks';
-import { selectUsername } from '../userSlice';
+
+// Redux test
+import { incremented, decremented, reset, store } from '../redux/counterExample/counter';
+
 export default function LoadingScreen({navigation}) {
-    const username = useAppSelector(selectUsername);
+    const [count, setCount] = React.useState(null);
+    store.subscribe(() => {
+        let x = store.getState().value;
+        // console.log("The Value", x);
+        setCount(x);
+    });
     return(
         <SafeAreaView style={styles.loadingContainer}>
-            <Text> Profile Screen for {username} </Text>
+            <Text> Profile Screen </Text>
+            <Text>{`${count}`}</Text>
+            <Button title='Increment' onPress={() => store.dispatch(incremented()) }></Button>
+            <Button title='Decrement' onPress={() => store.dispatch(decremented()) }></Button>
+            <Button title='Reset' onPress={() => store.dispatch(reset()) }></Button>
         </SafeAreaView>
     );
 }

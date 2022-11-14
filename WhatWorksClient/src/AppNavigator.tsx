@@ -8,6 +8,7 @@ import HomeStackNavigator from './tabroutes/HomeStackNavigator';
 import ExploreStackNavigator from './tabroutes/ExploreStackNavigator';
 import ProfileStackNavigator from './tabroutes/ProfileStackNavigator';
 import PostStackNavigator from'./tabroutes/PostStackNavigator';
+import OtherStackNavigator from'./tabroutes/OtherStackNavigator';
 
 // Components
 import TabBarAdvancedButton from './components/smallComponents/AdvanceTabButton';
@@ -84,7 +85,7 @@ export default function AppNavigator() {
           />
           <Tab.Screen
             name="OtherStack"
-            component={ ProfileStackNavigator }  
+            component={ OtherStackNavigator }  
             options={{ headerShown: false, title: "Other"}}
           />
           <Tab.Screen
