@@ -1,15 +1,26 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 
+export interface Review { 
+  title: string; 
+  review: string; 
+  imageURL: string; 
+  tags: string; 
+}
+
 
 export interface UserState {
-  username: string;
+  username: 'kathy123' | 'bob123';
   status: 'idle' | 'loading' | 'failed';
+  liked: {[key: number]: Review};
+  disliked: {[key: number]: Review};
 }
 
 const initialState: UserState = {
   username: 'bob123',
   status: 'idle',
+  liked: {}, 
+  disliked: {}
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -31,6 +42,22 @@ export const userSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
+    initializeLiked(state,action) {
+      let newLiked = action.payload; 
+      state.liked = newLiked;
+ 
+    }, 
+    initializeDisliked(state,action) { 
+      let newdisliked = action.payload; 
+      state.disliked = newdisliked;
+    }, 
+    switchUser(state) { 
+      state.username === 'bob123' ? state.username = 'kathy123' : state.username= 'bob123'; 
+      state.liked = [];
+      state.disliked = [];
+    }
+
+    
     
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -50,12 +77,15 @@ export const userSlice = createSlice({
   },
 });
 
-// export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const { initializeLiked, initializeDisliked, switchUser } = userSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectUsername = (state: RootState) => state.user.username;
+export const selectLiked = (state: RootState) => state.user.liked;
+export const selectDisliked = (state: RootState) => state.user.disliked;
+
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
