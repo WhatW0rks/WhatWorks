@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Text, View, StyleSheet, Button, Pressable, Alert, TextInput } from 'react-native';
 import { createComment, getComments } from '../comments/api';
 
+
+
 interface CommentItemProps {
     comment : { 
         id: string,
@@ -15,6 +17,7 @@ interface CommentItemProps {
         uri:string
     },
     addComment: (value: string)=> void
+    
 }
 
 const CommentItem = (props: CommentItemProps) => {
@@ -38,29 +41,8 @@ const CommentItem = (props: CommentItemProps) => {
         <Text>
             {comment.body}  
         </Text>
-        </View>
-        {/* <Pressable
-        style={styles.button}
-        onPress={() => setIspressed(true)}>
-        <Text style={styles.text}>reply</Text>
-      </Pressable>
-        {ispressed===true && <View><TextInput style={styles.input} onChangeText={setMyComment} value={myComment} placeholder='enter reply'/>
-         <Button
-            onPress={() => {
-                addComment(myComment);
-                setIspressed(false);
-                setMyComment("")
-            }
-        }
-            title="Submit"
-            color="#841584"
-            accessibilityLabel="Learn more about this purple button"
-            /> 
-            </View>} */}
-        
+        </View>      
     </View>
-
-    
   );
 };
 

@@ -6,6 +6,7 @@ import MainScreen from "../screens/Main";
 import PostScreen from "../screens/PostScreen";
 import ProductReviewForm from "../components/ProductReviewForm"; 
 import LoadingScreen from '../screens/LoadingScreen';
+import CommentsPage from "../components/CommentsPage";
 
 
 const Stack = createStackNavigator();
@@ -39,6 +40,13 @@ export default function ExploreNavigator() {
               component={ProductReviewForm}
               options={{ title: "Product Review Form" }}
           />
+
+            <Stack.Screen
+              name="CommentsPage"
+              component={CommentsPage}
+              options={{ title: "Comments Page" }}
+          />
+
 
           {/* Loading Screen Implementation (FOR TESTING PURPOSES) */}
           <Stack.Screen

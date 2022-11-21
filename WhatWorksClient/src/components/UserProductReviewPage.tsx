@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar, TextInput, Pressable } from 'react-native';
 
 // React Native UI Elements Import
 import { Avatar } from '@rneui/themed';
@@ -7,6 +7,7 @@ import { Icon } from '@rneui/themed';
 import { useState } from 'react';
 import { createComment, getComments } from '../comments/api';
 import CommentItem from './CommentItem';
+import CommentPreview from './CommentPreview';
 import React from 'react';
 
 interface ProductProperties { 
@@ -23,8 +24,9 @@ interface ProductProperties {
 
 export default function UserProductReviewPage(props: ProductProperties) {
     const [myComment, setMyComment] = useState("");
+    const [ispressed, setIspressed] = useState(false);
     const [comments, setComments] = useState(getComments());
-
+    const [isLoading, setLoading] = React.useState(true);
     const src = {uri: props.imageLink}; 
 
     const addComment = (value: string)=>{
@@ -74,8 +76,16 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 {/* Comment Container */}
                 <View style={styles.commentContainer}>
                 {/* Comment */}
-                {comments.map((comment, index) => <CommentItem comment={comment} addComment={addComment} key={index}/>) }
-         </View>
+                {comments.map((comment, index) => <CommentPreview comment={comment} addComment={addComment} key={index}/>) }
+               
+                </View>
+                {/* <View> */}
+                <View style={styles.buttonContainer}>
+              <Button title="view more comments"
+              onPress={() => props.navigation.navigate('CommentsPage')}/>
+            </View>
+             {/* </View> */}
+         
 
                 <View style={{marginBottom: 10, marginTop:10}}></View>
                 {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />
@@ -179,6 +189,24 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
-      }
+      },
+      text: {
+        fontSize: 10,
+        lineHeight: 16,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'black'
+      },
+      button: {
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 8,
+          paddingHorizontal: 16,
+          backgroundColor: 'gray',
+          maxWidth: 96,
+        },
+        buttonContainer: {
+            marginBottom: 20
+          }
   });
 
