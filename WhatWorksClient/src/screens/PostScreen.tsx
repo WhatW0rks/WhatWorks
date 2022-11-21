@@ -19,8 +19,8 @@ export default function PostScreen({navigation}) {
     heading: "Loading...", 
     user:"Loading...",
     description: "Loading...",
-    imageLink: "https://upload.wikimedia.org/wikipedia/commons/4/41/Image_tagging_icon_03.svg"
-    
+    imageLink: "https://upload.wikimedia.org/wikipedia/commons/4/41/Image_tagging_icon_03.svg",
+    tags: "Loading..."
   });
 
   // DB Routes
@@ -31,8 +31,6 @@ export default function PostScreen({navigation}) {
     const dbReviewRoute = ref(db, 'DummyReviews/');
     get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
     if (snapshot.exists()) {
-      // console.log(snapshot.val());
-
       let reviewData = snapshot.val();
 
       setData(
@@ -40,7 +38,8 @@ export default function PostScreen({navigation}) {
           heading: reviewData.title, 
           user: reviewData.username,
           description: reviewData.review,
-          imageLink: reviewData.imageURL
+          imageLink: reviewData.imageURL,
+          tags: reviewData.tags
         }
       );
 
@@ -58,10 +57,12 @@ export default function PostScreen({navigation}) {
 
   return (
     <UserProductReviewPage 
+      id = {review}
       heading = {data.heading}
       user = {data.user}
       description = {data.description}
       imageLink = {data.imageLink}
+      tags={data.tags}
       link={undefined}
       navigation={navigation}
       statistics = {[["Overall Rating", "5", "Sugar", "500mg"], 

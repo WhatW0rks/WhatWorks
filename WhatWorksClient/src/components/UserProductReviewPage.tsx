@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar, Pressable } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar, Pressable } from 'react-native';
 
 // React Native UI Elements Import
 import { Avatar, withBadge } from '@rneui/themed';
@@ -14,9 +14,14 @@ import Heart from '../assets/LottieAnimations/heart.json';
 import List from '../assets/LottieAnimations/toDo.json';
 import Dislike from '../assets/LottieAnimations/dislike.json';
 
+// React Contexts
+import TagContext from '../tagSelectorContext';
+
 interface ProductProperties { 
+    id: number,
     heading: string; 
     user: string;
+    tags: string;
     link: string | undefined;
     imageLink: string; 
     description: string; 
@@ -30,13 +35,19 @@ export default function UserProductReviewPage(props: ProductProperties) {
     ["Overall Rating", "5/10", "Sugar", "500mg"], 
     ["Calories", "180 cal", "Fat", "20mg"], 
     ["Carbs", "270g", "Protein", "30mg"]]);
+    const [tagsData, setTagsData] = React.useState([""]);
     const animationRef1 = useRef<Lottie>(null);
     const animationRef2 = useRef<Lottie>(null);
     const animationRef3 = useRef<Lottie>(null);
 
+    const {setTag, tag} = React.useContext(TagContext);
+    
+
     useEffect( () => {
-        // console.log(props.heading, "Title --> Stats ", props.statistics);
-    }, []);
+        if (props.tags !== undefined) {
+            setTagsData(props.tags.split(','));
+        }
+    }, [props.tags]);
 
     const src = {uri: props.imageLink}; 
 
@@ -51,7 +62,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     <View style={styles.statColumn}>
                             {statsData.map((v) => {
                                 return(
-                                <View style={styles.miniBlock}>
+                                <View key={props.id + v[0]} style={styles.miniBlock}>
                                     <View style={styles.statTextBox}>
                                         <Text style={styles.statsHeader}>{v[0]}</Text>
                                         <Text style={styles.statsInfo}>{v[1]}</Text>
@@ -80,11 +91,16 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 {/* Chips and Tagging */}
                 <View style={styles.chipContainer}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Home Cooked</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Popular</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Top 10</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Upvoted Most</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Healthy</Chip>
+                        {tagsData?.map( (v) => {
+                            if (v !== undefined) {
+                                return(<Chip style={styles.chip} key={props.id + v} icon="information" onPress={() => {
+                                    setTag(v);
+                                    props.navigation.navigate('MainScreen');
+                                }}>{v[0]?.toUpperCase() + v.slice(1).toLowerCase().replace('_',' ').replace('&','-')}</Chip>);
+                            } else {
+                                return(<Chip style={styles.chip} key={props.id + v} icon="information" onPress={() => console.log('Pressed')}>Loading Tags...</Chip>);
+                            }
+                        })}
                     </ScrollView>
                 </View>
 
@@ -149,8 +165,6 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     <Text style={{color: "#808080", marginTop: 15}}>View 1000 Comments</Text>
                 </View>
                 <View style={{marginBottom: 10, marginTop:10}}></View>
-                {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />
-                <Button title="Go back" onPress={() => props.navigation.goBack()} /> */}
             </ScrollView>
         </SafeAreaView>
     ); 

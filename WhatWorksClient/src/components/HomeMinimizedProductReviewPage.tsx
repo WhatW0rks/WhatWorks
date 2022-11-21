@@ -10,10 +10,6 @@ import { Chip } from 'react-native-paper';
 
 // Lottie Animations
 import Lottie from 'lottie-react-native';
-import Add from '../assets/LottieAnimations/add.json';
-import Share from '../assets/LottieAnimations/share.json';
-import Heart from '../assets/LottieAnimations/heart.json';
-import Like from '../assets/LottieAnimations/like.json';
 
 interface ProductProperties { 
     heading: string; 
@@ -27,16 +23,12 @@ interface ProductProperties {
 
 
 export default function UserProductReviewPage(props: ProductProperties) {
-    const [statsData, setStatsData] = React.useState([
-    ["Overall Rating", "5/10", "Sugar", "500mg"], 
-    ["Calories", "180 cal", "Fat", "20mg"], 
-    ["Carbs", "270g", "Protein", "30mg"]]);
     const animationRef1 = useRef<Lottie>(null);
     const animationRef2 = useRef<Lottie>(null);
     const animationRef3 = useRef<Lottie>(null);
 
     useEffect( () => {
-        // console.log(props.heading, "Title --> Stats ", props.statistics);
+        
     }, []);
 
     const src = {uri: props.imageLink}; 
@@ -48,8 +40,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 {/* Title and User Info */}
                 <View style={styles.headerContainer}>
                     <View style={styles.profileContainer}>
-                        <Avatar size={40} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profileLink}>@JaneDoe</Text>
+                        <Avatar size={30} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
                     </View>
                     <View style={styles.titleContainer}>
                         <Text style={styles.Title}>{props.heading}</Text>
@@ -72,7 +63,10 @@ export default function UserProductReviewPage(props: ProductProperties) {
 
                 {/* Description */}
                 <View style={styles.descriptionContainer}>
+                
+                 
                     <Text style={styles.description}>
+                        <Text style={styles.profileLink}>{`@${props.user}`} </Text>
                         {props.description}
                     </Text>
                 </View>
@@ -161,17 +155,19 @@ const styles = StyleSheet.create({
     headerContainer: {
         display: 'flex',
         flexDirection: "row",
-        marginLeft: 10,
-        width: "70%"
+        width: "100%",
+        paddingBottom: 5,
+        marginBottom: 10
     },
     profileContainer: {
         display:"flex",
         justifyContent: "center",
         alignItems: "center",
-        marginRight: 10
+        marginRight: 10,
+        marginLeft: 10
     },
     profileLink: {
-        fontSize: 10,
+        fontSize: 15,
         fontWeight: "bold"
     },
     titleContainer: {
@@ -181,8 +177,7 @@ const styles = StyleSheet.create({
     },
     Title: {
         fontSize: 20,
-        fontWeight: "900",
-        paddingBottom: 13
+        fontWeight: "900"
     },
     chipContainer: {
         display: "flex",

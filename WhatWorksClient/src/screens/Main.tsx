@@ -7,26 +7,31 @@ import LoadingScreen from './LoadingScreen';
 // UI Component
 import { Image } from '@rneui/themed';
 import { SearchBar } from '@rneui/themed';
-import { Button } from "@rneui/themed";
 
 // Image Caching
 
 // Firebase
 import { database } from '../firebase';
-import { onValue, ref, query, orderByChild, startAt, endAt, get } from "firebase/database";
+import { onValue, ref, query, orderByChild, startAt, endAt, get, Query } from "firebase/database";
 
 // Firebase DB
 const db = database;
 
 // React Contexts
 import ReviewContext from '../reviewSelectorContext';
+import TagContext from '../tagSelectorContext';
 
 export default function Main({navigation}) {
   const [reviewData, setReviewData] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
   const [querys, setQuery] = React.useState("");
   const {setReview, review} = React.useContext(ReviewContext);
+  const {setTag, tag} = React.useContext(TagContext);
   
+  const tagArrayReference = [
+    "tag1","tag2","tag3","tag4","tag5",
+    "tag5","tag6","tag7","tag8","tag9", "tag10"
+  ];
 
   // DB Routes
   //> userReviewIndex
@@ -36,7 +41,6 @@ export default function Main({navigation}) {
       const userIndexReviewsRoute = ref(db, 'DummyIndex/');
       onValue(userIndexReviewsRoute, (snapshot) => {
         const data = snapshot.val();
-        // console.log("The Review Count from DB:", data);
 
         let parsedData = [];
 
@@ -51,12 +55,6 @@ export default function Main({navigation}) {
 
         setReviewData(parsedData);
         setLoading(false);
-
-        // setTimeout(() => {
-        //   setLoading(false);
-        // }, 4000);
-        
-        // console.log("THE REACT STATE DATA: ", reviewData);
       });
 
     } catch (e) {
@@ -64,37 +62,40 @@ export default function Main({navigation}) {
     }
   }
 
-  const updateQuery = (search) => {
+  const DBQuery = (dbQuery: Query) => {
+    get(dbQuery).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        let parsedData = [];
+
+        for (let key in data) {
+          if (!data.hasOwnProperty(key)) continue;
+          let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
+          parsedData.push(temp);
+        }
+        setReviewData(parsedData);
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
+  const updateQuery = (search: string) => {
     setQuery(search);
-    console.log(search);
+    let searchTerm = search.toLowerCase().replace(' ', '_').replace('-', '&');
+    console.log(searchTerm);
 
     if (search == "") {
       fetchReviewData();
     } else {
       const tagPath = ref(db, 'TagReviews/');
-      // const dbTagQuery = query(tagPath, orderByChild("tags"), startAt(`${querys.toLowerCase()}`), endAt(`${querys.toLowerCase()}` + "\uf7ff"));
-      const dbTagQuery = query(tagPath, orderByChild("tags"));
 
-      get( dbTagQuery ).then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-
-          let parsedData = [];
-
-          for (let key in data) {
-            if (!data.hasOwnProperty(key)) continue;
-            let temp = [data[key].review.userReviewID, data[key].review.title, data[key].review.imageURL];
-            parsedData.push(temp);
-          }
-
-          setReviewData(parsedData);
-
-        } else {
-          console.log("The Snapshot doesn't exist!");
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
+      // Rows of DB Query's because firebase is not fun...
+      tagArrayReference.forEach( (s)=> {
+        const dbTagQuery = query(tagPath, orderByChild(`${s}`), startAt(`${searchTerm}`), endAt(`${searchTerm}` + "\uf7ff"));
+        DBQuery(dbTagQuery);
+      })
     }
     
   }
@@ -103,7 +104,8 @@ export default function Main({navigation}) {
   React.useEffect(() => {
     // Fetch Review Data
     fetchReviewData();
-  }, []);
+    if (tag !== "") updateQuery(tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'));
+  }, [tag]);
   
   // Loading Wrapper
   if (isLoading) {
@@ -112,10 +114,9 @@ export default function Main({navigation}) {
     return (
       <SafeAreaView style={styles.mainContainer}>
             <View style={styles.buttonContainer}>
-            {/* <Button title="See Loading Screen"
-              onPress={() => navigation.navigate('LoadingScreen')}/> */}
 
               <SearchBar
+                platform='ios'
                 placeholder='Search'
                 onChangeText={updateQuery}
                 value={querys}

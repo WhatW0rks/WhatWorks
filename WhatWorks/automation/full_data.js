@@ -54,7 +54,7 @@ const generateDescription = () => {
 }
 
 const dataUpload = async () => {
-  await client.photos.search({ query, per_page: 80, page: 10}).then(photos => {
+  await client.photos.search({ query, per_page: 40, page: 5}).then(photos => {
     let data = photos.photos;
     // console.log("Data: ", data);
 
