@@ -16,29 +16,156 @@ const db = database;
 // UI
 import { Image } from '@rneui/themed';
 
+// Victory Charts
+import { VictoryAxis, VictoryBar, VictoryBrushContainer, VictoryChart, VictoryLine, VictoryScatter, VictoryTheme, VictoryZoomContainer } from "victory-native";
+import { Button, Card, Paragraph, Title } from 'react-native-paper';
+
+const data = [
+  { quarter: 1, earnings: 13000 },
+  { quarter: 2, earnings: 16500 },
+  { quarter: 3, earnings: 14250 },
+  { quarter: 4, earnings: 19000 }
+];
+
+function range(size:number, startAt:number = 0):ReadonlyArray<number> {
+  return [...Array(size).keys()].map(i => i + startAt);
+}
+
+const getScatterData = () => {
+  const colors =[
+    "violet", "cornflowerblue", "gold", "orange",
+    "turquoise", "tomato", "greenyellow"
+  ];
+  const symbols = [
+    "circle", "star", "square", "triangleUp",
+    "triangleDown", "diamond", "plus"
+  ];
+  return range(25).map((index) => {
+    const scaledIndex = Math.floor(index % 7);
+    return {
+      x: Math.floor(Math.random() * 50) + 10,
+      y: Math.floor(Math.random() * 100) + 2,
+      size: (Math.floor(Math.random() * 8) + 0) + 3,
+      symbol: symbols[scaledIndex],
+      fill: colors[Math.floor(Math.random() * 6) + 0],
+      opacity: 0.6
+    };
+  });
+}
 
 export default function OtherScreen({navigation}) {
     const [reviewData, setReviewData] = React.useState([]);
+    const [scatter, setScatter] = React.useState(getScatterData);
 
     let username = useAppSelector(selectUsername); 
 
+    let element
     React.useEffect(() => {
-      // Fetch Review Data
-      // if (tag !== "") updateQuery(tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'));
+      let count = 0;
+      // element = setInterval(() => {
+      //   count += 1
+      //   console.log("Run times!", count);
+      //   setScatter(getScatterData);
+      // }, 3000);
+      return () => {
+      };
     }, [username]);
 
     return(
-        <SafeAreaView style={styles.loadingContainer}>
-          <View>
-            <Text>Other!</Text>
-          </View>
+        <SafeAreaView style={styles.metricsContainer}>
+          <ScrollView>
+            <View>
+
+              {/* Line Graph Fun */}
+              <VictoryChart width={400} height={300} scale={{ x: "time" }}
+                containerComponent={
+                <VictoryZoomContainer
+                  zoomDimension="x"
+                />
+                }
+              >
+                <VictoryLine
+                  style={{
+                    data: { stroke: "tomato" }
+                  }}
+                  data={[
+                    { a: new Date(1982, 1, 1), b: 125 },
+                    { a: new Date(1987, 1, 1), b: 257 },
+                    { a: new Date(1993, 1, 1), b: 345 },
+                    { a: new Date(1997, 1, 1), b: 515 },
+                    { a: new Date(2001, 1, 1), b: 132 },
+                    { a: new Date(2005, 1, 1), b: 305 },
+                    { a: new Date(2011, 1, 1), b: 270 },
+                    { a: new Date(2015, 1, 1), b: 470 }
+                  ]}
+                  x="a"
+                  y="b"
+                />
+
+              </VictoryChart>
+              
+              <VictoryChart
+                padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
+                width={400} height={100} scale={{ x: "time" }}
+                containerComponent={
+                  <VictoryBrushContainer
+                    brushDimension="x"
+                  />
+                }
+                >
+                <VictoryAxis
+                  tickFormat={(x) => new Date(x).getFullYear()}
+                />
+                <VictoryLine
+                  style={{
+                    data: { stroke: "tomato" }
+                  }}
+                  data={[
+                    { key: new Date(1982, 1, 1), b: 125 },
+                    { key: new Date(1987, 1, 1), b: 257 },
+                    { key: new Date(1993, 1, 1), b: 345 },
+                    { key: new Date(1997, 1, 1), b: 515 },
+                    { key: new Date(2001, 1, 1), b: 132 },
+                    { key: new Date(2005, 1, 1), b: 305 },
+                    { key: new Date(2011, 1, 1), b: 270 },
+                    { key: new Date(2015, 1, 1), b: 470 }
+                  ]}
+                  x="key"
+                  y="b"
+                />
+            </VictoryChart>
+
+              {/* Blocky fun */}
+              <VictoryChart animate={{ duration: 2000, easing: "bounce" }}>
+                <VictoryScatter
+                  data={scatter}
+                  style={{
+                    data: {
+                      fill: ({ datum }) => datum.fill,
+                      opacity: ({ datum }) => datum.opacity
+                    }
+                  }}
+                />
+              </VictoryChart>
+              <Button onPress={() => clearInterval(element)}>Clear Interval</Button>
+
+              <Card mode={'elevated'} elevation={5} style={{width: "90%", marginLeft: 20, borderRadius: 10}}>
+                <Card.Title title="Card Title" subtitle="Card Subtitle" />
+                <Card.Content>
+                  <Title>Card title</Title>
+                  <Paragraph>Card content</Paragraph>
+                </Card.Content>
+                <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+              </Card>
+            </View>
+          </ScrollView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({ 
-    loadingContainer: {
-        flex: 1,
+    metricsContainer: {
+        display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "white",

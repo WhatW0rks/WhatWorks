@@ -100,7 +100,6 @@ export default function ProductReviewForm({ route, navigation }) {
     const writeReviewData = async () => {
         let randomReviewID = randomIntFromInterval(0,1000);
         let randomNumUser = randomIntFromInterval(0,6);
-        let randomNumImage = randomIntFromInterval(0,3);
 
         let Tags = valueTag;
         if (Tags[0] == "") Tags.shift();
