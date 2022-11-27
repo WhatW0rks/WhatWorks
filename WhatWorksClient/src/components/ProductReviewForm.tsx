@@ -7,23 +7,43 @@ import { TextInput, Button, Snackbar } from 'react-native-paper';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { CategoryFoodTags, CategoryNonFoodTags, CategoryRestrauntTags, MasterTagList } from '../assets/tags/tags'
 
+// Lottie Animations
+import Lottie from 'lottie-react-native';
+
 // Firebase 
 import { database } from '../firebase';
+import { storage } from '../firebase';
 import { ref, set } from "firebase/database";
+import { getDownloadURL, ref as Fireref, uploadBytes } from "firebase/storage";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { tags } from 'react-native-svg/lib/typescript/xml';
+import { useRef } from 'react';
 
-// Firebase DB
+// Firebase DB and Storage
 const db = database;
+const fireStore = storage;
 
 interface ProductPostProperties { 
     navigation: any;
+    route: any;
 }
 
-export default function ProductReviewForm(props: ProductPostProperties) {
+export default function ProductReviewForm({ route, navigation }) {
+    const { reference } = route.params;
+
+    React.useImperativeHandle(reference, () => ({
+        submitWrapper() {
+            onPressPostReview();
+        },
+    }));
+
+    const animationRef = useRef<Lottie>(null)
+
     const [title, onChangeTitle] = React.useState(null);
     const [review, onChangeReview] = React.useState(null);
+
+    // Image States
     const [image, setImage] = React.useState(null);
+    const [imageList, setImageList] = React.useState([]);
 
     // Tagging States
     const [openCategory, setOpenCategory] = React.useState(false);
@@ -38,14 +58,6 @@ export default function ProductReviewForm(props: ProductPostProperties) {
     const [visibleSnack, setVisibleSnack] = React.useState(false);
     const onToggleSnackBar = () => setVisibleSnack(!visibleSnack);
     const onDismissSnackBar = () => setVisibleSnack(false);
-
-    const imageArray = 
-    [
-        "https://upload.wikimedia.org/wikipedia/commons/a/ac/Petit_d%C3%A9jeuner_fran%C3%A7ais.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/c/c3/Golden_Grahams_cereal%2C_with_milk.jpg", 
-        "http://cdn.shopify.com/s/files/1/0611/3456/9715/products/Raos_Sauce_Marinara_24oz_ProductShot_600x600_f9fffffc-a193-4cc8-9161-9dac5794b0e1.png?v=1648155711",
-        "https://upload.wikimedia.org/wikipedia/commons/f/fe/Pumpkin_Cheddar_Breakfast_Sandwich_-_New_Orleans.jpg"
-    ];
 
     const userArray = 
     [
@@ -70,19 +82,22 @@ export default function ProductReviewForm(props: ProductPostProperties) {
           aspect: [4, 3],
           quality: 1,
         });
-
-        console.log(result);
     
         if (!result.cancelled) {
             const { uri } = result as ImageInfo; 
             setImage(uri);
+
+            // Add to Image URI List
+            let tempArr = imageList;
+            tempArr.push(uri);
+            setImageList(tempArr);
+
         }
+
+        animationRef.current?.play();
     };
 
-    // Database Routes
-    //> DummyIndex
-    //> DummyReviews
-    const writeReviewData = () => {
+    const writeReviewData = async () => {
         let randomReviewID = randomIntFromInterval(0,1000);
         let randomNumUser = randomIntFromInterval(0,6);
         let randomNumImage = randomIntFromInterval(0,3);
@@ -95,44 +110,65 @@ export default function ProductReviewForm(props: ProductPostProperties) {
             return;
         }
 
+        // Image Guard
+        if (imageList.length === 0) {
+            return;
+        }
+
         let stringfyTags = String(Tags);
         let tagArray =  JSON.parse(JSON.stringify(Tags)) as typeof Tags;
 
+        // There are empty tags, fill with '!' string
         for (let i = 0; i < 9; i++) {
             tagArray.push("!");
         }
 
-        // Write the review index
-        set(ref(db, 'DummyIndex/' + randomReviewID), {
-            userReviewID: `${randomReviewID}`,
-            title: `${title}`,
-            imageURL: `${imageArray[randomNumImage]}`
+        const response = await fetch(imageList[0]);
+        const blob = await response.blob();
+
+        const reviewRef = Fireref(fireStore, `${randomReviewID}`);
+
+        uploadBytes(reviewRef, blob).then((snapshot) => {
+            // Now we get the download URL to propogate into the imageURL for reviews
+            getDownloadURL(Fireref(fireStore, `${randomReviewID}`))
+            .then((url) => {
+                // Write the review index
+                set(ref(db, 'DummyIndex/' + randomReviewID), {
+                    userReviewID: `${randomReviewID}`,
+                    title: `${title}`,
+                    imageURL: `${url}`
+                });
+                // Write the core review
+                set(ref(db, 'DummyReviews/' + randomReviewID), {
+                    username: `${userArray[randomNumUser]}`,
+                    title: `${title}`,
+                    imageURL: `${url}`,
+                    review: `${review}`,
+                    tags: `${stringfyTags}`
+                });
+                // Write the review index
+                set(ref(db, 'TagReviews/' + randomReviewID), {
+                    userReviewID: `${randomReviewID}`,
+                    title: `${title}`,
+                    imageURL: `${url}`,
+                    tags: `${stringfyTags}`,
+                    tag1: `${tagArray[0]}`,
+                    tag2: `${tagArray[1]}`,
+                    tag3: `${tagArray[2]}`,
+                    tag4: `${tagArray[3]}`,
+                    tag5: `${tagArray[4]}`,
+                    tag6: `${tagArray[5]}`,
+                    tag7: `${tagArray[6]}`,
+                    tag8: `${tagArray[7]}`,
+                    tag9: `${tagArray[8]}`,
+                    tag10: `${tagArray[9]}`
+                });
+
+                console.log("Upload Operation Finished");
+            });
         });
-        // Write the core review
-        set(ref(db, 'DummyReviews/' + randomReviewID), {
-            username: `${userArray[randomNumUser]}`,
-            title: `${title}`,
-            imageURL: `${imageArray[randomNumImage]}`,
-            review: `${review}`,
-            tags: `${stringfyTags}`
-        });
-        // Write the review index
-        set(ref(db, 'TagReviews/' + randomReviewID), {
-            userReviewID: `${randomReviewID}`,
-            title: `${title}`,
-            imageURL: `${imageArray[randomNumImage]}`,
-            tags: `${stringfyTags}`,
-            tag1: `${tagArray[0]}`,
-            tag2: `${tagArray[1]}`,
-            tag3: `${tagArray[2]}`,
-            tag4: `${tagArray[3]}`,
-            tag5: `${tagArray[4]}`,
-            tag6: `${tagArray[5]}`,
-            tag7: `${tagArray[6]}`,
-            tag8: `${tagArray[7]}`,
-            tag9: `${tagArray[8]}`,
-            tag10: `${tagArray[9]}`
-        });
+
+        
     }
 
 
@@ -147,16 +183,18 @@ export default function ProductReviewForm(props: ProductPostProperties) {
             onToggleSnackBar();
             return;
         }
-        props.navigation.goBack();
+        // props.navigation.goBack();
+        navigation.goBack();
     } 
 
     React.useEffect(()=> {
         DropDownPicker.setListMode("SCROLLVIEW");
-    }, []);
+    }, [imageList]);
     
     return (
     <SafeAreaView style={styles.background}>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{display: "flex", justifyContent: "center"}}>
+            {/* Snackbar Warning */}
             <Snackbar
                 wrapperStyle={{ top: 0, zIndex: 100 }}
                 visible={visibleSnack}
@@ -166,39 +204,41 @@ export default function ProductReviewForm(props: ProductPostProperties) {
                 }}>
                 Please input about 2 to 10 tags!
             </Snackbar>
-
-            <Text style={styles.heading2}> 
-                Title
-            </Text>
+            
+            {/* Title/Header */}
             <TextInput
                 onChangeText={onChangeTitle}
                 value={title}
-                style={styles.input}
-                activeUnderlineColor="#42b0f5"
-                placeholder="Burger"
-                maxLength={30}
+                style={styles.titleInput}
+                activeUnderlineColor="white"
+                placeholder="Add a Title"
+                maxLength={1000}
+                underlineColor="white"
+                dense={true}
             />
-                
-            <Button 
-                icon="camera"
-                onPress={pickImage} 
-                color="#42b0f5"
-            >
-                Select image
-            </Button>
-            {image && <Image source={{ uri: image }} style={styles.image} />}
-            <Text style={styles.heading2}>
-                Review
-            </Text>
+
+            {/* Subtext or Description Body */}
             <TextInput 
                 multiline={true}
-                style={styles.input}
-                activeUnderlineColor="#42b0f5"
+                style={styles.descriptionInput}
+                activeUnderlineColor="white"
                 onChangeText={onChangeReview}
                 value={review}
-                placeholder="I loved this burger..."
+                placeholder="I loved this :^) / I dislike this :^( ..."
                 maxLength={1000}
+                underlineColor="white"
             />
+            <View style={styles.imageContainer}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollHorizontal}>
+                    {imageList?.map((uri) => {
+                        return(<Image source={{ uri: `${uri}` }} style={styles.image}/>);
+                    })}
+                    <Button onPress={pickImage} style={styles.imageButton}>
+                        <Lottie style={{height: 120, width: 130, display: "flex", justifyContent: "center", alignItems:"center"}} ref={animationRef} source={require('../assets/LottieAnimations/camera.json')} loop={false}/>
+                    </Button>
+                </ScrollView>
+            </View>
+             
         
             {/* <View style={styles.tagDropdownContainer}>
                 <View style={styles.tagDropdown}>
@@ -218,13 +258,10 @@ export default function ProductReviewForm(props: ProductPostProperties) {
                 </View>
             </View> */}
 
-            <View style={styles.tagTitleContainer}>
-                <Text style={styles.tagTitle}>Tags</Text>
-            </View>
-
             <View style={styles.tagDropdownContainer}>
                 <View style={styles.tagDropdown}>
                     <DropDownPicker
+                    placeholder="Please Select 2 to 10 Tags"
                     open={openTag}
                     value={valueTag}
                     items={itemsTag}
@@ -239,56 +276,59 @@ export default function ProductReviewForm(props: ProductPostProperties) {
                     />
                 </View>
             </View>
-            <View style={styles.submissionContainer}>
-                <Button
-                mode='contained'
-                onPress={onPressPostReview}
-                color="#007cba"
-                accessibilityLabel="Post your review"
-                style={{width: "40%"}}
-                >
-                    Post review!
-                </Button>
+            <View style={styles.animationBottom}>
+                <Lottie style={{height: 220, width: 400}} source={require('../assets/LottieAnimations/clouds.json')} autoPlay loop></Lottie>
             </View>
-        
         </ScrollView>
     </SafeAreaView>
     ); 
 }
 
 const styles = StyleSheet.create({
-    input: {
-    //   backgroundColor :'#bfeaff',
-      marginBottom:30
-       },
+    titleInput: {
+        backgroundColor: "white",
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "black",
+        marginTop: 10
+    },
+    descriptionInput: { 
+        backgroundColor: "white",
+        color: "black",
+        marginBottom: 10
+    },
+    imageContainer: {
+        width: "100%",
+        display: "flex",
+    },
+    scrollHorizontal: {
+        display: "flex",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    imageButton: {
+        justifyContent:"flex-start",
+        alignItems: "flex-start",
+        height: 130,
+        width: 150,
+        margin: 15
+    },
+    animationBottom: {
+        width: "100%",
+        float: "right",
+        marginTop: 90
+    },
     background: {
-        // backgroundColor:'#bfeaff',
         backgroundColor: "white", 
         flex: 1, 
         height: "100%"
     },
     image: { 
-        height: 200, 
-        width: 200, 
-        padding: 10, 
-        left: 50
+        height: 120, 
+        width: 120,
+        marginLeft: 10
     }, 
-    heading: {
-        fontSize: 30,
-        marginLeft: 5,
-        fontWeight: "bold",
-        color: "black",
-        paddingBottom: 5, 
-        paddingTop: 5,
-    },
-    heading2: { 
-        fontSize: 20, 
-        padding:8,
-        fontFamily:"Helvetica",
-        marginLeft: 5, 
-        fontWeight: "bold", 
-        color: "#42b0f5"
-    },
     tagDropdown: {
         width: "80%"
     }, 
@@ -296,6 +336,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        zIndex: 10,
         marginBottom: 20
     },
     submissionContainer: {

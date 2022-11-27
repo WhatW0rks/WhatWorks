@@ -28,10 +28,6 @@ export default function TriedReview(props: ProductProperties) {
 
     // const tags = ["happy", "sad"];
 
-
-
-
-
     const src = {uri: props.imageLink}; 
 
     return (

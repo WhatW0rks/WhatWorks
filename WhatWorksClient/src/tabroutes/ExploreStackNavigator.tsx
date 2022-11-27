@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 // React Screens
@@ -6,17 +6,23 @@ import MainScreen from "../screens/Main";
 import PostScreen from "../screens/PostScreen";
 import ProductReviewForm from "../components/ProductReviewForm"; 
 import LoadingScreen from '../screens/LoadingScreen';
+import { Button } from "react-native";
 
 
 const Stack = createStackNavigator();
-
 export default function ExploreNavigator() {
+    const childRef = useRef(null);
+
+    const handleClick = () => {
+        childRef.current.submitWrapper();
+    };
+
     return (
         <Stack.Navigator
         initialRouteName="MainScreen"
         screenOptions={{
             gestureEnabled: false,
-            animationEnabled: true
+            animationEnabled: true,
         }}>  
 
           {/* Explore Screen (ALL REVIEWS) */}
@@ -37,7 +43,22 @@ export default function ExploreNavigator() {
           <Stack.Screen
               name="SubmitScreen"
               component={ProductReviewForm}
-              options={{ title: "Product Review Form" }}
+              initialParams={{reference: childRef}}
+              options={{ 
+                title: "",
+                presentation: "modal",
+                headerRight: () => (
+                    // <Button
+                    //   onPress={() => {handleClick()}}
+                    //   title="Post Review!"
+                    //   style={{marginRight: 10}}
+                    // />
+                    <Button
+                        onPress={() => {handleClick()}}
+                        title="Post Review!"
+                    />
+                  ),
+             }}
           />
 
           {/* Loading Screen Implementation (FOR TESTING PURPOSES) */}

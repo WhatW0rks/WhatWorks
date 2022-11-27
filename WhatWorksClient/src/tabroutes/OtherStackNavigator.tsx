@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import Other from '../screens/Other';
+import Other from '../screens/Metrics';
 
 const Stack = createStackNavigator();
 

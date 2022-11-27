@@ -34,10 +34,6 @@ export default function TabBarAdvancedButton({ bgColor, navigation, ...props }) 
     );
 }
 
-// onPress={() => {
-    //props.onPress;
-   // animationRef.current?.play();
-//}}
 
   const styles = StyleSheet.create({
   container: {

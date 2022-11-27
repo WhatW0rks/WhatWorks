@@ -50,15 +50,13 @@ export default function AppNavigator() {
                   : 'ios-search-outline';
               } else if (route.name === 'OtherStack') {
                 iconName = focused
-                  ? 'ios-body'
-                  : 'ios-body-outline';
+                  ? 'stats-chart'
+                  : 'stats-chart-outline';
               } else if (route.name === 'ProfileStack') {
                 iconName = focused
-                  ? 'ios-body'
-                  : 'ios-body-outline';
+                  ? 'person'
+                  : 'person-outline';
               }
-    
-              // You can return any component that you like here!
               return <Ionicons name={iconName} size={size} color={color} />;
             },
             tabBarActiveTintColor: 'tomato',
@@ -89,7 +87,7 @@ export default function AppNavigator() {
           <Tab.Screen
             name="OtherStack"
             component={ OtherStackNavigator }  
-            options={{ headerShown: false, title: "Other"}}
+            options={{ headerShown: false, title: "Progress"}}
           />
           <Tab.Screen
             name="ProfileStack"

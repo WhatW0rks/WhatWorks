@@ -17,6 +17,16 @@ import Dislike from '../assets/LottieAnimations/dislike.json';
 // React Contexts
 import TagContext from '../tagSelectorContext';
 
+// Redux
+import { selectUsername } from '../userSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
+
+//Firebase
+import { database } from '../firebase';
+import { ref, set } from "firebase/database";
+
+const db = database;
+
 interface ProductProperties { 
     id: number,
     heading: string; 
@@ -40,8 +50,22 @@ export default function UserProductReviewPage(props: ProductProperties) {
     const animationRef2 = useRef<Lottie>(null);
     const animationRef3 = useRef<Lottie>(null);
 
+    let username = useAppSelector(selectUsername); 
+
     const {setTag, tag} = React.useContext(TagContext);
-    
+
+    const goingToTry = () => {
+
+        console.log("Trying Button!");
+
+        // Write the Trying Data
+        set(ref(db, 'UserTriedData/' + username + '/' + "Trying" + '/' + props.id), {
+            username: `${props.user}`,
+            title: `${props.heading}`,
+            imageURL: `${props.imageLink}`,
+            tags: `${props.tags}`
+        });
+    };
 
     useEffect( () => {
         if (props.tags !== undefined) {
@@ -117,7 +141,10 @@ export default function UserProductReviewPage(props: ProductProperties) {
                         <Lottie style={{height: 44, width: 44}} ref={animationRef1} source={Dislike} loop={false}/>
                         <Text style={styles.funcTitleShare}>Didn't Work!</Text>
                     </Pressable>
-                    <Pressable onPress={() => {animationRef2.current?.play();}} style={styles.functionBtnContainer}>
+                    <Pressable onPress={() => {
+                        goingToTry();
+                        animationRef2.current?.play();
+                        }} style={styles.functionBtnContainer}>
                         <Lottie style={{height: 50, width: 50}} ref={animationRef2} source={List} loop={false}/>
                         <Text style={styles.funcGeneric}>Going to try!</Text>
                     </Pressable>
