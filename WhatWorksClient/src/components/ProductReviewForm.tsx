@@ -166,25 +166,16 @@ export default function ProductReviewForm({ route, navigation }) {
 
                 console.log("Upload Operation Finished");
             });
-        });
-
-        
+        }); 
     }
 
 
     // Submission
     const onPressPostReview = async () => { 
-        writeReviewData();
+        await writeReviewData().then(()=> {
+            navigation.goBack();
+        });
         // props.navigation.navigate('MainScreen');
-        let Tags = valueTag;
-        if (Tags[0] == "") Tags.shift();
-        // Tag Guard
-        if (Tags.length <= 2 || Tags.length >= 10){
-            onToggleSnackBar();
-            return;
-        }
-        // props.navigation.goBack();
-        navigation.goBack();
     } 
 
     React.useEffect(()=> {
@@ -277,7 +268,7 @@ export default function ProductReviewForm({ route, navigation }) {
                 </View>
             </View>
             <View style={styles.animationBottom}>
-                <Lottie style={{height: 220, width: 400}} source={require('../assets/LottieAnimations/clouds.json')} autoPlay loop></Lottie>
+                <Lottie style={{height: 265, width: 400}} source={require('../assets/LottieAnimations/clouds.json')} autoPlay loop></Lottie>
             </View>
         </ScrollView>
     </SafeAreaView>
