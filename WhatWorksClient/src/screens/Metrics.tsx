@@ -61,7 +61,7 @@ export default function OtherScreen({navigation}) {
 
     let element
     React.useEffect(() => {
-      let count = 0;
+      // let count = 0;
       // element = setInterval(() => {
       //   count += 1
       //   console.log("Run times!", count);

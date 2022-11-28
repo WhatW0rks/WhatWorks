@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Redux
@@ -15,10 +15,12 @@ const db = database;
 
 // UI
 import { Image } from '@rneui/themed';
+import ReviewContext from '../../reviewSelectorContext';
 
 
-export default function OtherScreen({navigation}) {
+export default function ProfileContentLoader({navigation}) {
     const [reviewData, setReviewData] = React.useState([]);
+    const {setReview, review} = React.useContext(ReviewContext);
 
     let username = useAppSelector(selectUsername); 
 
@@ -31,13 +33,11 @@ export default function OtherScreen({navigation}) {
             const data = snapshot.val();
     
             let parsedData = [];
-
-            console.log("The trying: ", data);
     
             // Retrieve data fields and parsing JSON object
             for (let key in data) {
                 if (!data.hasOwnProperty(key)) continue;
-                let temp = [data[key].username, data[key].title, data[key].imageURL];
+                let temp = [data[key].username, data[key].title, data[key].imageURL, key];
                 parsedData.push(temp);
             }
 
@@ -53,7 +53,6 @@ export default function OtherScreen({navigation}) {
       React.useEffect(() => {
         // Fetch Review Data
         fetchReviewData();
-        // if (tag !== "") updateQuery(tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'));
       }, [username]);
 
     return(
@@ -61,21 +60,28 @@ export default function OtherScreen({navigation}) {
           <ScrollView nestedScrollEnabled={true} style={{width: "100%"}}>
             {reviewData?.map((r) => {
               return(
-                <View style={{
-                  width: "100%", 
-                  height: 100, 
-                  display: "flex", 
-                  justifyContent: "flex-start",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  margin: 5
-                    }}>
-                    <Image style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }}></Image>
-                    <View style={{display: "flex", flexDirection:"column"}}>
-                      <Text style={{marginLeft: 20, fontWeight: "bold", fontSize: 20}}>{`${r[1]}`}</Text>
-                      <Text style={{marginLeft: 20, fontSize: 13}}>{`By ${r[0]}`}</Text>
+                <Pressable onPress={() => {
+                  setReview(r[3]);
+                  navigation.navigate('PostScreen');
+                }}>
+                  <View style={{
+                    width: "100%", 
+                    height: 100, 
+                    display: "flex", 
+                    justifyContent: "flex-start",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: 5
+                      }}
+                    key={r[3]}
+                    >
+                      <Image style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }}></Image>
+                      <View style={{display: "flex", flexDirection:"column"}}>
+                        <Text style={{marginLeft: 20, fontWeight: "bold", fontSize: 20}}>{`${r[1]}`}</Text>
+                        <Text style={{marginLeft: 20, fontSize: 13}}>{`By ${r[0]}`}</Text>
+                      </View>
                     </View>
-                  </View>
+                  </Pressable>
               );
             })}
           </ScrollView>          
@@ -100,8 +106,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: '100%',
     flex: 1,
-    // borderColor: 'red', 
-    // borderWidth: 1
     },
     exploreContainer: {
         display: "flex",

@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar, Pressable } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar, Pressable, Button } from 'react-native';
 
 // React Native UI Elements Import
 import { Avatar, withBadge } from '@rneui/themed';
 import { Image } from '@rneui/themed';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // React Native Paper
 import { Chip } from 'react-native-paper';
@@ -23,7 +23,12 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 
 //Firebase
 import { database } from '../firebase';
-import { ref, set } from "firebase/database";
+import { onValue, ref, set } from "firebase/database";
+
+// Comments
+import CommentPreview from './CommentPreview';
+import { createComment, getComments } from '../comments/api';
+import CommentItem from './CommentItem';
 
 const db = database;
 
@@ -50,14 +55,59 @@ export default function UserProductReviewPage(props: ProductProperties) {
     const animationRef2 = useRef<Lottie>(null);
     const animationRef3 = useRef<Lottie>(null);
 
+    // Comments API
+    const [myComment, setMyComment] = useState("");
+    const [comments, setComments] = useState(getComments());
+    const [commentData, setCommentData] = useState([]);
+
+    const FetchCommentData = async () => {
+        try {
+            const userCommentRef = ref(db, 'UserCommentData/' + username + '/' + 'Comments/' + props.id);
+            onValue(userCommentRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    let parsedData = [];
+
+                    // Retrieve data fields and parsing JSON object
+                    // Clean Comments
+                    let comments = data.Comments.split('!');
+                    comments = comments.filter(function(x){
+                        return x !== ""
+                    });
+                    // Clean Users
+                    let users = data.Username.split('!');
+                    users = users.filter(function(x){
+                        return x !== ""
+                    });
+
+                    // Clean Dates
+                    let dates = data.Dates.split('!');
+                    dates = dates.filter(function(x){
+                        return x !== ""
+                    });
+
+                    for (let i = 0; i < comments.length; i++) {
+                        if (i == 3) return;
+                        let temp = [data.ReviewID, comments[i], users[i], data.UserImageURL, dates[i]];
+                        parsedData.push(temp);
+                    }
+
+                    // console.log("THE COMMENTS ARRAY: ", comments);
+                    // console.log("THE USER ARRAY: ", users);
+                    setCommentData(parsedData);
+                }
+            });
+      
+          } catch (e) {
+            console.log("Error: ", e)
+          }
+    };
+
     let username = useAppSelector(selectUsername); 
 
     const {setTag, tag} = React.useContext(TagContext);
 
     const goingToTry = () => {
-
-        console.log("Trying Button!");
-
         // Write the Trying Data
         set(ref(db, 'UserTriedData/' + username + '/' + "Trying" + '/' + props.id), {
             username: `${props.user}`,
@@ -71,6 +121,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
         if (props.tags !== undefined) {
             setTagsData(props.tags.split(','));
         }
+        FetchCommentData();
     }, [props.tags]);
 
     const src = {uri: props.imageLink}; 
@@ -161,36 +212,30 @@ export default function UserProductReviewPage(props: ProductProperties) {
 
                 {/* Comment Container */}
                 <View style={styles.commentContainer}>
-                    {/* Comment */}
-                    <View style={styles.commentHeader}>
-                        <Avatar size={24} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profilename}>{props.user}</Text>
-                        <Text style={{color: "gray"}}> 59 minutes </Text>
-                    </View>
-                    <View style={styles.commentDescription}>
-                        <Text>
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                            incididunt ut labore et dolore magna aliqua. 
-                            Ut enim ad minim veniam."   
-                        </Text>
-                    </View>
 
                     {/* Comment */}
-                    <View style={styles.commentHeader}>
-                        <Avatar size={24} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profilename}>{props.user}</Text>
-                        <Text style={{color: "gray"}}> 1 day ago </Text>
-                    </View>
-                    <View style={styles.commentDescription}>
-                        <Text>
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                            incididunt ut labore et dolore magna aliqua. 
-                            Ut enim ad minim veniam."   
-                        </Text>
-                    </View>
-                    
-                    <Text style={{color: "#808080", marginTop: 15}}>View 1000 Comments</Text>
+                    {commentData?.map((v) => {
+                        return(
+                            <View style={styles.containerComment}> 
+                                <View style={styles.commentHeaderTop}>
+                                    <Avatar size={24} rounded source={{uri: `${v[3]}`}}/>
+                                    <Text style={styles.profilenameTop}>{`${v[2]}`}</Text>
+                                    <Text style={{color: "gray", marginLeft: 10}}>{v[4]}</Text>
+                                </View>
+                                <View style={styles.commentDescriptionTop}>
+                                <Text>
+                                    {`${v[1]}`}  
+                                </Text>
+                                </View>  
+                            </View>
+                        );
+                    }) }
+                        
+                    <Pressable onPress={() => props.navigation.navigate('CommentsPage')}>
+                        <Text style={{color: "#808080", marginTop: 5}}>View Comments</Text>
+                    </Pressable>
                 </View>
+                
                 <View style={{marginBottom: 10, marginTop:10}}></View>
             </ScrollView>
         </SafeAreaView>
@@ -326,6 +371,25 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline"
     },
 
+    containerComment: {
+        marginBottom:16
+    },
+    commentHeader: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center"
+    }, 
+    profilenameTop: {
+        fontSize: 15,
+        color: "black",
+        fontWeight: "bold",
+        marginLeft: 10
+    },
+    commentDescriptionTop: {
+        marginBottom: 10,
+        marginLeft: 35
+    },
+
 
 
     list: {
@@ -393,7 +457,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginTop: 20
     },
-    commentHeader: {
+    commentHeaderTop: {
         display: "flex",
         flexDirection: "row",
         alignItems: "center"

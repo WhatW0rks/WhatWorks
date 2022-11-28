@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Profile from '../screens/Profile';
+import PostScreen from "../screens/PostScreen";
 
 
 const Stack = createStackNavigator();
@@ -19,6 +20,13 @@ export default function ProfileNavigator() {
             component={Profile}
             options={{ headerShown: false, title: "" }}
             />
+
+            {/* Screen that handles posts/reviews */}
+          <Stack.Screen
+              name="PostScreen"
+              component={PostScreen}
+              options={{ title: "" }}
+          />
         </Stack.Navigator>
     );
   }

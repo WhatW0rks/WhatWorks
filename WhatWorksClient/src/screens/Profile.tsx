@@ -129,7 +129,7 @@ export default function Profile({navigation}) {
                             tabBarLabelStyle: {fontSize: 10, fontWeight: "700"}
                         }}>
                             <Tab.Screen name="What Works" component={HomeScreen} />
-                            <Tab.Screen name="Want to Try" component={Trying} />
+                            <Tab.Screen name="Want to Try" children={()=> <Trying navigation={navigation}></Trying>}/>
                             <Tab.Screen name="What Doesn't Work" component={SettingsScreen} />
                         </Tab.Navigator>
                     </NavigationContainer>

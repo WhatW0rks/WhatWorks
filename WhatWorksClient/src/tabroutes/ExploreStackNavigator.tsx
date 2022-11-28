@@ -7,6 +7,7 @@ import PostScreen from "../screens/PostScreen";
 import ProductReviewForm from "../components/ProductReviewForm"; 
 import LoadingScreen from '../screens/LoadingScreen';
 import { Button } from "react-native";
+import CommentsPage from "../components/CommentsPage";
 
 
 const Stack = createStackNavigator();
@@ -66,6 +67,13 @@ export default function ExploreNavigator() {
               name="LoadingScreen"
               component={LoadingScreen}
               options={{ title: "" }}
+          />
+
+          {/* Comments Page */}
+          <Stack.Screen
+              name="CommentsPage"
+              component={CommentsPage}
+              options={{ title: "Comments Page" }}
           />
         </Stack.Navigator>
     );

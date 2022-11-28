@@ -17,7 +17,7 @@ export default function TabBarAdvancedButton({ bgColor, navigation, ...props }) 
                 animationRef.current?.play();
                 navigation.navigate('SubmitScreen')
             }}>
-                <Lottie style={{height: 70, width: 70}} ref={animationRef} source={require('../../assets/LottieAnimations/add.json')} loop={false}/>
+                <Lottie style={{height: 95, width: 95}} ref={animationRef} source={require('../../assets/LottieAnimations/add.json')} loop={false}/>
             </TouchableOpacity>
         </View>
     );
