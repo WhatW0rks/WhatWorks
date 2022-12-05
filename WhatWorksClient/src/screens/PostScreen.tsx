@@ -10,9 +10,16 @@ const db = database;
 
 // React Contexts
 import ReviewContext from '../reviewSelectorContext'
+import { PropTypes } from 'victory-core';
+
+
 
 export default function PostScreen({navigation}) {
   const {setReview, review} = React.useContext(ReviewContext);
+  const {setLink, link} = React.useContext(ReviewContext);
+
+  const [imageURL, setImageURL] = useState('');
+
 
   // Default Data
   const [data, setData] = useState({
@@ -27,8 +34,16 @@ export default function PostScreen({navigation}) {
   //> userCreatedReviews
   //> DummyReviews
 
+  
+  
+  
+
+
+
+  
+
   const fetchReview = () => {
-    const dbReviewRoute = ref(db, 'DummyReviews/');
+    const dbReviewRoute = ref(db, 'Reviews/');
     get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
     if (snapshot.exists()) {
       let reviewData = snapshot.val();
@@ -38,7 +53,7 @@ export default function PostScreen({navigation}) {
           heading: reviewData.title, 
           user: reviewData.username,
           description: reviewData.review,
-          imageLink: reviewData.imageURL,
+          imageLink: link? link: reviewData.imageURL,
           tags: reviewData.tags
         }
       );

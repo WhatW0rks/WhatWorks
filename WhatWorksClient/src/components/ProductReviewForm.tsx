@@ -132,13 +132,13 @@ export default function ProductReviewForm({ route, navigation }) {
             getDownloadURL(Fireref(fireStore, `${randomReviewID}`))
             .then((url) => {
                 // Write the review index
-                set(ref(db, 'DummyIndex/' + randomReviewID), {
+                set(ref(db, 'Index/' + randomReviewID), {
                     userReviewID: `${randomReviewID}`,
                     title: `${title}`,
                     imageURL: `${url}`
                 });
                 // Write the core review
-                set(ref(db, 'DummyReviews/' + randomReviewID), {
+                set(ref(db, 'Reviews/' + randomReviewID), {
                     username: `${userArray[randomNumUser]}`,
                     title: `${title}`,
                     imageURL: `${url}`,

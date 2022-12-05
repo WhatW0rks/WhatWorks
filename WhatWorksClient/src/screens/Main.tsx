@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { StyleSheet, SafeAreaView, Text, View, FlatList, ActivityIndicator} from 'react-native';
-
+import CachedImage from '../components/smallComponents/CachedImage';
 // React Screen Components
 import LoadingScreen from './LoadingScreen';
+// import CachedImage from 'react-native-expo-cached-image';
 
 // UI Component
 import { Image } from '@rneui/themed';
@@ -26,6 +27,8 @@ export default function Main({navigation}) {
   const [isLoading, setLoading] = React.useState(true);
   const [querys, setQuery] = React.useState("");
   const {setReview, review} = React.useContext(ReviewContext);
+  const {setLink, link} = React.useContext(ReviewContext);
+
   const {setTag, tag} = React.useContext(TagContext);
   
   const tagArrayReference = [
@@ -38,7 +41,7 @@ export default function Main({navigation}) {
   //> DummyIndex
   const fetchReviewData = async() => {
     try {
-      const userIndexReviewsRoute = ref(db, 'DummyIndex/');
+      const userIndexReviewsRoute = ref(db, 'Index/');
       onValue(userIndexReviewsRoute, (snapshot) => {
         const data = snapshot.val();
 
@@ -48,6 +51,7 @@ export default function Main({navigation}) {
         for (let key in data) {
           if (!data.hasOwnProperty(key)) continue;
           let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
+          console.log(temp);
           
           parsedData.push(temp);
 
@@ -100,6 +104,10 @@ export default function Main({navigation}) {
     
   }
 
+  function navigate() { 
+   return (navigation.navigate('PostScreen'));
+  }
+
   // Render Reviews from DB
   React.useEffect(() => {
     // Fetch Review Data
@@ -131,15 +139,39 @@ export default function Main({navigation}) {
                 keyExtractor={(e) => {
                   return e[0]}}
                 renderItem={({ item }) => (
-                  <Image 
-                    source={{ uri: `${item[2]}` }}
-                    containerStyle={styles.item}
-                    PlaceholderContent={<ActivityIndicator />}
-                    onPress={() => {
-                      setReview(item[0]);
-                      navigation.navigate('PostScreen');
-                    }}
+                  // <SmartCacheImage 
+                  //   source={{ uri: `${item[2]}`, filename: item[0]}}
+                  //   style={styles.item}
+                  //   onPress={() => {
+                  //     setReview(item[0]);
+                  //     navigation.navigate('PostScreen');
+                  //   }}
+                  // />
+                  <CachedImage
+                  source={{uri: `${item[2]}`}}
+                  containerStyle={styles.item}
+                  PlaceholderContent={<ActivityIndicator />}
+                  id = {item[0]}
+                  function = {
+                    navigate
+                  }
+                  // onPress={() => {
+                  //   setReview(item[0]);
+                  //   navigation.navigate('PostScreen');
+                  // }}
+                
                   />
+                  // <Image 
+                  //   source={{ uri: `${item[2]r}` }}
+                  //   containerStyle={styles.item}
+                  //   PlaceholderContent={<ActivityIndicator />}
+                  //   onPress={() => {
+                  //     setReview(item[0]);
+                  //     navigation.navigate('PostScreen');
+                  //   }}
+                  // />
+                  
+
                 )}
               />
             </View>

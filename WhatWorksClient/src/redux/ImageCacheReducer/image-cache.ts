@@ -1,5 +1,6 @@
+import {  Action, AnyAction } from '@reduxjs/toolkit';
 import { createAction, handleActions } from 'redux-actions';
-
+import { Reducer } from 'redux'; 
 // Defines what each action is called for the reducer
 // For a fetch action we call it 'image-cache.fetch'
 // For a download action we call it 'image-cache.download'
@@ -12,6 +13,11 @@ export const constants = {
     success: 'image-cache.success',
     error: 'image-cache.error',
 };
+
+export interface StateType { 
+    loaded: {[key: string]: string}; 
+    loading: string[];
+}
 
 // For every state, there is a loaded field and a loading field...
 const defaultState = {
@@ -30,7 +36,7 @@ Object.keys(constants).reduce((res, key) =>
 , {});
 
 // When we recieve an action, this is what we do with them...
-export default handleActions({
+export const reducer = handleActions({
 
 // ['image-cache.download'] => Do
 [constants.download]: (state, { payload }) => {
@@ -73,4 +79,14 @@ export default handleActions({
     // Return just the loading boolean state
     return { loading };
 },
-}, defaultState);
+}, defaultState as StateType);
+
+
+
+// function thisReducer(
+//     State = defaultState,
+//     Action: AnyAction
+//   ) {
+//     handleActions('image',actions, defaultState); 
+//   }
+// export const imageReducer: Reducer = thisReducer ; 

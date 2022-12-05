@@ -66,13 +66,13 @@ const dataUpload = async () => {
       let text = generateDescription();
 
       // DATABASE WRITE
-      set(ref(db, 'DummyIndex/' + d.id), {
+      set(ref(db, 'Index/' + d.id), {
         userReviewID: `${d.id}`,
         title: `${d.alt}`,
         imageURL: `${d.src.original}`
       });
       // Write the core review
-      set(ref(db, 'DummyReviews/' + d.id), {
+      set(ref(db, 'Reviews/' + d.id), {
           username: `${d.photographer}`,
           title: `${d.alt}`,
           imageURL: `${d.src.original}`,

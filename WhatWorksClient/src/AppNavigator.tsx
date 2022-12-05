@@ -25,9 +25,10 @@ const Tab = createBottomTabNavigator();
 export default function AppNavigator() {
   const [review, setReview] = React.useState(0);
   const [tag, setTag] = React.useState("");
+  const [link, setLink] = React.useState(''); 
 
   return (
-    <ReviewContext.Provider value={{review, setReview}}>
+    <ReviewContext.Provider value={{review, setReview, link, setLink}}>
     <TagContext.Provider value={{tag, setTag}}>
 
     <NavigationContainer>
