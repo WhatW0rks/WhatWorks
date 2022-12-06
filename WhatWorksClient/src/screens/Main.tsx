@@ -23,7 +23,6 @@ import TagContext from '../tagSelectorContext';
 
 export default function Main({navigation}) {
   const [reviewData, setReviewData] = React.useState([]);
-  const [isLoading, setLoading] = React.useState(true);
   const [querys, setQuery] = React.useState("");
   const {setReview, review} = React.useContext(ReviewContext);
   const {setTag, tag} = React.useContext(TagContext);
@@ -33,12 +32,9 @@ export default function Main({navigation}) {
     "tag5","tag6","tag7","tag8","tag9", "tag10"
   ];
 
-  // DB Routes
-  //> userReviewIndex
-  //> DummyIndex
   const fetchReviewData = async() => {
     try {
-      const userIndexReviewsRoute = ref(db, 'DummyIndex/');
+      const userIndexReviewsRoute = ref(db, 'Index/');
       onValue(userIndexReviewsRoute, (snapshot) => {
         const data = snapshot.val();
 
@@ -54,7 +50,6 @@ export default function Main({navigation}) {
         }
 
         setReviewData(parsedData);
-        setLoading(false);
       });
 
     } catch (e) {
@@ -106,11 +101,7 @@ export default function Main({navigation}) {
     fetchReviewData();
     if (tag !== "") updateQuery(tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'));
   }, [tag]);
-  
-  // Loading Wrapper
-  if (isLoading) {
-    return <LoadingScreen navigation={navigation} />
-  } else {
+
     return (
       <SafeAreaView style={styles.mainContainer}>
             <View style={styles.buttonContainer}>
@@ -146,7 +137,6 @@ export default function Main({navigation}) {
       </SafeAreaView>
     );
   }
-}
 
 const styles = StyleSheet.create({
     mainContainer: {

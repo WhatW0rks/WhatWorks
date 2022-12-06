@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, Image, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeMinimizedProductReviewPage from '../components/HomeMinimizedProductReviewPage';
 
@@ -8,6 +8,19 @@ const WhatWorks = require('../assets/WhatWorksLogo.png');
 export default function LoadingScreen({navigation}) {
     const sampleText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.`
 
+    // Refresh Handler
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    // OnRefresh
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        console.log("Enter refresh");
+        setTimeout( () => {
+            console.log("Exit refresh!");
+            setRefreshing(false); 
+        }, 5000);
+      }, []);
+      
     const [data, setData] = React.useState({
         heading: "Roa's Homemade Marinara", user:"Jane Doe",
         description: `This is my favorite marinara sauce of all time. It is fantastic with meatballs and doesn’t seem to lead to a flare-up in my symptoms. I highly recommend it to anyone who craves marinara sauce and typically isn’t able to eat it due to the high acid!`,
@@ -16,7 +29,14 @@ export default function LoadingScreen({navigation}) {
 
     return(
         <SafeAreaView style={styles.loadingContainer}>
-            <ScrollView>
+            <ScrollView
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
+            >
                 <HomeMinimizedProductReviewPage
                 heading = {data.heading}
                 user = {data.user}

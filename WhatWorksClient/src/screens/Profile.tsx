@@ -14,10 +14,10 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 // UI
 import { Avatar } from '@rneui/themed';
-import { Flex } from '@react-native-material/core';
 
-// Component
+// Component for React Navigation Tabs
 import Trying from '../components/smallComponents/profileContentLoader'
+import Works from '../components/smallComponents/WorksComp'
 
 // Lottie Animations
 import Lottie from 'lottie-react-native';
@@ -27,16 +27,6 @@ const db = database;
 
 // React Navigation Tabs Creator
 const Tab = createMaterialTopTabNavigator();
-
-// React Navigation tabs
-function HomeScreen() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
-        <Lottie style={{height: 200, width: 200}} source={require('../assets/LottieAnimations/empty.json')} autoPlay loop></Lottie>
-        <Text style={{color: "gray"}}>{"There is nothing here :^("}</Text>
-      </View>
-    );
-  }
   
 function SettingsScreen() {
 return (
@@ -128,7 +118,7 @@ export default function Profile({navigation}) {
                         screenOptions={{
                             tabBarLabelStyle: {fontSize: 10, fontWeight: "700"}
                         }}>
-                            <Tab.Screen name="What Works" component={HomeScreen} />
+                            <Tab.Screen name="What Works" children={()=> <Works navigation={navigation}></Works>} />
                             <Tab.Screen name="Want to Try" children={()=> <Trying navigation={navigation}></Trying>}/>
                             <Tab.Screen name="What Doesn't Work" component={SettingsScreen} />
                         </Tab.Navigator>

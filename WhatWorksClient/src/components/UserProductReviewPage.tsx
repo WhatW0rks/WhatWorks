@@ -1,18 +1,26 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar, Pressable, Button } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar, Pressable, TouchableOpacity } from 'react-native';
 
 // React Native UI Elements Import
-import { Avatar, withBadge } from '@rneui/themed';
+import { Avatar } from '@rneui/themed';
 import { Image } from '@rneui/themed';
 import React, { useEffect, useRef, useState } from 'react';
 
 // React Native Paper
-import { Chip } from 'react-native-paper';
+import { Chip, Button } from 'react-native-paper';
+
+// React UI Kitten
+import { Tooltip } from '@ui-kitten/components';
+
+// React Popover UI
+import Popover, { PopoverPlacement } from 'react-native-popover-view';
 
 // Lottie Animations
 import Lottie from 'lottie-react-native';
 import Heart from '../assets/LottieAnimations/heart.json';
-import List from '../assets/LottieAnimations/toDo.json';
 import Dislike from '../assets/LottieAnimations/dislike.json';
+import Bookmark from '../assets/LottieAnimations/bookmark.json';
+import Tokens from '../assets/LottieAnimations/tokens.json'
+import Sad from '../assets/LottieAnimations/sad.json'
 
 // React Contexts
 import TagContext from '../tagSelectorContext';
@@ -23,12 +31,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 
 //Firebase
 import { database } from '../firebase';
-import { onValue, ref, set } from "firebase/database";
-
-// Comments
-import CommentPreview from './CommentPreview';
-import { createComment, getComments } from '../comments/api';
-import CommentItem from './CommentItem';
+import { child, get, onValue, ref, set } from "firebase/database";
 
 const db = database;
 
@@ -51,13 +54,21 @@ export default function UserProductReviewPage(props: ProductProperties) {
     ["Calories", "180 cal", "Fat", "20mg"], 
     ["Carbs", "270g", "Protein", "30mg"]]);
     const [tagsData, setTagsData] = React.useState([""]);
+
+    // Function Bar States
+    const [OnTrying, setOnTrying] = React.useState(undefined);
+    const [OnDidntWork, setOnDidntWork] = React.useState(undefined);
+    const [OnWorks, setOnWorks] = React.useState(undefined);
+
+    // Lottie
     const animationRef1 = useRef<Lottie>(null);
     const animationRef2 = useRef<Lottie>(null);
     const animationRef3 = useRef<Lottie>(null);
+    const animationRef4 = useRef<Lottie>(null);
+    const animationRef5 = useRef<Lottie>(null);
 
     // Comments API
     const [myComment, setMyComment] = useState("");
-    const [comments, setComments] = useState(getComments());
     const [commentData, setCommentData] = useState([]);
 
     const FetchCommentData = async () => {
@@ -107,6 +118,74 @@ export default function UserProductReviewPage(props: ProductProperties) {
 
     const {setTag, tag} = React.useContext(TagContext);
 
+    const getTryingInfo = () => {
+        get(child(ref(db), `UserTriedData/${username}/Trying/${props.id}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                setOnTrying(true);
+                animationRef2.current?.play(200, 200);
+            } else {
+                setOnTrying(false);
+                animationRef2.current?.play(0, 0);
+            }
+        })
+    }   
+
+    const getDislikeInfo = () => {
+        get(child(ref(db), `UserTriedData/${username}/disliked/${props.id}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                setOnDidntWork(true);
+                console.log("setOnDidntWork to true after getting!");
+            } else {
+                setOnDidntWork(false);
+                console.log("setOnDidntWork to false after getting!");
+            }
+        })
+    }
+
+    const getLikeInfo = () => {
+        get(child(ref(db), `UserTriedData/${username}/liked/${props.id}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                setOnWorks(true);
+            } else {
+                setOnWorks(false);
+            }
+        })
+    }
+
+    const Like = () => {
+        // Write Like Data
+        set(ref(db, 'UserTriedData/' + username + '/' + "liked" + '/' + props.id), {
+            username: `${props.user}`,
+            title: `${props.heading}`,
+            imageURL: `${props.imageLink}`,
+            tags: `${props.tags}`
+        });
+        setOnWorks(true);
+    }
+
+    const deleteFromLikeList = () => {
+        setOnWorks(false);
+        const userTriedReviewsRoute = ref(db, 'UserTriedData/' + username + '/' + 'liked/' + props.id);
+        set(userTriedReviewsRoute, null);
+        animationRef3.current?.play(0, 0);
+    }
+
+    const didntLike = () => {
+        setOnDidntWork(true);
+    }
+
+    const deleteFromDislikeList = () => {
+        setOnDidntWork(false);
+        animationRef1.current?.play(0, 0);
+    }
+
+    const deleteFromTryList = () => {
+        setOnTrying(false);
+        const userTriedReviewsRoute = ref(db, 'UserTriedData/' + username + '/' + 'Trying/' + props.id);
+        set(userTriedReviewsRoute, null);
+        animationRef2.current?.play(0, 0);
+    }
+
     const goingToTry = () => {
         // Write the Trying Data
         set(ref(db, 'UserTriedData/' + username + '/' + "Trying" + '/' + props.id), {
@@ -115,13 +194,55 @@ export default function UserProductReviewPage(props: ProductProperties) {
             imageURL: `${props.imageLink}`,
             tags: `${props.tags}`
         });
+        animationRef2.current?.play();
+        setOnTrying(true)
     };
 
+    const isCommentEmpty = () => {
+        if (commentData.length == 0) {
+            return(
+                <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: -25, marginBottom: 20}}>
+                    <Lottie style={{height: 200, width: 200}} source={require('../assets/LottieAnimations/empty.json')} autoPlay loop></Lottie>
+                    <Text style={{color: "#A9A9A9"}}>{"No Comments Yet :^("}</Text>
+                </View>
+            )
+        }
+    }
+
     useEffect( () => {
+        console.log("Looking at review: ", props.id);
+        console.log("States Before, OnTrying: ", OnTrying);
+        console.log("States Before, OnDidntWork: ", OnDidntWork);
+        console.log("States Before, OnWorks: ", OnWorks);
         if (props.tags !== undefined) {
             setTagsData(props.tags.split(','));
         }
         FetchCommentData();
+
+        if (OnTrying == undefined) {
+            getTryingInfo();
+        }
+        
+        if (OnDidntWork == undefined) {
+            getDislikeInfo();
+            // Animation Setters
+            if (OnDidntWork) {
+                animationRef1.current?.play(200, 200);
+            } else {
+                animationRef1.current?.play(0, 0);
+            }
+        }
+
+        if (OnWorks == undefined) {
+            getLikeInfo();
+            // Animation Setters
+            if (OnWorks) {
+                animationRef3.current?.play(200, 200);
+            } else {
+                animationRef3.current?.play(0, 0);
+            }
+        }
+        
     }, [props.tags]);
 
     const src = {uri: props.imageLink}; 
@@ -135,20 +256,20 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 {/* Stats Container */}
                 <View style={styles.statscontainer}>
                     <View style={styles.statColumn}>
-                            {statsData.map((v) => {
-                                return(
-                                <View key={props.id + v[0]} style={styles.miniBlock}>
-                                    <View style={styles.statTextBox}>
-                                        <Text style={styles.statsHeader}>{v[0]}</Text>
-                                        <Text style={styles.statsInfo}>{v[1]}</Text>
-                                    </View>
-                                    <View style={styles.statTextBox}>
-                                        <Text style={styles.statsHeader}>{v[2]}</Text>
-                                        <Text style={styles.statsInfo}>{v[3]}</Text>
-                                    </View>
+                        {statsData.map((v) => {
+                            return(
+                            <View key={props.id + v[0]} style={styles.miniBlock}>
+                                <View style={styles.statTextBox}>
+                                    <Text style={styles.statsHeader}>{v[0]}</Text>
+                                    <Text style={styles.statsInfo}>{v[1]}</Text>
                                 </View>
-                                )
-                            })}
+                                <View style={styles.statTextBox}>
+                                    <Text style={styles.statsHeader}>{v[2]}</Text>
+                                    <Text style={styles.statsInfo}>{v[3]}</Text>
+                                </View>
+                            </View>
+                            )
+                        })}
                     </View>
                 </View>
 
@@ -168,12 +289,12 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         {tagsData?.map( (v) => {
                             if (v !== undefined) {
-                                return(<Chip style={styles.chip} key={props.id + v} icon="information" onPress={() => {
+                                return(<Chip textStyle={{color: "white"}} style={styles.chip} key={props.id + v} icon="information" onPress={() => {
                                     setTag(v);
                                     props.navigation.navigate('MainScreen');
                                 }}>{v[0]?.toUpperCase() + v.slice(1).toLowerCase().replace('_',' ').replace('&','-')}</Chip>);
                             } else {
-                                return(<Chip style={styles.chip} key={props.id + v} icon="information" onPress={() => console.log('Pressed')}>Loading Tags...</Chip>);
+                                return(<Chip style={styles.chip} key={props.id + v} icon="information" onPress={() => console.log('Pressed Loading')}>Loading Tags...</Chip>);
                             }
                         })}
                     </ScrollView>
@@ -188,35 +309,109 @@ export default function UserProductReviewPage(props: ProductProperties) {
 
                 {/* Function Bar */}
                 <View style={styles.functionContainer}>
-                    <Pressable onPress={() => {animationRef1.current?.play();}} style={styles.functionBtnContainer}>
-                        <Lottie style={{height: 44, width: 44}} ref={animationRef1} source={Dislike} loop={false}/>
-                        <Text style={styles.funcTitleShare}>Didn't Work!</Text>
-                    </Pressable>
+
+                    {/* Didn't Work! */}
+                    <Popover
+                        onOpenStart={() => {
+                            if (OnDidntWork == false || OnDidntWork == undefined) {
+                                // Add Didn't like, if Works is clicked, this will be set to false!
+                                didntLike();
+                                deleteFromLikeList();
+                                console.log("Didn't like added!");
+                            }
+                            animationRef1.current?.play();
+                            animationRef5.current?.play();
+                        }}
+                        placement={PopoverPlacement.BOTTOM}
+                        backgroundStyle={{opacity: 0}}
+                        popoverStyle={{borderRadius: 10, backgroundColor: "#f0f3f7"}}
+                        from={(
+                        <TouchableOpacity style={styles.functionBtnContainer}>
+                            <Lottie style={{height: 44, width: 44}} ref={animationRef1} source={Dislike} loop={false}/>
+                            <Text style={styles.funcTitleShare}>Didn't Work!</Text>
+                        </TouchableOpacity>
+                        )}>
+                            <View style={{display: "flex", justifyContent: "center", alignItems: "center", margin: 5}}>
+                                <Text>{"Awwww Sorry to hear... 😔"}</Text>
+                                <Text style={{marginBottom: 10}}>{"Would you like help share why?"}</Text>
+                                <Lottie style={{height: 70, width: 70, marginTop: -5, marginBottom: 5}} ref={animationRef5} source={Sad} loop={false}/>
+                                <Button 
+                                mode="contained"
+                                style={{width: 140, height: 30, marginTop: -25, marginBottom: 5}}
+                                onPress={() => {props.navigation.navigate('SubmitScreen')}}>
+                                    <Text style={{fontSize: 10}}>Write a Review</Text>
+                                </Button>
+                            </View>
+                    </Popover>
+
+                    {/* Going to Try! */}
                     <Pressable onPress={() => {
-                        goingToTry();
-                        animationRef2.current?.play();
+                        if (OnTrying == false || OnTrying == undefined) {
+                            goingToTry();
+                            
+                        } else {
+                            deleteFromTryList();
+                        }
                         }} style={styles.functionBtnContainer}>
-                        <Lottie style={{height: 50, width: 50}} ref={animationRef2} source={List} loop={false}/>
+                        <Lottie style={{height: 50, width: 50}} ref={animationRef2} source={Bookmark} loop={false}/>
                         <Text style={styles.funcGeneric}>Going to try!</Text>
                     </Pressable>
-                    <Pressable onPress={() => {animationRef3.current?.play();}} style={styles.functionBtnContainerWorks}>
-                        <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Heart} loop={false}/>
-                        <Text style={styles.funcTitleShare2}>Works!</Text>
-                    </Pressable>
+                    
+                    {/* Works! */}
+                    <Popover
+                        onOpenStart={() => {
+                            if (OnWorks == false || OnWorks == undefined) {
+                                // Add Didn't like, if Works is clicked, this will be set to false!
+                                Like();
+                                deleteFromDislikeList();
+                                console.log("Like added!");
+                            }   
+                            animationRef3.current?.play(); 
+                            animationRef4.current?.play();         
+                        }}
+                        placement={PopoverPlacement.BOTTOM}
+                        backgroundStyle={{opacity: 0}}
+                        popoverStyle={{borderRadius: 10, backgroundColor: "#f0f3f7"}}
+                        from={(
+                        <TouchableOpacity style={styles.functionBtnContainerWorks}>
+                            <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Heart} loop={false}/>
+                            <Text style={styles.funcTitleShare2}>Works!</Text>
+                        </TouchableOpacity>
+                        )}>
+                            <View style={{display: "flex", justifyContent: "center", alignItems: "center", margin: 5}}>
+                                <Text>{"Woohoo! Glad to hear! 🎉🎉"}</Text>
+                                <Text>{"Want to share for +100 tokens?"}</Text>
+                                <Lottie style={{height: 80, width: 80, marginTop: -15}} ref={animationRef4} source={Tokens} loop={false}/>
+                                <Button 
+                                mode="contained"
+                                style={{width: 140, height: 30, marginTop: -25, marginBottom: 5}}
+                                onPress={() => {props.navigation.navigate('SubmitScreen')}}>
+                                    <Text style={{fontSize: 10}}>Write a Review</Text>
+                                </Button>
+                            </View>
+                    </Popover>
                 </View>
 
                 {/* Comment Title */}
                 <View style={styles.CommentTitleContainer}>
-                    <Text style={styles.CommentTitle}>Top Comments</Text>
+                    <View style={{ 
+                    borderRadius: 10,
+                    borderBottomWidth: 2,
+                    borderBottomColor: '#d3d3d3',
+                    width: "20%"
+                    }}
+                    />
                 </View>
 
                 {/* Comment Container */}
                 <View style={styles.commentContainer}>
+                    
+                    {isCommentEmpty()}
 
                     {/* Comment */}
                     {commentData?.map((v) => {
                         return(
-                            <View style={styles.containerComment}> 
+                            <View key={props.id + v[1] + v[0]} style={styles.containerComment}> 
                                 <View style={styles.commentHeaderTop}>
                                     <Avatar size={24} rounded source={{uri: `${v[3]}`}}/>
                                     <Text style={styles.profilenameTop}>{`${v[2]}`}</Text>
@@ -230,13 +425,14 @@ export default function UserProductReviewPage(props: ProductProperties) {
                             </View>
                         );
                     }) }
+                    
                         
                     <Pressable onPress={() => props.navigation.navigate('CommentsPage')}>
                         <Text style={{color: "#808080", marginTop: 5}}>View Comments</Text>
                     </Pressable>
                 </View>
                 
-                <View style={{marginBottom: 10, marginTop:10}}></View>
+                <View style={{marginBottom: 10, marginTop: 10}}></View>
             </ScrollView>
         </SafeAreaView>
     ); 
@@ -315,6 +511,7 @@ const styles = StyleSheet.create({
         height: 30
     },
     chip: {
+        backgroundColor: "#37aca4",
         marginRight: 2,
         marginLeft: 2
     },
@@ -328,9 +525,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         marginTop: 20,
-        // borderWidth: 1,
-        // borderStyle: "dashed",
-        // borderColor: "#33B3A6"
     },
     functionBtnContainer: {
         display: "flex",
@@ -359,16 +553,9 @@ const styles = StyleSheet.create({
     },
     CommentTitleContainer: {
         display: "flex",
-        marginLeft: 5,
-        marginTop: 10,
         height: 30,
         justifyContent: "center",
         alignItems: "center"
-    },
-    CommentTitle: {
-        fontSize: 20,
-        fontWeight: "bold",
-        textDecorationLine: "underline"
     },
 
     containerComment: {

@@ -7,8 +7,6 @@ import React from 'react';
 // React Native Paper
 import { Chip } from 'react-native-paper';
 
-
-
 interface ProductProperties { 
     title: string; 
     imageLink: string; 
@@ -24,9 +22,6 @@ export default function TriedReview(props: ProductProperties) {
         tag = tag.replace(/&|_/, " ");
         return tag;
       });    
-    // console.log(props.tags);
-
-    // const tags = ["happy", "sad"];
 
     const src = {uri: props.imageLink}; 
 

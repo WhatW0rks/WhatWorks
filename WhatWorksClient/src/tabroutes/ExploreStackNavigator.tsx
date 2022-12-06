@@ -55,7 +55,9 @@ export default function ExploreNavigator() {
                     //   style={{marginRight: 10}}
                     // />
                     <Button
-                        onPress={() => {handleClick()}}
+                        onPress={() => {
+                            handleClick();
+                        }}
                         title="Post Review!"
                     />
                   ),

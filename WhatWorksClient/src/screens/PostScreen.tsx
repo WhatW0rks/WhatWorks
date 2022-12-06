@@ -23,12 +23,8 @@ export default function PostScreen({navigation}) {
     tags: "Loading..."
   });
 
-  // DB Routes
-  //> userCreatedReviews
-  //> DummyReviews
-
   const fetchReview = () => {
-    const dbReviewRoute = ref(db, 'DummyReviews/');
+    const dbReviewRoute = ref(db, 'Reviews/');
     get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
     if (snapshot.exists()) {
       let reviewData = snapshot.val();

@@ -3,7 +3,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import Home from '../screens/Home';
 import ProductReviewForm from "../components/ProductReviewForm";
-import { Button } from "react-native";
+import NavBarTop from '../components/smallComponents/NavBarTop'
+import { Button, Image, View } from "react-native";
 
 
 const Stack = createStackNavigator();
@@ -25,7 +26,23 @@ export default function HomeNavigator() {
             <Stack.Screen
             name="HomeScreen"
             component={Home}
-            options={{ headerShown: false, title: "" }}
+            options={{ 
+                headerShown: true, 
+                title: "",
+                headerStyle: {
+                    height: 90
+
+                },
+                headerRight: () => (
+                    <NavBarTop navigation={undefined}/>
+                ),
+                headerLeft: () => (
+                    <View style={{marginLeft: 10}}>
+                        <Image style={{height: 40, width: 70}} source={require('../assets/WhatWorksLogo.png')}></Image>
+                    </View>
+                    
+                ),
+             }}
             />
 
             {/* Content Creation Workflow */}
