@@ -16,6 +16,8 @@ import TabBarAdvancedButton from './components/smallComponents/AdvanceTabButton'
 // React Contexts
 import ReviewContext from './reviewSelectorContext';
 import TagContext from './tagSelectorContext';
+import LinkContext from './linkSelectorContext';
+
 
 // UI
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -25,10 +27,14 @@ const Tab = createBottomTabNavigator();
 export default function AppNavigator() {
   const [review, setReview] = React.useState(0);
   const [tag, setTag] = React.useState("");
+  const [link, setLink] = React.useState("");
+
 
   return (
     <ReviewContext.Provider value={{review, setReview}}>
     <TagContext.Provider value={{tag, setTag}}>
+    <LinkContext.Provider value={{link, setLink}}>
+
 
     <NavigationContainer>
       <Tab.Navigator
@@ -96,7 +102,8 @@ export default function AppNavigator() {
           />
       </Tab.Navigator>
     </NavigationContainer> 
-
+  
+  </LinkContext.Provider>      
   </TagContext.Provider>
   </ReviewContext.Provider>      
   );

@@ -9,7 +9,7 @@ import { Image } from '@rneui/themed';
 import { SearchBar } from '@rneui/themed';
 
 // Image Caching
-
+import CachedImage from '../components/smallComponents/CachedImage';
 // Firebase
 import { database } from '../firebase';
 import { onValue, ref, query, orderByChild, startAt, endAt, get, Query } from "firebase/database";
@@ -122,14 +122,21 @@ export default function Main({navigation}) {
                 keyExtractor={(e) => {
                   return e[0]}}
                 renderItem={({ item }) => (
-                  <Image 
+
+                  // <Image 
+                  //   source={{ uri: `${item[2]}` }}
+                  //   containerStyle={styles.item}
+                  //   PlaceholderContent={<ActivityIndicator />}
+                  //   onPress={() => {
+                  //     setReview(item[0]);
+                  //     navigation.navigate('PostScreen');
+                  //   }}
+                  // />
+                  <CachedImage
                     source={{ uri: `${item[2]}` }}
                     containerStyle={styles.item}
-                    PlaceholderContent={<ActivityIndicator />}
-                    onPress={() => {
-                      setReview(item[0]);
-                      navigation.navigate('PostScreen');
-                    }}
+                    id={item[0]}
+                    navigation={navigation}
                   />
                 )}
               />

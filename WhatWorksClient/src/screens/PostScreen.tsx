@@ -10,9 +10,12 @@ const db = database;
 
 // React Contexts
 import ReviewContext from '../reviewSelectorContext'
-
+import LinkContext from '../linkSelectorContext';
+import getLink from '../cachefunctions';
 export default function PostScreen({navigation}) {
   const {setReview, review} = React.useContext(ReviewContext);
+  const {setLink, link} = React.useContext(LinkContext);
+
 
   // Default Data
   const [data, setData] = useState({
@@ -23,21 +26,25 @@ export default function PostScreen({navigation}) {
     tags: "Loading..."
   });
 
-  const fetchReview = () => {
+  const fetchReview =  () => {
     const dbReviewRoute = ref(db, 'Reviews/');
-    get( child(dbReviewRoute, `${review}/`) ).then((snapshot) => {
+    get( child(dbReviewRoute, `${review}/`) ).then(async (snapshot) => {
     if (snapshot.exists()) {
       let reviewData = snapshot.val();
+      const imgLink = await getLink(reviewData.imageURL)
+
 
       setData(
         {
           heading: reviewData.title, 
           user: reviewData.username,
           description: reviewData.review,
-          imageLink: reviewData.imageURL,
+          imageLink: imgLink,
           tags: reviewData.tags
         }
       );
+      console.log("Link: " + (link ? link : reviewData.imageURL));
+
 
     } else {
       console.log("Review Missing!");
@@ -46,6 +53,7 @@ export default function PostScreen({navigation}) {
     console.error(error);
   });
   }
+
 
   useEffect( () => {
     fetchReview();
