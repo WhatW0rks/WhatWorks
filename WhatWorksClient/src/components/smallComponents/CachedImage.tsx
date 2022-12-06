@@ -4,7 +4,6 @@ import * as FileSystem from 'expo-file-system';
 import * as Crypto from 'expo-crypto';
 import { Image } from '@rneui/themed';
 import ReviewContext from '../../reviewSelectorContext';
-import LinkContext from '../../linkSelectorContext';
 
 interface Source { 
     uri: string
@@ -26,7 +25,6 @@ interface CachedProps {
 }
 export default function CachedImage(props: CachedProps, {navigation}) { 
     let {review, setReview} = useContext(ReviewContext);
-    let {link, setLink} = useContext(LinkContext);
 
 
     const [imgUri, setImgUri] = useState<string>('');
@@ -74,6 +72,7 @@ export default function CachedImage(props: CachedProps, {navigation}) {
             
           // get downloaded url and set state to this
           const imageObject = await downloadResumable.downloadAsync();
+          console.log("Downloading......")
           if (mounted) {
             if (imageObject && imageObject.status === 200) {
               setImgUri(
@@ -181,7 +180,6 @@ export default function CachedImage(props: CachedProps, {navigation}) {
             onPress={() => {
                 console.log(imgUri);
                 setReview(props.id);
-                setLink(imgUri);
                 props.navigation.navigate('PostScreen');
                 console.log("hello");
             }}

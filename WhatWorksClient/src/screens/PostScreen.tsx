@@ -10,12 +10,9 @@ const db = database;
 
 // React Contexts
 import ReviewContext from '../reviewSelectorContext'
-import LinkContext from '../linkSelectorContext';
 import getLink from '../cachefunctions';
 export default function PostScreen({navigation}) {
   const {setReview, review} = React.useContext(ReviewContext);
-  const {setLink, link} = React.useContext(LinkContext);
-
 
   // Default Data
   const [data, setData] = useState({
@@ -32,7 +29,8 @@ export default function PostScreen({navigation}) {
     if (snapshot.exists()) {
       let reviewData = snapshot.val();
       const imgLink = await getLink(reviewData.imageURL)
-
+      // const imgLink = link ? link : reviewData.imageURL;
+      console.log("Myyyy liiinkkkk: " + imgLink);
 
       setData(
         {
@@ -43,7 +41,7 @@ export default function PostScreen({navigation}) {
           tags: reviewData.tags
         }
       );
-      console.log("Link: " + (link ? link : reviewData.imageURL));
+      console.log("Link: " + imgLink);
 
 
     } else {

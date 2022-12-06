@@ -20,14 +20,12 @@ import Lottie from 'lottie-react-native';
 import { Image } from '@rneui/themed';
 import CachedImage from './CachedImage';
 import ReviewContext from '../../reviewSelectorContext';
-import LinkContext from '../../linkSelectorContext';
-import getLink from '../../cachefunctions';
+
 
 export default function WorksComp({navigation}) {
     const [reviewWorksData, setReviewWorksData] = React.useState([]);
     const [reviewData, setReviewData] = React.useState([]);
     const {setReview, review} = React.useContext(ReviewContext);
-    const {setLink, link} = React.useContext(LinkContext);
 
 
     let username = useAppSelector(selectUsername); 
@@ -107,9 +105,8 @@ export default function WorksComp({navigation}) {
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     {reviewWorksData?.map((r) => {
                     return(
-                        <Pressable onPress={() => {
+                        <Pressable onPress={async () => {
                         setReview(r[3]);
-                        setLink(getLink(`${r[2]}`))
                         navigation.navigate('PostScreen');
                         }}>
                         <View style={{
@@ -139,9 +136,8 @@ export default function WorksComp({navigation}) {
             </View>
             {reviewData?.map((r) => {
               return(
-                <Pressable onPress={() => {
+                <Pressable onPress={async () => {
                   setReview(r[3]);
-                  setLink(getLink(`${r[2]}`))
                   navigation.navigate('PostScreen');
                 }}>
                   <View style={{

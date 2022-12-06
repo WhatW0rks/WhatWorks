@@ -19,14 +19,11 @@ import Lottie from 'lottie-react-native';
 // UI
 import { Image } from '@rneui/themed';
 import ReviewContext from '../../reviewSelectorContext';
-import LinkContext from '../../linkSelectorContext';
-import getLink from '../../cachefunctions';
 import CachedImage from './CachedImage';
 
 export default function ProfileContentLoader({navigation}) {
     const [reviewData, setReviewData] = React.useState([]);
     const {setReview, review} = React.useContext(ReviewContext);
-    const {setLink, link} = React.useContext(LinkContext);
 
     let username = useAppSelector(selectUsername); 
 
@@ -59,6 +56,7 @@ export default function ProfileContentLoader({navigation}) {
             }
 
             setReviewData(parsedData);
+            
         });
             
             
@@ -79,10 +77,10 @@ export default function ProfileContentLoader({navigation}) {
             {Empty()}
 
             {reviewData?.map((r) => {
+              
               return(
-                <Pressable onPress={() => {
+                <Pressable onPress={async () => {
                   setReview(r[3]);
-                  setLink(getLink(`${r[2]}`))
                   navigation.navigate('PostScreen');
                   }}>
             
