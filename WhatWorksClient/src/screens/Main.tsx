@@ -33,6 +33,7 @@ export default function Main({navigation}) {
   ];
 
   const fetchReviewData = async() => {
+    console.log("fetchReviewData");
     try {
       const userIndexReviewsRoute = ref(db, 'Index/');
       onValue(userIndexReviewsRoute, (snapshot) => {
@@ -57,29 +58,70 @@ export default function Main({navigation}) {
     }
   }
 
-  const DBQuery = (dbQuery: Query) => {
-    get(dbQuery).then((snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
+  // const DBQuery = (dbQuery: Query) => {
+  //   get(dbQuery).then((snapshot) => {
+  //     if (snapshot.exists()) {
+  //       const data = snapshot.val();
+        
 
-        let parsedData = [];
+  //       let parsedData = [];
 
-        for (let key in data) {
-          if (!data.hasOwnProperty(key)) continue;
-          let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
-          parsedData.push(temp);
-        }
-        setReviewData(parsedData);
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+  //       for (let key in data) {
+  //         if (!data.hasOwnProperty(key)) continue;
+  //         let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
+  //         parsedData.push(temp);
+  //       }
+  //       console.log("Review data in DBQuery: ", reviewData);
+  //       setReviewData(parsedData.concat(reviewData));
+  //       console.log(reviewData);
+  //     }
+  //   }).catch((error) => {
+  //     console.error(error);
+  //   });
+  // }
+
+  const newDBQuery = (search: string) => { 
+    console.log("newDBQuery");
+
+    let parsedData = []; 
+    const tagPath = ref(db, 'TagReviews/');
+    for (let i = 0; i < 10; i++) {
+
+      const dbTagQuery = query(tagPath, orderByChild(tagArrayReference[i]), startAt(search), endAt(`${search}` + "\uf7ff")); 
+      get(dbTagQuery).then((snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              
+              for (let key in data) {
+                if (!data.hasOwnProperty(key)) continue;
+                let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
+                parsedData.push(temp);
+              }
+             
+            }
+            setReviewData(a => {
+              const newstate = parsedData.slice(); 
+              return newstate
+            });
+            console.log("Review data in DBQuery: ", reviewData);
+          }).catch((error) => {
+            console.error(error);
+          });
+
+    }
+    
   }
 
   const updateQuery = (search: string) => {
-    setQuery(search);
+    console.log("updateQuery");
+    setQuery(prev => search);
+    setReviewData(prev => []);
+
     let searchTerm = search.toLowerCase().replace(' ', '_').replace('-', '&');
     console.log(searchTerm);
+
+    
+    
 
     if (search == "") {
       fetchReviewData();
@@ -87,20 +129,29 @@ export default function Main({navigation}) {
       const tagPath = ref(db, 'TagReviews/');
 
       // Rows of DB Query's because firebase is not fun...
-      tagArrayReference.forEach( (s)=> {
-        const dbTagQuery = query(tagPath, orderByChild(`${s}`), startAt(`${searchTerm}`), endAt(`${searchTerm}` + "\uf7ff"));
-        DBQuery(dbTagQuery);
-      })
+      // tagArrayReference.forEach( (s)=> {
+      //   const dbTagQuery = query(tagPath, orderByChild(`${s}`), startAt(`${searchTerm}`), endAt(`${searchTerm}` + "\uf7ff"));
+      //   console.log("Querying db...");
+      //   DBQuery(dbTagQuery);
+      // })
+      newDBQuery(searchTerm);
+    
     }
+
     
   }
 
   // Render Reviews from DB
   React.useEffect(() => {
+    console.log("Use effect");
     // Fetch Review Data
     fetchReviewData();
     if (tag !== "") updateQuery(tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'));
   }, [tag]);
+  console.log("Querys: " + querys);
+
+
+  console.log("Reviewdata: " + reviewData);
 
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -117,7 +168,7 @@ export default function Main({navigation}) {
             </View>
     
             <View style={styles.exploreContainer}>
-              <FlatList data={reviewData.map((v) => v)}
+              <FlatList data={reviewData}
                 style={styles.list} numColumns={3} 
                 keyExtractor={(e) => {
                   return e[0]}}
