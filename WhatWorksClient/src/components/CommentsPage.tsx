@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, Image, SafeAreaView, View, Pressable, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { StyleSheet, Text, Image, SafeAreaView, View, Pressable, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 
 import { useState } from 'react';
 // import { createComment, getComments } from '../comments/api';
@@ -62,6 +62,7 @@ export default function CommentsPage(props: CommentPageProps) {
     let username = useAppSelector(selectUsername); 
     const {setReview, review} = React.useContext(ReviewContext);
 
+    let h = 45; 
     const FetchCommentData = async () => {
         try {
             const userCommentRef = ref(db, 'ReviewCommentData/' + review);
@@ -193,7 +194,15 @@ export default function CommentsPage(props: CommentPageProps) {
                         );
                     }) }
                 </View>
-                <View style={{display: "flex", flexDirection: "row", marginRight: 25, height: 55}}>
+               
+            </ScrollView>
+            {/* <KeyboardAvoidingView style={{flex: 1, marginTop: 200}} behavior={Platform.OS === "ios" ? "padding" : "height"} */}
+            <KeyboardAvoidingView behavior={"position"} keyboardVerticalOffset={h + 10}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+                <View style={{display: "flex", flexDirection: "row", padding: 0, marginRight: 20, height: 55, marginBottom:h}}>
+                {/* <View style={{flex: 1}}> */}
+
                     <TextInput
                         style={{marginLeft: 10, width: "80%", height: 50}}
                         label="Comment"
@@ -212,8 +221,10 @@ export default function CommentsPage(props: CommentPageProps) {
                     contentStyle={{width: 80, height:57}}
                     >
                     </Button>
-                </View>
-            </ScrollView>
+                    </View>
+                    </TouchableWithoutFeedback>
+
+                </KeyboardAvoidingView>
         </SafeAreaView>
     ); 
 }
@@ -258,7 +269,8 @@ const styles = StyleSheet.create({
     },    
     commentContainer: {
         marginLeft: 10,
-        marginTop: 20, 
+        marginTop: 20,
+
     },
     text: {
         fontSize: 10,
