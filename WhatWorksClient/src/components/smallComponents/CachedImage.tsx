@@ -48,7 +48,6 @@ export default function CachedImage(props: CachedProps, {navigation}) {
 
     async function loadImage(filesystemURI:string, remoteURI:string) {
         // clear downloadresumable object from any previous downloads! 
-        console.log("Loading image...");
         if (downloadResumable && downloadResumable.cancelAsync) {
           downloadResumable.cancelAsync();
         }

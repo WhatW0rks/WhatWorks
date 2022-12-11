@@ -32,7 +32,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 //Firebase
 import { database } from '../firebase';
 import { child, get, onValue, ref, set } from "firebase/database";
-
+import { dateFromNow } from './CommentsPage';
 const db = database;
 
 interface ProductProperties { 
@@ -73,41 +73,63 @@ export default function UserProductReviewPage(props: ProductProperties) {
 
     const FetchCommentData = async () => {
         try {
-            const userCommentRef = ref(db, 'UserCommentData/' + username + '/' + 'Comments/' + props.id);
-            onValue(userCommentRef, (snapshot) => {
+            // const userCommentRef = ref(db, 'UserCommentData/' + username + '/' + 'Comments/' + props.id);
+            // onValue(userCommentRef, (snapshot) => {
+            //     if (snapshot.exists()) {
+            //         const data = snapshot.val();
+            //         let parsedData = [];
+
+            //         // Retrieve data fields and parsing JSON object
+            //         // Clean Comments
+            //         let comments = data.Comments.split('!');
+            //         comments = comments.filter(function(x){
+            //             return x !== ""
+            //         });
+            //         // Clean Users
+            //         let users = data.Username.split('!');
+            //         users = users.filter(function(x){
+            //             return x !== ""
+            //         });
+
+            //         // Clean Dates
+            //         let dates = data.Dates.split('!');
+            //         dates = dates.filter(function(x){
+            //             return x !== ""
+            //         });
+
+            //         for (let i = 0; i < comments.length; i++) {
+            //             if (i == 3) return;
+            //             let temp = [data.ReviewID, comments[i], users[i], data.UserImageURL, dates[i]];
+            //             parsedData.push(temp);
+            //         }
+
+            //         // console.log("THE COMMENTS ARRAY: ", comments);
+            //         // console.log("THE USER ARRAY: ", users);
+            //         setCommentData(parsedData);
+            //     }
+            // });
+
+            const reviewCommentRef = ref(db, 'ReviewCommentData/' + props.id);
+            onValue(reviewCommentRef, (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     let parsedData = [];
-
-                    // Retrieve data fields and parsing JSON object
-                    // Clean Comments
-                    let comments = data.Comments.split('!');
-                    comments = comments.filter(function(x){
-                        return x !== ""
-                    });
-                    // Clean Users
-                    let users = data.Username.split('!');
-                    users = users.filter(function(x){
-                        return x !== ""
-                    });
-
-                    // Clean Dates
-                    let dates = data.Dates.split('!');
-                    dates = dates.filter(function(x){
-                        return x !== ""
-                    });
-
-                    for (let i = 0; i < comments.length; i++) {
-                        if (i == 3) return;
-                        let temp = [data.ReviewID, comments[i], users[i], data.UserImageURL, dates[i]];
-                        parsedData.push(temp);
+                    // iterate through comments for this particular review! 
+                    for (let comment in data) {
+                        if (parsedData.length >= 3) break;
+                        console.log("A comment: " + JSON.stringify(data[comment])); 
+                        data[comment]['Dates'] = dateFromNow(data[comment]['Dates'])
+                        parsedData.push(data[comment]); 
                     }
-
-                    // console.log("THE COMMENTS ARRAY: ", comments);
-                    // console.log("THE USER ARRAY: ", users);
                     setCommentData(parsedData);
+
+                    
                 }
             });
+
+
+
+
       
           } catch (e) {
             console.log("Error: ", e)
@@ -411,15 +433,15 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     {/* Comment */}
                     {commentData?.map((v) => {
                         return(
-                            <View key={props.id + v[1] + v[0]} style={styles.containerComment}> 
+                            <View key={v['Dates']} style={styles.containerComment}> 
                                 <View style={styles.commentHeaderTop}>
-                                    <Avatar size={24} rounded source={{uri: `${v[3]}`}}/>
-                                    <Text style={styles.profilenameTop}>{`${v[2]}`}</Text>
-                                    <Text style={{color: "gray", marginLeft: 10}}>{v[4]}</Text>
+                                    <Avatar size={24} rounded source={{uri: v['UserImageURL']}}/>
+                                    <Text style={styles.profilenameTop}>{v['Username']}</Text>
+                                    <Text style={{color: "gray", marginLeft: 10}}>{v['Dates']}</Text>
                                 </View>
                                 <View style={styles.commentDescriptionTop}>
                                 <Text>
-                                    {`${v[1]}`}  
+                                    {v['Comments']}  
                                 </Text>
                                 </View>  
                             </View>

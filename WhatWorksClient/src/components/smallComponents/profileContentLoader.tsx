@@ -79,7 +79,8 @@ export default function ProfileContentLoader({navigation}) {
             {reviewData?.map((r) => {
               
               return(
-                <Pressable onPress={async () => {
+                <Pressable key={r[3]} onPress={async () => {
+                  
                   setReview(r[3]);
                   navigation.navigate('PostScreen');
                   }}>

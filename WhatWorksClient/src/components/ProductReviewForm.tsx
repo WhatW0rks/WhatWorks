@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, Image, SafeAreaView, ScrollView, View, Pressable, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, Image, SafeAreaView, ScrollView, View, Pressable, TouchableOpacity, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
@@ -179,22 +179,40 @@ export default function ProductReviewForm({ route, navigation }) {
     };
 
     const writeReviewData = async () => {
+
         let randomReviewID = randomIntFromInterval(0,1000);
         let randomNumUser = randomIntFromInterval(0,6);
 
         let Tags = valueTag;
         if (Tags[0] == "") Tags.shift();
         // Tag Guard
-        if (Tags.length <= 2 || Tags.length >= 10){
-            onToggleSnackBar();
-            return;
+        if (Tags.length < 2 || Tags.length > 10){
+            // onToggleSnackBar();
+            // return;
+            Alert.alert(
+                "Unable to post review",
+                "Please include between 2 and 10 tags in your review!",
+                [
+                
+                  { text: "Got it!", onPress: () => console.log("OK Pressed") }
+                ]
+              );
         }
+
 
         // Image Guard
         if (imageList.length === 0 || imageList.length > 1) {
             // Reset Image List
-            setImageList([]);
-            return;
+            // setImageList([]);
+            // return;
+            Alert.alert(
+                "Unable to post review",
+                "Please include an image in your review!",
+                [
+                
+                  { text: "Got it!", onPress: () => console.log("OK Pressed") }
+                ]
+              );
         }
 
         let stringfyTags = String(Tags);
@@ -239,15 +257,19 @@ export default function ProductReviewForm({ route, navigation }) {
         //     tag10: `${tagArray[9]}`
         // });
 
+
         const response = await fetch(imageList[0]);
         const blob = await response.blob();
 
         const reviewRef = Fireref(fireStore, `${randomReviewID}`);
 
         uploadBytes(reviewRef, blob).then((snapshot) => {
+
             // Now we get the download URL to propogate into the imageURL for reviews
             getDownloadURL(Fireref(fireStore, `${randomReviewID}`))
+            
             .then((url) => {
+
                 // Write the review index for the explore page
                 set(ref(db, 'Index/' + randomReviewID), {
                     userReviewID: `${randomReviewID}`,
@@ -312,6 +334,7 @@ export default function ProductReviewForm({ route, navigation }) {
 
     // Submission
     const onPressPostReview = async () => { 
+        console.log("Post button pressed");
         await writeReviewData().then(()=> {
             awardToken();
             navigation.goBack();

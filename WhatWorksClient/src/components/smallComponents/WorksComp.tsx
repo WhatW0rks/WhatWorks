@@ -105,7 +105,7 @@ export default function WorksComp({navigation}) {
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     {reviewWorksData?.map((r) => {
                     return(
-                        <Pressable onPress={async () => {
+                        <Pressable key={r[3]} onPress={async () => {
                         setReview(r[3]);
                         navigation.navigate('PostScreen');
                         }}>
@@ -136,7 +136,7 @@ export default function WorksComp({navigation}) {
             </View>
             {reviewData?.map((r) => {
               return(
-                <Pressable onPress={async () => {
+                <Pressable key={r[3]} onPress={async () => {
                   setReview(r[3]);
                   navigation.navigate('PostScreen');
                 }}>
