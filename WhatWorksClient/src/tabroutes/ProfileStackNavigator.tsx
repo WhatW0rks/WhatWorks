@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import Profile from '../screens/Profile';
 import PostScreen from "../screens/PostScreen";
+import ProfileEditScreen from '../screens/ProfileEditScreen'
 
 
 const Stack = createStackNavigator();
@@ -14,7 +15,9 @@ export default function ProfileNavigator() {
         screenOptions={{
             gestureEnabled: false,
             animationEnabled: true
-        }}>  
+        }}
+        > 
+            {/* Profile Screen */} 
             <Stack.Screen
             name="ProfileScreen"
             component={Profile}
@@ -22,11 +25,22 @@ export default function ProfileNavigator() {
             />
 
             {/* Screen that handles posts/reviews */}
-          <Stack.Screen
-              name="PostScreen"
-              component={PostScreen}
-              options={{ title: "" }}
-          />
+            <Stack.Screen
+                name="PostScreen"
+                component={PostScreen}
+                options={{ title: "" }}
+            />
+
+            {/* Profile Edit Screen */}
+            <Stack.Screen
+                name="ProfileEditScreen"
+                component={ProfileEditScreen}
+                options={{ 
+                    title: "",
+                    presentation: "modal"
+                }}
+                
+            />
         </Stack.Navigator>
     );
   }

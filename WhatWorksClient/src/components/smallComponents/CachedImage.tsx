@@ -5,6 +5,7 @@ import * as Crypto from 'expo-crypto';
 import { Image } from '@rneui/themed';
 import ReviewContext from '../../reviewSelectorContext';
 
+
 interface Source { 
     uri: string
 }
@@ -173,7 +174,7 @@ export default function CachedImage(props: CachedProps, {navigation}) {
         <Image 
             source={source}
             containerStyle={props.containerStyle}
-            PlaceholderContent={<ActivityIndicator />}
+            PlaceholderContent={<ActivityIndicator style={{height: 100, width: 100}} />}
             style={props.style}
 
             onPress={() => {

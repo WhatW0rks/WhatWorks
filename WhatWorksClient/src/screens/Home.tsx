@@ -1,3 +1,4 @@
+import { color } from '@rneui/base';
 import * as React from 'react';
 import { Dimensions, Image, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -31,7 +32,7 @@ export default function LoadingScreen({navigation}) {
     });
 
     return(
-        <SafeAreaView style={styles.loadingContainer}>
+        <SafeAreaView style={styles.loadingContainer} edges={['left', 'right']}>
             <ScrollView
             style={{flex: 1,  position: "absolute", bottom: 0, height: 642,  width: "100%"
         }}

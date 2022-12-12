@@ -2,7 +2,6 @@ import { Avatar } from '@rneui/base';
 import * as React from 'react';
 import { useState } from 'react';
 import { Text, View, StyleSheet, Button, Pressable, Alert, TextInput } from 'react-native';
-import { createComment, getComments } from '../comments/api';
 
 interface CommentItemProps {
     comment : { 
@@ -21,9 +20,7 @@ const CommentItem = (props: CommentItemProps) => {
     const comment = props.comment
     const [ispressed, setIspressed] = useState(false);
     const [myComment, setMyComment] = useState(""); 
-    const [comments, setComments] = useState(getComments());
     const addComment = (value: string)=>{
-        setComments(prev => [...prev, createComment(value)])
         setMyComment("")
     }
 

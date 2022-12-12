@@ -16,6 +16,9 @@ const db = database;
 // Lottie Animations
 import Lottie from 'lottie-react-native';
 
+// UUID Unique Key
+import uuid from 'react-native-uuid';
+
 // UI
 import { Image } from '@rneui/themed';
 import CachedImage from './CachedImage';
@@ -33,7 +36,7 @@ export default function WorksComp({navigation}) {
     const Empty = () => {
       if (reviewData.length == 0) {
           return(
-              <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: 132}}>
+              <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: 60}}>
                   <Lottie style={{height: 200, width: 200}} source={require('../../assets/LottieAnimations/empty.json')} autoPlay loop></Lottie>
                   <Text style={{color: "#A9A9A9"}}>{"There is nothing here :^("}</Text>
               </View>
@@ -97,15 +100,11 @@ export default function WorksComp({navigation}) {
 
             {Empty()}
 
-            <View style={{display: "flex", alignItems: "center", width: "100%"}}>
-                <Text style={{fontWeight: "bold", fontSize: 20, marginTop: 10}}>My Reviews</Text>
-            </View>
-
             <View style={styles.reviewContainer}>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     {reviewWorksData?.map((r) => {
                     return(
-                        <Pressable key={r[3]} onPress={async () => {
+                        <Pressable key={`${uuid.v4()}`} onPress={async () => {
                         setReview(r[3]);
                         navigation.navigate('PostScreen');
                         }}>
@@ -118,7 +117,7 @@ export default function WorksComp({navigation}) {
                             alignItems: "center",
                             margin: 5
                             }}
-                            key={r[3]}
+                            key={`${uuid.v4()}`}
                             >
                             <CachedImage style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }} id={r[3]} navigation={navigation}></CachedImage>
                             <View style={{display: "flex", flexDirection:"column"}}>
@@ -131,12 +130,9 @@ export default function WorksComp({navigation}) {
                     })}
                 </ScrollView>
             </View>
-            <View style={{display: "flex", alignItems: "center", width: "100%"}}>
-                <Text style={{fontWeight: "bold", fontSize: 20, marginTop: 10}}>What Works for Me</Text>
-            </View>
             {reviewData?.map((r) => {
               return(
-                <Pressable key={r[3]} onPress={async () => {
+                <Pressable key={`${uuid.v4()}`} onPress={async () => {
                   setReview(r[3]);
                   navigation.navigate('PostScreen');
                 }}>
@@ -149,7 +145,7 @@ export default function WorksComp({navigation}) {
                     alignItems: "center",
                     margin: 5
                       }}
-                    key={r[3]}
+                    key={`${uuid.v4()}`}
                     >
                       <CachedImage style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }} id={r[3]} navigation={navigation}/>
                       <View style={{display: "flex", flexDirection:"column"}}>

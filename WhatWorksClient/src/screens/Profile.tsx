@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { initializeDisliked, initializeLiked, selectDisliked, selectLiked, selectUsername, switchUser } from '../userSlice';
-import TriedReview from '../components/smallComponents/TriedReview'; 
 import { useAppDispatch, useAppSelector } from '../hooks';
-// import { Avatar } from 'react-native-paper';
+
+// Expo Fonts
+import { useFonts } from 'expo-font';
+
 import { database } from '../firebase';
 import { onValue, ref } from "firebase/database";
 
@@ -43,7 +45,13 @@ export default function Profile({navigation}) {
     let liked = useAppSelector(selectLiked);
     let disliked = useAppSelector(selectDisliked);
 
-    let icon = ""
+    const animationRef = React.useRef<Lottie>(null)
+
+    // Fonts
+    const [fontsLoaded] = useFonts({
+        'Futura-Medium': require('../assets/fonts/futura_medium.ttf'),
+        'Futura-Bold': require('../assets/fonts/futura_bold.ttf'),
+    });
 
     const onPressSwitch = () => { 
         dispatch(switchUser());
@@ -83,6 +91,7 @@ export default function Profile({navigation}) {
       return (
         <SafeAreaView style={styles.loadingContainer}>
             <ScrollView contentContainerStyle={{flex: 1}}>
+
                 {/* Profile Header Container */}
                 <View style={styles.header}>
                     {username === 'bob123' ? 
@@ -110,6 +119,26 @@ export default function Profile({navigation}) {
                         </View>
 
                     </View>
+                    
+                    {/* Add info to profile */}
+                    <View>
+                        <TouchableOpacity onPress={() => {
+                            // Navigate to Profile Edit Screen
+                            animationRef?.current.play();
+                            navigation.navigate("ProfileEditScreen");
+                        }}>
+                            <Lottie style={{height: 50, width: 50}} source={require('../assets/LottieAnimations/setting.json')} loop={false} ref={animationRef}></Lottie>
+                        </TouchableOpacity>  
+                    </View>
+                </View>
+
+                <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 10, marginRight: 10}}>
+                    <Text style={{fontFamily: "Future-Medium", fontSize: 13}}>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+                        incididunt ut labore et dolore magna aliqua. 
+                        Ut enim ad minim veniam. Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+                        incididunt ut labore.  
+                    </Text>
                 </View>
 
                 {/* Tabs for different data */}
@@ -150,6 +179,7 @@ const styles = StyleSheet.create({
     title: { 
         fontSize: 30, 
         fontWeight: "800", 
+        fontFamily: "Futura-Bold"
     }, 
 
     profileInfoContainer: {
@@ -162,11 +192,13 @@ const styles = StyleSheet.create({
     },
     profileStat: {
         fontSize: 11,
-        fontWeight: "700"
+        fontWeight: "700",
+        fontFamily: "Futura-Medium"
     },
     Stat: {
         fontSize: 10,
-        paddingTop: 3
+        paddingTop: 3,
+        fontFamily: "Futura-Medium"
     },
 
 

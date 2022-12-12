@@ -29,6 +29,9 @@ import TagContext from '../tagSelectorContext';
 import { selectUsername } from '../userSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 
+// UUID Unique Key
+import uuid from 'react-native-uuid';
+
 //Firebase
 import { database } from '../firebase';
 import { child, get, onValue, ref, set } from "firebase/database";
@@ -280,7 +283,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     <View style={styles.statColumn}>
                         {statsData.map((v) => {
                             return(
-                            <View key={props.id + v[0]} style={styles.miniBlock}>
+                            <View key={`${uuid.v4()}1`} style={styles.miniBlock}>
                                 <View style={styles.statTextBox}>
                                     <Text style={styles.statsHeader}>{v[0]}</Text>
                                     <Text style={styles.statsInfo}>{v[1]}</Text>
@@ -311,12 +314,12 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         {tagsData?.map( (v) => {
                             if (v !== undefined) {
-                                return(<Chip textStyle={{color: "white"}} style={styles.chip} key={props.id + v} icon="information" onPress={() => {
+                                return(<Chip textStyle={{color: "white"}} style={styles.chip} key={`${uuid.v4()}`} icon="information" onPress={() => {
                                     setTag(v);
                                     props.navigation.navigate('MainScreen');
                                 }}>{v[0]?.toUpperCase() + v.slice(1).toLowerCase().replace('_',' ').replace('&','-')}</Chip>);
                             } else {
-                                return(<Chip style={styles.chip} key={props.id + v} icon="information" onPress={() => console.log('Pressed Loading')}>Loading Tags...</Chip>);
+                                return(<Chip style={styles.chip} key={`${uuid.v4()}`} icon="information" onPress={() => console.log('Pressed Loading')}>Loading Tags...</Chip>);
                             }
                         })}
                     </ScrollView>
@@ -433,7 +436,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     {/* Comment */}
                     {commentData?.map((v) => {
                         return(
-                            <View key={v['Dates']} style={styles.containerComment}> 
+                            <View key={`${uuid.v4()}`} style={styles.containerComment}> 
                                 <View style={styles.commentHeaderTop}>
                                     <Avatar size={24} rounded source={{uri: v['UserImageURL']}}/>
                                     <Text style={styles.profilenameTop}>{v['Username']}</Text>

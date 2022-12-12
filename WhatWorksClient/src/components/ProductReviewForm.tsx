@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, Text, Image, SafeAreaView, ScrollView, View, Pressable, TouchableOpacity, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
 import { TextInput, Button, Snackbar, List } from 'react-native-paper';
@@ -8,6 +9,9 @@ import { CategoryFoodTags, CategoryNonFoodTags, CategoryRestrauntTags, MasterTag
 
 // Lottie Animations
 import Lottie from 'lottie-react-native';
+
+// UI Icons
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Firebase 
 import { database } from '../firebase';
@@ -32,6 +36,9 @@ import ButtonToggleGroup from 'react-native-button-toggle-group';
 
 // Stats list
 import Statistics from '../StatisticsList'
+
+// UUID Unique Key
+import uuid from 'react-native-uuid';
 
 // Redux
 import { selectUsername } from '../userSlice';
@@ -258,13 +265,23 @@ export default function ProductReviewForm({ route, navigation }) {
         // });
 
 
-        const response = await fetch(imageList[0]);
+        let response = await fetch(imageList[0]);
+
+        // Manipulate image and save as png 
+        const decompress = await ImageManipulator.manipulateAsync(
+            response.url,
+            [],
+            { compress: 0, format: ImageManipulator.SaveFormat.JPEG }
+            );
+        
+
+        response = await fetch(decompress.uri);
+        
         const blob = await response.blob();
 
         const reviewRef = Fireref(fireStore, `${randomReviewID}`);
 
         uploadBytes(reviewRef, blob).then((snapshot) => {
-
             // Now we get the download URL to propogate into the imageURL for reviews
             getDownloadURL(Fireref(fireStore, `${randomReviewID}`))
             
@@ -385,11 +402,15 @@ export default function ProductReviewForm({ route, navigation }) {
             <View style={styles.imageContainer}>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollHorizontal}>
                     {imageList?.map((uri) => {
-                        return(<Image source={{ uri: `${uri}` }} style={styles.image}/>);
+                        return(
+                        <View>
+                            <Image key={`${uuid.v4()}`} source={{ uri: `${uri}` }} style={styles.image}/>
+                            <Ionicons style={styles.close} name="ios-close-circle" size={25} onPress={() => setImageList([])} />
+                        </View>);
                     })}
-                    <Button onPress={pickImage} style={styles.imageButton}>
+                     {imageList.length == 0 ? <Button onPress={pickImage} style={styles.imageButton}>
                         <Lottie style={{height: 120, width: 130, display: "flex", justifyContent: "center", alignItems:"center"}} ref={animationRef} source={require('../assets/LottieAnimations/camera.json')} loop={false}/>
-                    </Button>
+                    </Button> : null }
                 </ScrollView>
             </View>
 
@@ -450,7 +471,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex1}
                                     onSelect={index => setSelectedIndex1(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -469,7 +490,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex2}
                                     onSelect={index => setSelectedIndex2(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -487,7 +508,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex3}
                                     onSelect={index => setSelectedIndex3(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -505,7 +526,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex4}
                                     onSelect={index => setSelectedIndex4(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -523,7 +544,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex5}
                                     onSelect={index => setSelectedIndex5(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -541,7 +562,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex6}
                                     onSelect={index => setSelectedIndex6(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -559,7 +580,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex7}
                                     onSelect={index => setSelectedIndex7(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -577,7 +598,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex8}
                                     onSelect={index => setSelectedIndex8(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -595,7 +616,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                     selectedIndex={selectedIndex9}
                                     onSelect={index => setSelectedIndex9(index)}>
                                     {Statistics?.map((value) => {
-                                        return(<SelectItem title={`${value}`} />)
+                                        return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
                             </Layout>
@@ -733,6 +754,15 @@ const styles = StyleSheet.create({
         width: "46%",
         marginLeft: 10
       },
-   
+      
+      close: {
+        margin: 5,
+        position: "absolute",
+        top: -7,
+        left: 0,
+        width: 25,
+        height: 25,
+        color: "tomato"
+      }
   });
   
