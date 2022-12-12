@@ -382,7 +382,7 @@ export default function ProductReviewForm({ route, navigation }) {
                 value={title}
                 style={styles.titleInput}
                 activeUnderlineColor="white"
-                placeholder="Add a Title"
+                placeholder="What's the name of this product?"
                 maxLength={1000}
                 underlineColor="white"
                 dense={true}
@@ -395,7 +395,7 @@ export default function ProductReviewForm({ route, navigation }) {
                 activeUnderlineColor="white"
                 onChangeText={onChangeReview}
                 value={review}
-                placeholder="I loved this :^) / I dislike this :^( ..."
+                placeholder="Tell us about it!"
                 maxLength={1000}
                 underlineColor="white"
             />
@@ -418,11 +418,11 @@ export default function ProductReviewForm({ route, navigation }) {
             <View>
                 <ButtonToggleGroup
                     style={{marginTop: 5, marginLeft: 10, marginRight: 10}}
-                    highlightBackgroundColor={"blue"}
+                    highlightBackgroundColor={"#37aca4"}
                     highlightTextColor={"white"}
                     inactiveBackgroundColor={'transparent'}
                     inactiveTextColor={'grey'}
-                    values={['Works!', 'Didnt Work']}
+                    values={['Works!', "Didn't Work"]}
                     value={works}
                     onSelect={val => setWorks(`${val}`)}
                 />
@@ -450,7 +450,7 @@ export default function ProductReviewForm({ route, navigation }) {
                         
                         <ButtonToggleGroup
                             style={{marginTop: 5}}
-                            highlightBackgroundColor={"blue"}
+                            highlightBackgroundColor={"#37aca4"}
                             highlightTextColor={"white"}
                             inactiveBackgroundColor={'transparent'}
                             inactiveTextColor={'grey'}
@@ -647,7 +647,8 @@ export default function ProductReviewForm({ route, navigation }) {
                     <View style={styles.tagDropdownContainer}>
                         <View style={styles.tagDropdown}>
                             <DropDownPicker
-                            placeholder="Please Select 2 to 10 Tags"
+                            
+                            placeholder="Please select 2-10 tags!"
                             open={openTag}
                             value={valueTag}
                             items={itemsTag}
