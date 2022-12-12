@@ -179,7 +179,7 @@ export default function CommentsPage(props: CommentPageProps) {
                 <View style={styles.commentContainer}>
                     {commentData?.map((v) => {
                         return(
-                            <View style={styles.containerComment} key={v['Dates']}> 
+                            <View style={styles.containerComment} key={v['UserImageURL']}> 
                                 <View style={styles.commentHeader}>
                                     <Avatar size={24} rounded source={{uri: v['UserImageURL']}}/>
                                     <Text style={styles.profilename}>{v['Username']}</Text>

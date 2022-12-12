@@ -11,7 +11,14 @@ import { Chip } from 'react-native-paper';
 // Lottie Animations
 import Lottie from 'lottie-react-native';
 
-interface ProductProperties { 
+interface CommentObject { 
+    comment: string; 
+    user: string; 
+    time: string; 
+    userImageURL: string; 
+}
+
+export interface ProductProperties { 
     heading: string; 
     user: string;
     link: string | undefined;
@@ -19,7 +26,11 @@ interface ProductProperties {
     description: string; 
     navigation: any;
     statistics: string[][];
+    comments: CommentObject[] ; 
+    tags: string[]; 
 }
+
+const profilePicURIs = {'annaj1999':'https://styles.redditmedia.com/t5_2r5i1/styles/communityIcon_x4lqmqzu1hi81.jpg?width=256&s=fc15e67e2b431bbd2e93e980be3090306b78be55' , 'pastaluvr': 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg', 'bob123': 'https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg'}
 
 
 export default function UserProductReviewPage(props: ProductProperties) {
@@ -40,7 +51,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 {/* Title and User Info */}
                 <View style={styles.headerContainer}>
                     <View style={styles.profileContainer}>
-                        <Avatar size={30} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
+                        <Avatar size={30} rounded source={{uri: profilePicURIs[props.user]}}/>
                     </View>
                     <View style={styles.titleContainer}>
                         <Text style={styles.Title}>{props.heading}</Text>
@@ -53,11 +64,13 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 {/* Chips and Tagging */}
                 <View style={styles.chipContainer}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Home Cooked</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Popular</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Top 10</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Upvoted Most</Chip>
-                        <Chip style={styles.chip} icon="information" onPress={() => console.log('Pressed')}>Healthy</Chip>
+                        
+                        {props.tags.map((v) => {
+                        return(
+                            <Chip style={styles.chip} key={v} icon="information" onPress={() => console.log('Pressed')}>{v} </Chip>
+                            
+                        );
+                    }) }
                     </ScrollView>
                 </View>
 
@@ -88,23 +101,26 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 </View> */}
 
                 {/* Comment Container */}
-                <View style={styles.commentContainer}>
+                {props.comments.map((v) => {
+                        return(
+                            <View style={styles.commentContainer} key={v.comment}>
                     {/* Comment */}
-                    <View style={styles.commentHeader}>
-                        <Avatar size={24} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profilename}>{props.user}</Text>
-                        <Text style={{color: "gray"}}> 59 minutes </Text>
-                    </View>
-                    <View style={styles.commentDescription}>
-                        <Text>
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                            incididunt ut labore et dolore magna aliqua. 
-                            Ut enim ad minim veniam."   
-                        </Text>
-                    </View>
-                    
-                    <Text style={{color: "#808080", marginTop: 15}}>View 1000 Comments</Text>
-                </View>
+                                <View style={styles.commentHeader}>
+                                    <Avatar size={24} rounded source={{uri: v.userImageURL}}/>
+                                    <Text style={styles.profilename}>{v.user}</Text>
+                                    <Text style={{color: "gray"}}> {v.time} </Text>
+                                </View>
+                                <View style={styles.commentDescription}>
+                                    <Text>
+                                        {v.comment}
+                                    </Text>
+                                </View>
+                                
+                            </View>
+                        );
+                    }) }
+                <Text style={{color: "#808080", marginTop: 15, marginLeft:10}}>View comments</Text>
+
                 <View style={{marginBottom: 10, marginTop:10}}></View>
                 {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />
                 <Button title="Go back" onPress={() => props.navigation.goBack()} /> */}
