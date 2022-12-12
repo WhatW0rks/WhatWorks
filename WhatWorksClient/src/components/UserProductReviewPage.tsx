@@ -51,12 +51,33 @@ interface ProductProperties {
 }
 
 
+
+
 export default function UserProductReviewPage(props: ProductProperties) {
     const [statsData, setStatsData] = React.useState([
     ["Overall Rating", "5/10", "Sugar", "500mg"], 
     ["Calories", "180 cal", "Fat", "20mg"], 
     ["Carbs", "270g", "Protein", "30mg"]]);
     const [tagsData, setTagsData] = React.useState([""]);
+
+    // tags: 
+
+    function get_ascii(tag: string) { 
+        let asciiVal = 0; 
+        if (tag.length === 0) return asciiVal;
+        for (let i = 0; i < tag.length; i++) { 
+            asciiVal = asciiVal + tag.charCodeAt(i); 
+        }
+        return asciiVal; 
+    }
+
+    const tagColors = ["#e76f51", "#00b4d8", "#e9c46a", "#e76f51", "#8ac926", "#00b4d8", "#e9c46a"]; 
+
+    function getTagColor(tag: string) { 
+        tag = tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'); 
+        let index = Math.abs(get_ascii(tag)) % tagColors.length;
+        return tagColors[index];
+    }
 
     // Function Bar States
     const [OnTrying, setOnTrying] = React.useState(undefined);
@@ -314,7 +335,8 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         {tagsData?.map( (v) => {
                             if (v !== undefined) {
-                                return(<Chip textStyle={{color: "white"}} style={styles.chip} key={`${uuid.v4()}`} icon="information" onPress={() => {
+                                return(<Chip textStyle={{color: "white"}} style={{ marginRight: 2,
+                                    marginLeft: 2, backgroundColor: getTagColor(v) }} key={`${uuid.v4()}`} icon="information" onPress={() => {
                                     setTag(v);
                                     props.navigation.navigate('MainScreen');
                                 }}>{v[0]?.toUpperCase() + v.slice(1).toLowerCase().replace('_',' ').replace('&','-')}</Chip>);
