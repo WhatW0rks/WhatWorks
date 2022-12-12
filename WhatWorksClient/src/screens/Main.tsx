@@ -12,7 +12,7 @@ import { SearchBar } from '@rneui/themed';
 import CachedImage from '../components/smallComponents/CachedImage';
 // Firebase
 import { database } from '../firebase';
-import { onValue, ref, query, orderByChild, startAt, endAt, get, Query } from "firebase/database";
+import { onValue, ref, query, orderByChild, startAt, endAt, get, Query, orderByValue } from "firebase/database";
 
 // Firebase DB
 const db = database;
@@ -83,31 +83,66 @@ export default function Main({navigation}) {
   //   });
   // }
 
+  
+
   const newDBQuery = async (search: string) => {
 
     let parsedData = {}; 
     const tagPath = ref(db, 'TagReviews/');
-    for (let i = 0; i < 10; i++) {
+    let searchTerm = search.toLowerCase().replace(' ', '_').replace('-', '&');
+    console.log("1");
 
-      const dbTagQuery = query(tagPath, orderByChild(tagArrayReference[i]), startAt(search), endAt(`${search}` + "\uf7ff")); 
+    for (let i = 0; i < 10; i++) {
+      console.log("2");
+
+
+      const dbTagQuery = query(tagPath, orderByChild(tagArrayReference[i]), startAt(searchTerm), endAt(`${searchTerm}` + "\uf7ff")); 
       await get(dbTagQuery).then((snapshot) => {
+        console.log("3");
+
             if (snapshot.exists()) {
               const data = snapshot.val();
               
               for (let key in data) {
                 
                 if (!data.hasOwnProperty(key)) continue;
-                let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
-                parsedData[data[key].userReviewID] = temp;
-              }
-             
-             
+                if (parsedData[data[key].userReviewID] === undefined)  {
+                  parsedData[data[key].userReviewID] = [data[key].userReviewID, data[key].title, data[key].imageURL]; 
+                }   
+              }   
             }
             (error) => {
             console.error(error);
           }});
 
     }
+
+    const titlePath = ref(db, 'Index/');
+    const titleTagQuery = query(titlePath, orderByChild('title'), startAt(search), endAt(`${search}` + "\uf7ff")); 
+    console.log("4");
+
+    await get(titleTagQuery).then((snapshot) => {
+      console.log("5");
+
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        
+        for (let key in data) {
+          
+          if (!data.hasOwnProperty(key)) continue;
+          if (parsedData[data[key].userReviewID] === undefined) {
+            parsedData[data[key].userReviewID] = [data[key].userReviewID, data[key].title, data[key].imageURL];
+          }
+        }
+      }
+      (error) => {
+      console.error(error);
+    }});
+
+    console.log("6");
+
+
+
     setReviewData((a) => 
      {console.log(parsedData);
       return [...Object.values(parsedData)];
@@ -122,8 +157,6 @@ export default function Main({navigation}) {
     setQuery(prev => search);
     // setReviewData(prev => []);
 
-    let searchTerm = search.toLowerCase().replace(' ', '_').replace('-', '&');
-    console.log(searchTerm);
 
     
     
@@ -139,7 +172,7 @@ export default function Main({navigation}) {
       //   console.log("Querying db...");
       //   DBQuery(dbTagQuery);
       // })
-      newDBQuery(searchTerm);
+      newDBQuery(search);
     
     }
 
