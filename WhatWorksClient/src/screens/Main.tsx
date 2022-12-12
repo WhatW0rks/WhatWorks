@@ -83,34 +83,36 @@ export default function Main({navigation}) {
   //   });
   // }
 
-  const newDBQuery = (search: string) => { 
+  const newDBQuery = async (search: string) => {
 
     let parsedData = {}; 
     const tagPath = ref(db, 'TagReviews/');
     for (let i = 0; i < 10; i++) {
 
       const dbTagQuery = query(tagPath, orderByChild(tagArrayReference[i]), startAt(search), endAt(`${search}` + "\uf7ff")); 
-      get(dbTagQuery).then((snapshot) => {
+      await get(dbTagQuery).then((snapshot) => {
             if (snapshot.exists()) {
               const data = snapshot.val();
               
               for (let key in data) {
+                
                 if (!data.hasOwnProperty(key)) continue;
                 let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
                 parsedData[data[key].userReviewID] = temp;
               }
-              setReviewData(a => {
-                const newstate = Object.values(parsedData);
-                return newstate
-              });
+             
              
             }
-            
-          }).catch((error) => {
+            (error) => {
             console.error(error);
-          });
+          }});
 
     }
+    setReviewData((a) => 
+     {console.log(parsedData);
+      return [...Object.values(parsedData)];
+    })
+
     
     
   }
@@ -118,7 +120,7 @@ export default function Main({navigation}) {
   const updateQuery = (search: string) => {
     console.log("updateQuery");
     setQuery(prev => search);
-    setReviewData(prev => []);
+    // setReviewData(prev => []);
 
     let searchTerm = search.toLowerCase().replace(' ', '_').replace('-', '&');
     console.log(searchTerm);
@@ -181,6 +183,7 @@ export default function Main({navigation}) {
             </View>
     
             <View style={styles.exploreContainer}>
+             {( reviewData.length > 0) ?
               <FlatList data={reviewData}
                 style={styles.list} numColumns={3} 
                 keyExtractor={(e) => {
@@ -194,6 +197,13 @@ export default function Main({navigation}) {
                   />
               )}
               />
+              :
+               
+          
+            
+            <Text style={styles.emptysearch}>We couldn't find any posts matching your search. Try searching for something else!</Text>
+            }
+           
             </View>
       </SafeAreaView>
     );
@@ -241,6 +251,15 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
       marginBottom: 5
+    }, 
+    emptysearch: { 
+      marginLeft: 20, 
+      marginTop: 15, 
+      marginRight: 8,
+      fontSize: 15, 
+      lineHeight:25, 
+      color: 'gray',
+
     }
 });
 
