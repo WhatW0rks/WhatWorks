@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
+        marginBottom: 10,
         marginTop: 20
     },
     profileContainer: {
