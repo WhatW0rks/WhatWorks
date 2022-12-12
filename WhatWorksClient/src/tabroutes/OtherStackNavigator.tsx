@@ -16,7 +16,7 @@ export default function ProfileNavigator() {
             }}>
             <Stack.Screen
                 name="ProfileScreen"
-                component={Intro}
+                component={Other}
                 options={{ headerShown: false, title: "" }}
             />
         </Stack.Navigator>
