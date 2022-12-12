@@ -83,7 +83,7 @@ export default function Main({navigation}) {
   const newDBQuery = (search: string) => { 
     console.log("newDBQuery");
 
-    let parsedData = []; 
+    let parsedData = {}; 
     const tagPath = ref(db, 'TagReviews/');
     for (let i = 0; i < 10; i++) {
 
@@ -95,20 +95,21 @@ export default function Main({navigation}) {
               for (let key in data) {
                 if (!data.hasOwnProperty(key)) continue;
                 let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
-                parsedData.push(temp);
+                parsedData[data[key].userReviewID] = temp;
               }
+              setReviewData(a => {
+                const newstate = Object.values(parsedData);
+                return newstate
+              });
              
             }
-            setReviewData(a => {
-              const newstate = parsedData.slice(); 
-              return newstate
-            });
-            console.log("Review data in DBQuery: ", reviewData);
+            
           }).catch((error) => {
             console.error(error);
           });
 
     }
+    
     
   }
 
@@ -123,7 +124,7 @@ export default function Main({navigation}) {
     
     
 
-    if (search == "") {
+    if (/^\s*$/.test(search)) {
       fetchReviewData();
     } else {
       const tagPath = ref(db, 'TagReviews/');
