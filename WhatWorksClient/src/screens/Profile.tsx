@@ -145,7 +145,8 @@ export default function Profile({navigation}) {
                     <NavigationContainer independent={true}>
                         <Tab.Navigator 
                         screenOptions={{
-                            tabBarLabelStyle: {fontSize: 10, fontWeight: "700"}
+                            tabBarLabelStyle: {fontSize: 10, fontWeight: "700"},
+                            tabBarIndicatorStyle: {backgroundColor:"#37aca4"}
                         }}>
                             <Tab.Screen name="What Works" children={()=> <Works navigation={navigation}></Works>} />
                             <Tab.Screen name="Want to Try" children={()=> <Trying navigation={navigation}></Trying>}/>
