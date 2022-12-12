@@ -33,6 +33,8 @@ export default function LoadingScreen({navigation}) {
     return(
         <SafeAreaView style={styles.loadingContainer}>
             <ScrollView
+            style={{flex: 1,  position: "absolute", bottom: 0, height: 642,  width: "100%"
+        }}
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing}
@@ -85,6 +87,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "white"
+        backgroundColor: "white",
+                
     }
 });

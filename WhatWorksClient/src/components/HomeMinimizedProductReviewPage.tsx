@@ -173,7 +173,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
-        marginBottom: 10
+        marginBottom: 5, 
+        marginTop: 20
     },
     profileContainer: {
         display:"flex",
@@ -307,7 +308,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     }, 
     commentDescription: {
-        marginBottom: 10,
+        marginBottom: 0,
         marginLeft: 35
     },
     commentTime: {
