@@ -8,9 +8,6 @@ import React, { useEffect, useRef, useState } from 'react';
 // React Native Paper
 import { Chip, Button } from 'react-native-paper';
 
-// React UI Kitten
-import { Tooltip } from '@ui-kitten/components';
-
 // React Popover UI
 import Popover, { PopoverPlacement } from 'react-native-popover-view';
 

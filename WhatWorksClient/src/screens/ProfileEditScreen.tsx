@@ -23,7 +23,6 @@ import {Input} from '@ui-kitten/components';
 export default function LoadingScreen({navigation}) {
 
     return(
-
         <SafeAreaView style={styles.Container} edges={['left']}>
             <ScrollView style={{width: "100%"}}>
                 <View style={{display:"flex", alignItems: "center", borderBottomColor: "#d3d3d3", borderBottomWidth: 0.2}}>

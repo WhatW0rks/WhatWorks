@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, StatusBar} from 'react-native';
 
 // React Native UI Elements Import
 import { Avatar, withBadge } from '@rneui/themed';
@@ -45,87 +45,84 @@ export default function UserProductReviewPage(props: ProductProperties) {
     const src = {uri: props.imageLink}; 
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView>
-
-                {/* Title and User Info */}
-                <View style={styles.headerContainer}>
-                    <View style={styles.profileContainer}>
-                        <Avatar size={30} rounded source={{uri: profilePicURIs[props.user]}}/>
-                    </View>
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.Title}>{props.heading}</Text>
-                    </View>
+        <ScrollView >
+            {/* Title and User Info */}
+            <View style={styles.headerContainer}>
+                <View style={styles.profileContainer}>
+                    <Avatar size={30} rounded source={{uri: profilePicURIs[props.user]}}/>
                 </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.Title}>{props.heading}</Text>
+                </View>
+            </View>
 
-                {/* Image Container */}
-                <Image style={styles.image}source={src}/>
+            {/* Image Container */}
+            <Image style={styles.image}source={src}/>
 
-                {/* Chips and Tagging */}
-                <View style={styles.chipContainer}>
-                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {/* Chips and Tagging */}
+            <View style={styles.chipContainer}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    
+                    {props.tags.map((v) => {
+                    return(
+                        <Chip style={styles.chip} key={v} icon="information" onPress={() => console.log('Pressed')}>{v} </Chip>
                         
-                        {props.tags.map((v) => {
-                        return(
-                            <Chip style={styles.chip} key={v} icon="information" onPress={() => console.log('Pressed')}>{v} </Chip>
-                            
-                        );
-                    }) }
-                    </ScrollView>
-                </View>
+                    );
+                }) }
+                </ScrollView>
+            </View>
 
-                {/* Description */}
-                <View style={styles.descriptionContainer}>
+            {/* Description */}
+            <View style={styles.descriptionContainer}>
+            
                 
-                 
-                    <Text style={styles.description}>
-                        <Text style={styles.profileLink}>{`@${props.user}`} </Text>
-                        {props.description}
-                    </Text>
-                </View>
+                <Text style={styles.description}>
+                    <Text style={styles.profileLink}>{`@${props.user}`} </Text>
+                    {props.description}
+                </Text>
+            </View>
 
-                {/* Function Bar */}
-                {/* <View style={styles.functionContainer}>
-                    <Pressable onPress={() => {animationRef1.current?.play();}} style={styles.functionBtnContainer}>
-                        <Lottie style={{height: 35, width: 35}} ref={animationRef1} source={Share} loop={false}/>
-                        <Text style={styles.funcTitleShare}>Share</Text>
-                    </Pressable>
-                    <Pressable onPress={() => {animationRef2.current?.play();}} style={styles.functionBtnContainer}>
-                        <Lottie style={{height: 70, width: 70}} ref={animationRef2} source={Heart} loop={false}/>
-                        <Text style={styles.funcGeneric}>Favorite</Text>
-                    </Pressable>
-                    <Pressable onPress={() => {animationRef3.current?.play();}} style={styles.functionBtnContainer}>
-                        <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Like} loop={false}/>
-                        <Text style={styles.funcGeneric}>Like</Text>
-                    </Pressable>
-                </View> */}
+            {/* Function Bar */}
+            {/* <View style={styles.functionContainer}>
+                <Pressable onPress={() => {animationRef1.current?.play();}} style={styles.functionBtnContainer}>
+                    <Lottie style={{height: 35, width: 35}} ref={animationRef1} source={Share} loop={false}/>
+                    <Text style={styles.funcTitleShare}>Share</Text>
+                </Pressable>
+                <Pressable onPress={() => {animationRef2.current?.play();}} style={styles.functionBtnContainer}>
+                    <Lottie style={{height: 70, width: 70}} ref={animationRef2} source={Heart} loop={false}/>
+                    <Text style={styles.funcGeneric}>Favorite</Text>
+                </Pressable>
+                <Pressable onPress={() => {animationRef3.current?.play();}} style={styles.functionBtnContainer}>
+                    <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Like} loop={false}/>
+                    <Text style={styles.funcGeneric}>Like</Text>
+                </Pressable>
+            </View> */}
 
-                {/* Comment Container */}
-                {props.comments.map((v) => {
-                        return(
-                            <View style={styles.commentContainer} key={v.comment}>
-                    {/* Comment */}
-                                <View style={styles.commentHeader}>
-                                    <Avatar size={24} rounded source={{uri: v.userImageURL}}/>
-                                    <Text style={styles.profilename}>{v.user}</Text>
-                                    <Text style={{color: "gray"}}> {v.time} </Text>
-                                </View>
-                                <View style={styles.commentDescription}>
-                                    <Text>
-                                        {v.comment}
-                                    </Text>
-                                </View>
-                                
+            {/* Comment Container */}
+            {props.comments.map((v) => {
+                    return(
+                        <View style={styles.commentContainer} key={v.comment}>
+                {/* Comment */}
+                            <View style={styles.commentHeader}>
+                                <Avatar size={24} rounded source={{uri: v.userImageURL}}/>
+                                <Text style={styles.profilename}>{v.user}</Text>
+                                <Text style={{color: "gray"}}> {v.time} </Text>
                             </View>
-                        );
-                    }) }
-                <Text style={{color: "#808080", marginTop: 15, marginLeft:10}}>View comments</Text>
+                            <View style={styles.commentDescription}>
+                                <Text>
+                                    {v.comment}
+                                </Text>
+                            </View>
+                            
+                        </View>
+                    );
+                }) }
+            <Text style={{color: "#808080", marginTop: 15, marginLeft:10}}>View comments</Text>
 
-                <View style={{marginBottom: 10, marginTop:10}}></View>
-                {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />
-                <Button title="Go back" onPress={() => props.navigation.goBack()} /> */}
-            </ScrollView>
-        </SafeAreaView>
+            <View style={{marginBottom: 10, marginTop:10}}></View>
+            {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />
+            <Button title="Go back" onPress={() => props.navigation.goBack()} /> */}
+        </ScrollView>
     ); 
 }
 
@@ -173,11 +170,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
-<<<<<<< Updated upstream
-        marginBottom: 5, 
-=======
-        marginBottom: 10,
->>>>>>> Stashed changes
         marginTop: 20
     },
     profileContainer: {

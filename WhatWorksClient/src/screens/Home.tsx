@@ -1,6 +1,6 @@
 import { color } from '@rneui/base';
 import * as React from 'react';
-import { Dimensions, Image, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeMinimizedProductReviewPage, { ProductProperties } from '../components/HomeMinimizedProductReviewPage';
 
@@ -32,10 +32,8 @@ export default function LoadingScreen({navigation}) {
     });
 
     return(
-        <SafeAreaView style={styles.loadingContainer} edges={['left', 'right']}>
-            <ScrollView
-            style={{flex: 1,  position: "absolute", bottom: 0, height: 642,  width: "100%"
-        }}
+        <SafeAreaView style={styles.Container} edges={['left', 'right']}>
+            <ScrollView style={{flex: 1,  width: "100%"}}
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing}
@@ -84,7 +82,7 @@ export default function LoadingScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({ 
-    loadingContainer: {
+    Container: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",

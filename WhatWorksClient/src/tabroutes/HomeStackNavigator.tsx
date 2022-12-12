@@ -30,7 +30,7 @@ export default function HomeNavigator() {
                 headerShown: true, 
                 title: "",
                 headerStyle: {
-                    height: 90,
+                    height: 90
                 },
                 headerRight: () => (
                     <NavBarTop navigation={undefined}/>
