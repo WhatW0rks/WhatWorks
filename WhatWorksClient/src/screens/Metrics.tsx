@@ -17,8 +17,9 @@ const db = database;
 import { Image } from '@rneui/themed';
 
 // Victory Charts
-import { VictoryAxis, VictoryBar, VictoryBrushContainer, VictoryChart, VictoryLine, VictoryScatter, VictoryTheme, VictoryZoomContainer } from "victory-native";
+import { VictoryArea, VictoryAxis, VictoryBar, VictoryBrushContainer, VictoryChart, VictoryLine, VictoryScatter, VictoryTheme, VictoryZoomContainer } from "victory-native";
 import { Button, Card, Paragraph, Title } from 'react-native-paper';
+import { useState } from 'react';
 
 const data = [
   { quarter: 1, earnings: 13000 },
@@ -30,6 +31,9 @@ const data = [
 function range(size:number, startAt:number = 0):ReadonlyArray<number> {
   return [...Array(size).keys()].map(i => i + startAt);
 }
+
+   // fetch plot data on init
+   
 
 const getScatterData = () => {
   const colors =[
@@ -57,6 +61,43 @@ export default function OtherScreen({navigation}) {
     const [reviewData, setReviewData] = React.useState([]);
     const [scatter, setScatter] = React.useState(getScatterData);
 
+    const [plotData, setPlotData] = useState<{ x: string, y: number }[]>([])
+   React.useEffect(() => {
+
+       const getData = async () => {
+
+           try {
+               const trendDataRef = ref(db, 'UserTracking/' + "JoeDoe" + '/' + 'check/');
+               onValue(trendDataRef, (snapshot) => {
+                   if (snapshot.exists()) {
+                       const data = snapshot.val();
+
+                       const sanatizedData = data.filter((item) => {
+                           if (item) {
+                               const noOfTriggers = item.noOfTriggers
+                               const time = item.time
+
+                               return noOfTriggers && time // undefined && '22 nd May' -> false && ' ' 
+                           }
+
+                           return false
+
+                       }).map((item) => ({ x: item.time, y: Number(item.noOfTriggers) }))
+                       setPlotData(sanatizedData)
+                   }
+
+               })
+
+           } catch (err) {
+               console.error(err)
+           }
+
+       }
+
+       getData()
+
+   }, [])
+
     let username = useAppSelector(selectUsername); 
 
     let element
@@ -71,8 +112,14 @@ export default function OtherScreen({navigation}) {
       };
     }, [username]);
 
+
+
+    
+    
+
     return(
         <SafeAreaView style={styles.metricsContainer}>
+          
           <ScrollView>
             <View>
 
@@ -84,22 +131,24 @@ export default function OtherScreen({navigation}) {
                 />
                 }
               >
-                <VictoryLine
+                   <VictoryArea
+                  interpolation="natural"
                   style={{
-                    data: { stroke: "tomato" }
+                    data: {fill: "#37aca4", stroke: "tomato" }
                   }}
-                  data={[
-                    { a: new Date(1982, 1, 1), b: 125 },
-                    { a: new Date(1987, 1, 1), b: 257 },
-                    { a: new Date(1993, 1, 1), b: 345 },
-                    { a: new Date(1997, 1, 1), b: 515 },
-                    { a: new Date(2001, 1, 1), b: 132 },
-                    { a: new Date(2005, 1, 1), b: 305 },
-                    { a: new Date(2011, 1, 1), b: 270 },
-                    { a: new Date(2015, 1, 1), b: 470 }
-                  ]}
+                  // data={[
+                  //   { a: new Date(1982, 1, 1), b: 125 },
+                  //   { a: new Date(1987, 1, 1), b: 257 },
+                  //   { a: new Date(1993, 1, 1), b: 345 },
+                  //   { a: new Date(1997, 1, 1), b: 515 },
+                  //   { a: new Date(2001, 1, 1), b: 132 },
+                  //   { a: new Date(2005, 1, 1), b: 305 },
+                  //   { a: new Date(2011, 1, 1), b: 270 },
+                  //   { a: new Date(2015, 1, 1), b: 470 }
+                  // ]}
                   x="a"
                   y="b"
+                  labels={({ data, index }) => index == data.length - 1 ? index : index}
                 />
 
               </VictoryChart>

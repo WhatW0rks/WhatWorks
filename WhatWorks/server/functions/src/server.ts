@@ -79,6 +79,14 @@ app.post('/hello', (req, res) => {
   res.end("Received POST request!");  
 });
 
+
+app.post('/updateFlares', (req, res) => {
+  const type = '' + req.query.type;
+  // incr / decr
+
+  res.end("Received POST request!");  
+});
+
 // Expose Express API as a single Cloud Function:
 exports.widgets = functions.https.onRequest(app);
 
