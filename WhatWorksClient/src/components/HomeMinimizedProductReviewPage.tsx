@@ -173,7 +173,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         paddingBottom: 5,
+<<<<<<< Updated upstream
         marginBottom: 5, 
+=======
+        marginBottom: 10,
+>>>>>>> Stashed changes
         marginTop: 20
     },
     profileContainer: {
