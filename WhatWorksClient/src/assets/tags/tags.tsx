@@ -63,7 +63,7 @@ export const MasterTagList =
 [
     {label: 'Non-Fat', value: 'non&fat'},
     {label: 'For Kids', value: 'for_kids'},
-    {label: 'Family Friendly', value: 'family_friendly '},
+    {label: 'Family Friendly', value: 'family_friendly'},
     {label: 'Low Fat', value: 'low_fat'},
     {label: 'Citrus Feed', value: 'citrus_feed'},
     {label: 'Non-Acidic', value: 'non&acidic'},

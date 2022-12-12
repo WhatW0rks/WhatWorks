@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { InteractionManager, ActivityIndicator } from 'react-native';
+import { InteractionManager, ActivityIndicator, View } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Crypto from 'expo-crypto';
 import { Image } from '@rneui/themed';
@@ -120,13 +120,6 @@ export default function CachedImage(props: CachedProps, {navigation}) {
         }
       }
 
-
-
-
-
-
-
-
     useEffect(() => {
         // when component has been mounted, try to download the image/retrieve cached image based on the url in props
         interaction = InteractionManager.runAfterInteractions(async () => {
@@ -156,7 +149,6 @@ export default function CachedImage(props: CachedProps, {navigation}) {
 
 
       useEffect(() => {
-        // componentWillUnmount: do cleanup
 
         async function cleanup() { 
             interaction && interaction.cancel();
@@ -176,12 +168,12 @@ export default function CachedImage(props: CachedProps, {navigation}) {
             containerStyle={props.containerStyle}
             PlaceholderContent={<ActivityIndicator style={{height: 100, width: 100}} />}
             style={props.style}
+            
 
             onPress={() => {
                 console.log(imgUri);
                 setReview(props.id);
                 props.navigation.navigate('PostScreen');
-                console.log("hello");
             }}
        />
       );

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { StyleSheet, SafeAreaView, Text, View, FlatList, ActivityIndicator} from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, FlatList, ActivityIndicator, ScrollView} from 'react-native';
 
-// React Screen Components
-import LoadingScreen from './LoadingScreen';
+// UUID Unique Key
+import uuid from 'react-native-uuid';
 
 // UI Component
 import { Image } from '@rneui/themed';
@@ -20,12 +20,15 @@ const db = database;
 // React Contexts
 import ReviewContext from '../reviewSelectorContext';
 import TagContext from '../tagSelectorContext';
+import { Chip } from 'react-native-paper';
 
 export default function Main({navigation}) {
   const [reviewData, setReviewData] = React.useState([]);
   const [querys, setQuery] = React.useState("");
   const {setReview, review} = React.useContext(ReviewContext);
   const {setTag, tag} = React.useContext(TagContext);
+  const [tagsData, setTagsData] = React.useState(["non&fat",
+  'for_kids', 'family_friendly', 'low_fat', "citrus_feed"]);
   
   const tagArrayReference = [
     "tag1","tag2","tag3","tag4","tag5",
@@ -81,7 +84,6 @@ export default function Main({navigation}) {
   // }
 
   const newDBQuery = (search: string) => { 
-    console.log("newDBQuery");
 
     let parsedData = {}; 
     const tagPath = ref(db, 'TagReviews/');
@@ -157,7 +159,6 @@ export default function Main({navigation}) {
     return (
       <SafeAreaView style={styles.mainContainer}>
             <View style={styles.buttonContainer}>
-
               <SearchBar
                 platform='ios'
                 placeholder='Search'
@@ -167,6 +168,17 @@ export default function Main({navigation}) {
                 inputContainerStyle={styles.searchBarInput}
               />
             </View>
+
+            {/* Chip Row */}
+            <View style={styles.chipContainer}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    {tagsData?.map( (v) => {
+                      return(<Chip style={styles.chip} key={`${uuid.v4()}`} onPress={() => {
+                        setTag(v)
+                      }}>{v[0]?.toUpperCase() + v.slice(1).toLowerCase().replace('_',' ').replace('&','-')}</Chip>);
+                    })}
+                </ScrollView>
+            </View>
     
             <View style={styles.exploreContainer}>
               <FlatList data={reviewData}
@@ -174,23 +186,13 @@ export default function Main({navigation}) {
                 keyExtractor={(e) => {
                   return e[0]}}
                 renderItem={({ item }) => (
-
-                  // <Image 
-                  //   source={{ uri: `${item[2]}` }}
-                  //   containerStyle={styles.item}
-                  //   PlaceholderContent={<ActivityIndicator />}
-                  //   onPress={() => {
-                  //     setReview(item[0]);
-                  //     navigation.navigate('PostScreen');
-                  //   }}
-                  // />
                   <CachedImage
                     source={{ uri: `${item[2]}` }}
                     containerStyle={styles.item}
                     id={item[0]}
                     navigation={navigation}
                   />
-                )}
+              )}
               />
             </View>
       </SafeAreaView>
@@ -199,10 +201,21 @@ export default function Main({navigation}) {
 
 const styles = StyleSheet.create({
     mainContainer: {
-      // display: "flex",
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
+      backgroundColor: "white"
+    },
+    chipContainer: {
+      display: "flex",
+      flexDirection: "row",
+      marginLeft: 5,
+      marginBottom: 10,
+      height: 30
+    },
+    chip: {
+      marginRight: 2,
+      marginLeft: 2
     },
     searchBarContainer: {
       width: 350,
@@ -224,12 +237,10 @@ const styles = StyleSheet.create({
     item: {
       aspectRatio: 1,
       width: '100%',
-      flex: 1,
-      // borderColor: 'red', 
-      // borderWidth: 1
+      flex: 1
     },
     buttonContainer: {
-      marginBottom: 20
+      marginBottom: 5
     }
 });
 
