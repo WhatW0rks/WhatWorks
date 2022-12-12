@@ -1,3 +1,3 @@
 # WhatWorks
-https://imgur.com/a/WgNnIpX
+![alt text](https://imgur.com/a/WgNnIpX)
 WhatWorks Application
