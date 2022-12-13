@@ -27,7 +27,7 @@ import { child, get, onValue, ref, set } from "firebase/database";
 import { ImageInfo } from 'expo-image-picker';
 
 // Redux
-import { selectUsername } from '../userSlice';
+import { selectUsername, switchPhoto } from '../userSlice';
 import { useAppSelector } from '../hooks';
 
 // Firebase Storage
@@ -140,6 +140,8 @@ export default function ProfileEditScreen({navigation}) {
                         yoe: `${YOE}`,
                         profilePhoto: `${url}`
                     });
+                    switchPhoto(url); 
+
                 });
             });
 

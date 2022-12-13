@@ -6,6 +6,7 @@ import { useState } from 'react';
 import CommentPreview from './CommentPreview';
 import CommentItem from './CommentItem';
 
+
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import { Button, TextInput } from 'react-native-paper';
 
@@ -16,7 +17,8 @@ import { selectUsername } from '../userSlice';
 import { useAppSelector } from '../hooks';
 import ReviewContext from '../reviewSelectorContext';
 import { Avatar } from '@rneui/themed';
-
+// redux
+import { selectPhoto } from '../userSlice';
 const db = database;
 
 function randomIntFromInterval(min, max) { // min and max included 
@@ -60,7 +62,10 @@ export default function CommentsPage(props: CommentPageProps) {
     const [commentData, setCommentData] = useState([]);
 
     let username = useAppSelector(selectUsername); 
+    let photo = useAppSelector(selectPhoto); 
     const {setReview, review} = React.useContext(ReviewContext);
+ 
+    console.log("Commentspage + ", review); 
 
     let h = 45; 
     const FetchCommentData = async () => {
@@ -157,7 +162,7 @@ export default function CommentsPage(props: CommentPageProps) {
             set(ref(db, 'ReviewCommentData/' + review + '/' + randomCommentID), {
                             Comments: `${myComment}`,
                             Username: `${username}`,
-                            UserImageURL: "https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg",
+                            UserImageURL: photo,
                             Dates: `${new Date()}`
             });
             setMyComment("");

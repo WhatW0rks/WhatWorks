@@ -110,12 +110,28 @@ export default function LoadingScreen({navigation}) {
                             tempTags[i] = tempTags[i].charAt(0).toUpperCase() + tempTags[i].slice(1).toLowerCase().replace('_',' ').replace('&','-')
                         }
 
-                        let temp = [data.title, data.review, data.username, tempTags, data.imageURL];
+                        let comments = [] ; 
+
+
+
+                        get(child(ref(db), `ReviewCommentData/${randomIDs[idIndex]}`)).then((snapshot) => {
+                            if (snapshot.exists()) {
+                                let data = snapshot.val(); 
+                                for (let item in data) {
+                                    comments.push({comment: data[item].Comments, user: data[item].Username, time: data[item].Dates, userImageURL: data[item].UserImageURL})      
+                                }
+
+                            }})
+
+
+                        let temp = [data.title, data.review, data.username, tempTags, data.imageURL, comments, randomIDs[idIndex]];
+                        console.log("Temp: " + temp)
 
                         console.log("THE TAGS: ", tempTags)
                         
 
-                        masterData.push(temp);                
+                        masterData.push(temp); 
+                                       
                     } else {
                         console.log("Review doesn't exist!")
                     }
@@ -123,13 +139,15 @@ export default function LoadingScreen({navigation}) {
                         masterData[1] !== undefined &&
                         masterData[2] !== undefined &&
                         masterData[3] !== undefined &&
-                        masterData[4] !== undefined) {
+                        masterData[4] !== undefined && 
+                        masterData[5] !== undefined) {
                             setMasterData(masterData)
                     }
 
                     // setTimeout( () => {
                     //     setMasterData(masterData);
                     // }, 1000)
+                    
                 })
             }
 
@@ -177,8 +195,9 @@ export default function LoadingScreen({navigation}) {
                 link={undefined}
                 navigation={navigation}
                 statistics={[[]]}
-                comments={comments1}
+                comments={Array.isArray(masterData[0][5]) ? masterData[0][5] : []}
                 tags={masterData[0][3]}
+                id={masterData[0][6]}
                 />
 
                 <HomeMinimizedProductReviewPage
@@ -189,8 +208,9 @@ export default function LoadingScreen({navigation}) {
                 link={undefined}
                 navigation={navigation}
                 statistics={[[]]}
-                comments={comments2}
+                comments={Array.isArray(masterData[1][5]) ? masterData[1][5] : []}
                 tags={masterData[1][3]}
+                id = {masterData[1][6]}
                 />
 
                 <HomeMinimizedProductReviewPage
@@ -201,8 +221,9 @@ export default function LoadingScreen({navigation}) {
                 link={undefined}
                 navigation={navigation}
                 statistics={[[]]}
-                comments={comments3}
+                comments={Array.isArray(masterData[2][5]) ? masterData[2][5] : []}
                 tags={masterData[2][3]}
+                id = {masterData[2][6]}
                 />
 
                 <HomeMinimizedProductReviewPage
@@ -213,8 +234,9 @@ export default function LoadingScreen({navigation}) {
                 link={undefined}
                 navigation={navigation}
                 statistics={[[]]}
-                comments={comments3}
+                comments={Array.isArray(masterData[3][5]) ? masterData[3][5] : []}
                 tags={masterData[3][3]}
+                id = {masterData[3][6]}
                 />
 
                 <HomeMinimizedProductReviewPage
@@ -225,8 +247,9 @@ export default function LoadingScreen({navigation}) {
                 link={undefined}
                 navigation={navigation}
                 statistics={[[]]}
-                comments={comments3}
+                comments={Array.isArray(masterData[4][5]) ? masterData[4][5] : []}
                 tags={masterData[4][3]}
+                id ={masterData[4][6]}
                 />
             </ScrollView>
         </SafeAreaView>

@@ -14,13 +14,16 @@ export interface UserState {
   status: 'idle' | 'loading' | 'failed';
   liked: {[key: number]: Review};
   disliked: {[key: number]: Review};
+  profilePhoto: string; 
+
 }
 
 const initialState: UserState = {
   username: 'ahsieh22',
   status: 'idle',
   liked: {}, 
-  disliked: {}
+  disliked: {}, 
+  profilePhoto: 'https://firebasestorage.googleapis.com/v0/b/whatworks-ac068.appspot.com/o/ahsieh22?alt=media&token=56e228c8-1eec-443f-88eb-1c3de3d38475'
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -55,6 +58,9 @@ export const userSlice = createSlice({
       state.username === 'ahsieh22' ? state.username = 'kathy123' : state.username= 'ahsieh22'; 
       state.liked = [];
       state.disliked = [];
+    }, 
+    switchPhoto(state, action) { 
+      state.profilePhoto = action.payload; 
     }
 
     
@@ -77,7 +83,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { initializeLiked, initializeDisliked, switchUser } = userSlice.actions;
+export const { initializeLiked, initializeDisliked, switchUser, switchPhoto } = userSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
@@ -85,7 +91,7 @@ export const { initializeLiked, initializeDisliked, switchUser } = userSlice.act
 export const selectUsername = (state: RootState) => state.user.username;
 export const selectLiked = (state: RootState) => state.user.liked;
 export const selectDisliked = (state: RootState) => state.user.disliked;
-
+export const selectPhoto = (state: RootState) => state.user.profilePhoto; 
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.

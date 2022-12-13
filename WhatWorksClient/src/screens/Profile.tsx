@@ -29,6 +29,9 @@ import Lottie from 'lottie-react-native';
 // Firebase DB
 const db = database;
 
+// redux
+import { switchPhoto } from '../userSlice';
+
 // React Navigation Tabs Creator
 const Tab = createMaterialTopTabNavigator();  
 
@@ -54,6 +57,8 @@ export default function Profile({navigation}) {
                     setprofileCondition(data.condition);
                     setprofileYOE(data.yoe);
                     setprofileAvatar(data.profilePhoto);
+                    switchPhoto(data.profilePhoto); 
+
                 }
             });
       

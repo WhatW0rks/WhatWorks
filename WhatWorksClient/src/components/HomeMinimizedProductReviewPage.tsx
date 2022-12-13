@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, ScrollView, StatusBar} from 'react-native';
-
+import { StyleSheet, Text, View, ScrollView, StatusBar, Pressable} from 'react-native';
+import ReviewContext from '../reviewSelectorContext'
+import { dateFromNow } from './CommentsPage';
 // React Native UI Elements Import
 import { Avatar, withBadge } from '@rneui/themed';
 import { Image } from '@rneui/themed';
 import React, { useEffect, useRef } from 'react';
-
+import uuid from 'react-native-uuid';
 // React Native Paper
 import { Chip } from 'react-native-paper';
 
@@ -26,14 +27,20 @@ export interface ProductProperties {
     description: any; 
     navigation: any;
     statistics: string[][];
-    comments: CommentObject[] ; 
+    comments?;
     tags: any; 
+    id: any;
 }
 
 const profilePicURIs = {'annaj1999':'https://styles.redditmedia.com/t5_2r5i1/styles/communityIcon_x4lqmqzu1hi81.jpg?width=256&s=fc15e67e2b431bbd2e93e980be3090306b78be55' , 'pastaluvr': 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg', 'bob123': 'https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg'}
 
 
 export default function UserProductReviewPage(props: ProductProperties) {
+    const {setReview, review} = React.useContext(ReviewContext);
+    console.log(props.id)
+
+    React.useEffect(() => {console.log("lol")}, [review])
+
     const animationRef1 = useRef<Lottie>(null);
     const animationRef2 = useRef<Lottie>(null);
     const animationRef3 = useRef<Lottie>(null);
@@ -58,9 +65,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
         }
 
 
-    useEffect( () => {
-        
-    }, []);
+  
 
     const src = {uri: props.imageLink}; 
 
@@ -85,7 +90,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     
                     {props.tags.map((v) => {
                     return(
-                        <Chip style={{...styles.chip, backgroundColor: getTagColor(v)}} key={v} icon="information" onPress={() => console.log('Pressed')}>{v} </Chip>
+                        <Chip style={{...styles.chip, backgroundColor: getTagColor(v)}} key={`${uuid.v4()}`} icon="information" onPress={() => console.log('Pressed')}>{v} </Chip>
                         
                     );
                 }) }
@@ -103,14 +108,15 @@ export default function UserProductReviewPage(props: ProductProperties) {
             </View>
 
             {/* Comment Container */}
-            {props.comments.map((v) => {
+            {(props.comments.length > 0) && props.comments.map((v) => {
                     return(
-                        <View style={styles.commentContainer} key={v.comment}>
+                        <View style={styles.commentContainer}                     key={`${uuid.v4()}`}
+                        >
                 {/* Comment */}
                             <View style={styles.commentHeader}>
                                 <Avatar size={24} rounded source={{uri: v.userImageURL}}/>
                                 <Text style={styles.profilename}>{v.user}</Text>
-                                <Text style={{color: "gray"}}> {v.time} </Text>
+                                <Text style={{color: "gray"}}> {dateFromNow(v.time)} </Text>
                             </View>
                             <View style={styles.commentDescription}>
                                 <Text>
@@ -121,7 +127,14 @@ export default function UserProductReviewPage(props: ProductProperties) {
                         </View>
                     );
                 }) }
-            <Text style={{color: "#808080", marginTop: 15, marginLeft:10}}>View comments</Text>
+            {/* <Text style={{color: "#808080", marginTop: 15, marginLeft:10}}>View comments</Text> */}
+            <Pressable onPress={() => {
+                setReview(props.id)
+                console.log("Review context " + review);
+                props.navigation.navigate('CommentsPage')}
+                }>
+                        <Text style={{color: "#808080", marginTop: 5, marginLeft: 10}}>View Comments</Text>
+            </Pressable>
 
             <View style={{marginBottom: 10, marginTop:10}}></View>
             {/* <Button title="Go to Home" onPress={() => props.navigation.navigate('MainScreen')} />

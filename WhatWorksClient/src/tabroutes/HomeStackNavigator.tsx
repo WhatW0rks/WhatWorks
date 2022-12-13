@@ -13,6 +13,7 @@ import NavBarTop from '../components/smallComponents/NavBarTop'
 
 import { Button, Image, View } from "react-native";
 import IntroContext from "../IntroState";
+import CommentsPage from "../components/CommentsPage";
 
 
 const Stack = createStackNavigator();
@@ -62,6 +63,16 @@ export default function HomeNavigator() {
                 options={{ headerShown: true, title: "" }}
             />
 
+            {/* Comments Page */}
+          <Stack.Screen
+              name="CommentsPage"
+              component={CommentsPage}
+              options={{ title: "Comments Page" }}
+          />
+
+
+
+
             {/* Home */}
             <Stack.Screen
             name="HomeScreen"
@@ -106,5 +117,7 @@ export default function HomeNavigator() {
              }}
           />
         </Stack.Navigator>
+
+        
     );
   }
