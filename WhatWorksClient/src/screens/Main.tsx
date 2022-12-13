@@ -83,15 +83,10 @@ export default function Main({navigation}) {
     let parsedData = {}; 
     const tagPath = ref(db, 'TagReviews/');
     let searchTerm = search.toLowerCase().replace(' ', '_').replace('-', '&');
-    console.log("1");
 
     for (let i = 0; i < 10; i++) {
-      console.log("2");
-
-
       const dbTagQuery = query(tagPath, orderByChild(tagArrayReference[i]), startAt(searchTerm), endAt(`${searchTerm}` + "\uf7ff")); 
       await get(dbTagQuery).then((snapshot) => {
-        console.log("3");
 
             if (snapshot.exists()) {
               const data = snapshot.val();

@@ -59,11 +59,8 @@ export default function UserProductReviewPage(props: ProductProperties) {
         }
         return false; 
     }
-   
-
+    
     const [tagsData, setTagsData] = React.useState([""]);
-
-    // tags: 
 
     function get_ascii(tag: string) { 
         let asciiVal = 0; 

@@ -19,15 +19,15 @@ interface CommentObject {
 }
 
 export interface ProductProperties { 
-    heading: string; 
-    user: string;
+    heading: any; 
+    user: any;
     link: string | undefined;
-    imageLink: string; 
-    description: string; 
+    imageLink: any; 
+    description: any; 
     navigation: any;
     statistics: string[][];
     comments: CommentObject[] ; 
-    tags: string[]; 
+    tags: any; 
 }
 
 const profilePicURIs = {'annaj1999':'https://styles.redditmedia.com/t5_2r5i1/styles/communityIcon_x4lqmqzu1hi81.jpg?width=256&s=fc15e67e2b431bbd2e93e980be3090306b78be55' , 'pastaluvr': 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg', 'bob123': 'https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg'}
@@ -101,22 +101,6 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     {props.description}
                 </Text>
             </View>
-
-            {/* Function Bar */}
-            {/* <View style={styles.functionContainer}>
-                <Pressable onPress={() => {animationRef1.current?.play();}} style={styles.functionBtnContainer}>
-                    <Lottie style={{height: 35, width: 35}} ref={animationRef1} source={Share} loop={false}/>
-                    <Text style={styles.funcTitleShare}>Share</Text>
-                </Pressable>
-                <Pressable onPress={() => {animationRef2.current?.play();}} style={styles.functionBtnContainer}>
-                    <Lottie style={{height: 70, width: 70}} ref={animationRef2} source={Heart} loop={false}/>
-                    <Text style={styles.funcGeneric}>Favorite</Text>
-                </Pressable>
-                <Pressable onPress={() => {animationRef3.current?.play();}} style={styles.functionBtnContainer}>
-                    <Lottie style={{height: 70, width: 70}} ref={animationRef3} source={Like} loop={false}/>
-                    <Text style={styles.funcGeneric}>Like</Text>
-                </Pressable>
-            </View> */}
 
             {/* Comment Container */}
             {props.comments.map((v) => {
