@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Profile Picker
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 // React Native Paper
 import { Button, Snackbar } from 'react-native-paper';
@@ -119,6 +120,13 @@ export default function ProfileEditScreen({navigation}) {
         // Check if a new image has been uploaded?
         if (selectedImageBool) {
             let response = await fetch(profilePhoto);
+
+            // Manipulate image and save as jpeg for compression
+            const decompress = await ImageManipulator.manipulateAsync(
+            response.url,[],{ compress: 0, format: ImageManipulator.SaveFormat.JPEG });
+            
+            response = await fetch(decompress.uri);
+
             const blob = await response.blob();
 
             const reviewRef = Fireref(fireStore, `${username}`);
