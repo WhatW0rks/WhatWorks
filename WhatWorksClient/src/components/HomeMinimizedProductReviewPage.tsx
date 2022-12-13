@@ -38,6 +38,26 @@ export default function UserProductReviewPage(props: ProductProperties) {
     const animationRef2 = useRef<Lottie>(null);
     const animationRef3 = useRef<Lottie>(null);
 
+      // tags: 
+
+      function get_ascii(tag: string) { 
+        let asciiVal = 0; 
+        if (tag.length === 0) return asciiVal;
+        for (let i = 0; i < tag.length; i++) { 
+            asciiVal = asciiVal + tag.charCodeAt(i); 
+        }
+        return asciiVal; 
+        }
+
+    const tagColors = ["#e76f51", "#00b4d8", "#e9c46a", "#e76f51", "#8ac926", "#00b4d8", "#e9c46a"]; 
+
+    function getTagColor(tag: string) { 
+        tag = tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'); 
+        let index = Math.abs(get_ascii(tag)) % tagColors.length;
+        return tagColors[index];
+        }
+
+
     useEffect( () => {
         
     }, []);
@@ -65,7 +85,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                     
                     {props.tags.map((v) => {
                     return(
-                        <Chip style={styles.chip} key={v} icon="information" onPress={() => console.log('Pressed')}>{v} </Chip>
+                        <Chip style={{...styles.chip, backgroundColor: getTagColor(v)}} key={v} icon="information" onPress={() => console.log('Pressed')}>{v} </Chip>
                         
                     );
                 }) }

@@ -5,7 +5,6 @@ import { StyleSheet, SafeAreaView, Text, View, FlatList, ActivityIndicator, Scro
 import uuid from 'react-native-uuid';
 
 // UI Component
-import { Image } from '@rneui/themed';
 import { SearchBar } from '@rneui/themed';
 
 // Image Caching
@@ -14,6 +13,8 @@ import CachedImage from '../components/smallComponents/CachedImage';
 import { database } from '../firebase';
 import { onValue, ref, query, orderByChild, startAt, endAt, get, Query, orderByValue } from "firebase/database";
 
+//TAGS
+import { MasterTagList } from '../assets/tags/tags'
 // Firebase DB
 const db = database;
 
@@ -27,8 +28,9 @@ export default function Main({navigation}) {
   const [querys, setQuery] = React.useState("");
   const {setReview, review} = React.useContext(ReviewContext);
   const {setTag, tag} = React.useContext(TagContext);
-  const [tagsData, setTagsData] = React.useState(["non&fat",
-  'for_kids', 'family_friendly', 'low_fat', "citrus_feed"]);
+  // const [tagsData, setTagsData] = React.useState(["non&fat",
+  // 'for_kids', 'family_friendly', 'low_fat', "citrus_feed"]);
+  const [tagsData, setTagsData] = React.useState(MasterTagList);
   
   const tagArrayReference = [
     "tag1","tag2","tag3","tag4","tag5",
@@ -209,8 +211,8 @@ export default function Main({navigation}) {
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     {tagsData?.map( (v) => {
                       return(<Chip style={styles.chip} key={`${uuid.v4()}`} onPress={() => {
-                        setTag(v)
-                      }}>{v[0]?.toUpperCase() + v.slice(1).toLowerCase().replace('_',' ').replace('&','-')}</Chip>);
+                        setTag(v.value)
+                      }}>{v.label}</Chip>);
                     })}
                 </ScrollView>
             </View>

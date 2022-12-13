@@ -35,7 +35,7 @@ import { ListItem } from '@rneui/themed';
 import ButtonToggleGroup from 'react-native-button-toggle-group';
 
 // Stats list
-import Statistics from '../StatisticsList'
+// import Statistics from '../StatisticsList'
 
 // UUID Unique Key
 import uuid from 'react-native-uuid';
