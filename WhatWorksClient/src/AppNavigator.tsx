@@ -20,17 +20,21 @@ import TagContext from './tagSelectorContext';
 
 // UI
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Intro from './screens/Intro';
+import IntroContext from './IntroState';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
   const [review, setReview] = React.useState(0);
   const [tag, setTag] = React.useState("");
+  const [intro, setIntro] = React.useState(true);
 
 
   return (
     <ReviewContext.Provider value={{review, setReview}}>
     <TagContext.Provider value={{tag, setTag}}>
+    <IntroContext.Provider value={{intro, setIntro}}>
 
 
     <NavigationContainer>
@@ -100,6 +104,7 @@ export default function AppNavigator() {
       </Tab.Navigator>
     </NavigationContainer> 
   
+    </IntroContext.Provider>
   </TagContext.Provider>
   </ReviewContext.Provider>      
   );
