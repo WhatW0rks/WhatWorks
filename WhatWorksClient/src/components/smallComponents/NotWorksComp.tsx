@@ -20,12 +20,11 @@ import Lottie from 'lottie-react-native';
 import uuid from 'react-native-uuid';
 
 // UI
-import { Image } from '@rneui/themed';
 import CachedImage from './CachedImage';
 import ReviewContext from '../../reviewSelectorContext';
 
 
-export default function WorksComp({navigation}) {
+export default function NotWorksComp({navigation}) {
     // Animations
     const animationRef = React.useRef<Lottie>(null)
 
@@ -49,7 +48,7 @@ export default function WorksComp({navigation}) {
 
     const fetchReviewData = async() => {
         try {
-            const userIndexReviewsRoute = ref(db, 'UserReviewData/' + username + '/' + "Works");
+            const userIndexReviewsRoute = ref(db, 'UserReviewData/' + username + '/' + "DidntWork");
             onValue(userIndexReviewsRoute, (snapshot) => {
             const data = snapshot.val();
 
@@ -104,10 +103,9 @@ export default function WorksComp({navigation}) {
             {Empty()}
 
             <View style={styles.reviewContainer}>
-                    {reviewWorksData.length != 0 ?
+                    {reviewWorksData.length != 0 ? 
                         <Pressable onPress={() => {
-                            navigation.navigate("SubmitScreen");
-                        }}>
+                            navigation.navigate("SubmitScreen");}}>
                             <Lottie style={{height: 120, width: 120}} source={require('../../assets/LottieAnimations/upload.json')} ref={animationRef} loop={false}></Lottie>
                         </Pressable>
                     : null}

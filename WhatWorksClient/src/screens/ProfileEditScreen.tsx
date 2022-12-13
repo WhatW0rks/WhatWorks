@@ -94,13 +94,11 @@ export default function ProfileEditScreen({navigation}) {
     const submitChanges = async() => { 
         // Text Guards
         if (displayName.length > 9 || displayName.length === 0) {
-            console.log("Display Name Guard triggered!")
             onToggleSnackBar("Display Name: \nPlease enter less than 8 characters");
             return;
         }
 
         if (bio.length === 0) {
-            console.log("Bio Guard triggered!")
             onToggleSnackBar("Bio: \nBio cannot be empty!");
             return;
         }

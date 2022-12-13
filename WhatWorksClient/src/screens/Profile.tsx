@@ -21,6 +21,7 @@ import { Avatar } from '@rneui/themed';
 // Component for React Navigation Tabs
 import Trying from '../components/smallComponents/profileContentLoader'
 import Works from '../components/smallComponents/WorksComp'
+import NotWorks from '../components/smallComponents/NotWorksComp'
 
 // Lottie Animations
 import Lottie from 'lottie-react-native';
@@ -29,16 +30,8 @@ import Lottie from 'lottie-react-native';
 const db = database;
 
 // React Navigation Tabs Creator
-const Tab = createMaterialTopTabNavigator();
-  
-function SettingsScreen() {
-return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
-        <Lottie style={{height: 200, width: 200}} source={require('../assets/LottieAnimations/empty.json')} autoPlay loop></Lottie>
-        <Text style={{color: "gray"}}>{"There is nothing here :^("}</Text>
-    </View>
-);
-}
+const Tab = createMaterialTopTabNavigator();  
+
 
 export default function Profile({navigation}) {
     // Profile states
@@ -178,7 +171,7 @@ export default function Profile({navigation}) {
                         }}>
                             <Tab.Screen name="What Works" children={()=> <Works navigation={navigation}></Works>} />
                             <Tab.Screen name="Want to Try" children={()=> <Trying navigation={navigation}></Trying>}/>
-                            <Tab.Screen name="What Doesn't Work" component={SettingsScreen} />
+                            <Tab.Screen name="What Doesn't Work" children={()=> <NotWorks navigation={navigation}></NotWorks>} />
                         </Tab.Navigator>
                     </NavigationContainer>
                 {/* <Button onPress={onPressSwitch} title="Switch user!"/> */}

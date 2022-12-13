@@ -230,12 +230,7 @@ export default function Main({navigation}) {
                   />
               )}
               />
-              :
-               
-          
-            
-            <Text style={styles.emptysearch}>We couldn't find any posts matching your search. Try searching for something else!</Text>
-            }
+              :<Text style={styles.emptysearch}>We couldn't find any posts matching your search. Try searching for something else!</Text>}
            
             </View>
       </SafeAreaView>
@@ -292,7 +287,6 @@ const styles = StyleSheet.create({
       fontSize: 15, 
       lineHeight:25, 
       color: 'gray',
-
     }
 });
 
