@@ -4,13 +4,11 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
+      "developmentClient": false,
       "distribution": "internal"
     },
     "preview": {
-      "ios": {
-        "simulator": true
-      }
+      "distribution": "internal"
     },
     "production": {}
   },
