@@ -311,9 +311,10 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 <Image style={styles.image}source={src}/>
 
                 {/* Stats Container */}
+                {(checkStats(props.statistics)) &&
                 <View style={styles.statscontainer}>
                     <View style={styles.statColumn}>
-                        {(checkStats(props.statistics)) && props.statistics.map((v) => {
+                        { props.statistics.map((v) => {
                             return(
                             <View key={`${uuid.v4()}1`} style={styles.miniBlock}>
                                 <View style={styles.statTextBox}>
@@ -329,6 +330,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                         })}
                     </View>
                 </View>
+                }
 
                 {/* Title and User Info */}
                 <View style={styles.headerContainer}>
@@ -539,6 +541,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: "row",
         marginLeft: 10,
+        marginTop: 10,
         width: "70%"
     },
     profileContainer: {
