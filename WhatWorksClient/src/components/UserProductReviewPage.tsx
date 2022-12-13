@@ -220,6 +220,13 @@ export default function UserProductReviewPage(props: ProductProperties) {
     }
 
     const didntLike = () => {
+        // Write Dislike Data
+        set(ref(db, 'UserTriedData/' + username + '/' + "dislike" + '/' + props.id), {
+            username: `${props.user}`,
+            title: `${props.heading}`,
+            imageURL: `${props.imageLink}`,
+            tags: `${props.tags}`
+        });
         setOnDidntWork(true);
     }
 

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 // Expo Fonts
 import { useFonts } from 'expo-font';
 
+// Firebase DB
 import { database } from '../firebase';
 import { onValue, ref } from "firebase/database";
 
@@ -20,6 +21,7 @@ import { Avatar } from '@rneui/themed';
 // Component for React Navigation Tabs
 import Trying from '../components/smallComponents/profileContentLoader'
 import Works from '../components/smallComponents/WorksComp'
+import NotWorks from '../components/smallComponents/NotWorksComp'
 
 // Lottie Animations
 import Lottie from 'lottie-react-native';
@@ -28,27 +30,51 @@ import Lottie from 'lottie-react-native';
 const db = database;
 
 // React Navigation Tabs Creator
-const Tab = createMaterialTopTabNavigator();
-  
-function SettingsScreen() {
-return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
-        <Lottie style={{height: 200, width: 200}} source={require('../assets/LottieAnimations/empty.json')} autoPlay loop></Lottie>
-        <Text style={{color: "gray"}}>{"There is nothing here :^("}</Text>
-    </View>
-);
-}
+const Tab = createMaterialTopTabNavigator();  
+
 
 export default function Profile({navigation}) {
+    // Profile states
+    const [profileDisplayName, setprofileDisplayName] = React.useState("N/A");
+    const [profileBio, setprofileBio] = React.useState("N/A");
+    const [profileCondition, setprofileCondition] = React.useState("N/A");
+    const [profileYOE, setprofileYOE] = React.useState("N/A");
+    const [profileAvatar, setprofileAvatar] = React.useState('https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg');
+
+    const fetchProfileData = () => {
+        try {
+            const userIndexReviewsRoute = ref(db, 'Profiles/' + username);
+            onValue(userIndexReviewsRoute, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                
+                    // Setting values
+                    setprofileDisplayName(data.displayName);
+                    setprofileBio(data.bio);
+                    setprofileCondition(data.condition);
+                    setprofileYOE(data.yoe);
+                    setprofileAvatar(data.profilePhoto);
+                }
+            });
+      
+          } catch (e) {
+            console.log("Error: ", e)
+          }
+    }
+
+    React.useEffect( () => {
+        fetchProfileData();
+    }, [])
+
+
     const dispatch = useAppDispatch(); 
     let username = useAppSelector(selectUsername); 
-    let liked = useAppSelector(selectLiked);
-    let disliked = useAppSelector(selectDisliked);
 
     const animationRef = React.useRef<Lottie>(null)
 
     // Fonts
     const [fontsLoaded] = useFonts({
+        'Futura-Light': require('../assets/fonts/futura_light.ttf'),
         'Futura-Medium': require('../assets/fonts/futura_medium.ttf'),
         'Futura-Bold': require('../assets/fonts/futura_bold.ttf'),
     });
@@ -89,32 +115,30 @@ export default function Profile({navigation}) {
       }, [username]);
 
       return (
-        <SafeAreaView style={styles.loadingContainer}>
+        <SafeAreaView style={styles.Container}>
             <ScrollView contentContainerStyle={{flex: 1}}>
 
                 {/* Profile Header Container */}
                 <View style={styles.header}>
-                    {username === 'bob123' ? 
-                    (  <Avatar size={150} avatarStyle={styles.avatar} rounded source={{uri:'https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg'}}></Avatar> )
-                    :
-                    (  <Avatar size={150} avatarStyle={styles.avatar} rounded source={{uri:'https://cdn.pixabay.com/photo/2020/09/18/05/58/lights-5580916__340.jpg'}}></Avatar>  )
-
-                    }
+                    <View style={{display: "flex", flexDirection: "column"}}>
+                        <Avatar size={150} avatarStyle={styles.avatar} rounded source={{uri: profileAvatar}}></Avatar>
+                    </View>
+                    
                     <View>
                         <View style={styles.titleContainer}>
                             <Text style={styles.title}>
-                                {username}
+                                {profileDisplayName}
                             </Text>
                         </View>
 
                         <View style={styles.profileInfoContainer}>
                             <View style={styles.profileStateMiniContainer}>
                                 <Text style={styles.profileStat}>Condition:</Text>
-                                <Text style={styles.Stat}>Acid Reflux</Text>
+                                <Text style={styles.Stat}>{profileCondition}</Text>
                             </View>
                             <View style={styles.profileStateMiniContainer}>
                                 <Text style={styles.profileStat}>Experience:</Text>
-                                <Text style={styles.Stat}>3 Years</Text>
+                                <Text style={styles.Stat}>{profileYOE}</Text>
                             </View>
                         </View>
 
@@ -132,12 +156,10 @@ export default function Profile({navigation}) {
                     </View>
                 </View>
 
-                <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 10, marginRight: 10}}>
-                    <Text style={{fontFamily: "Future-Medium", fontSize: 13}}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                        incididunt ut labore et dolore magna aliqua. 
-                        Ut enim ad minim veniam. Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                        incididunt ut labore.  
+                <View style={{display: "flex", marginLeft: 10, marginRight: 10}}>
+                    <Text style={{fontSize: 13}}>
+                        <Text style={{fontWeight: "bold"}}>{`@${username}`} </Text>
+                        {profileBio}
                     </Text>
                 </View>
 
@@ -150,7 +172,7 @@ export default function Profile({navigation}) {
                         }}>
                             <Tab.Screen name="What Works" children={()=> <Works navigation={navigation}></Works>} />
                             <Tab.Screen name="Want to Try" children={()=> <Trying navigation={navigation}></Trying>}/>
-                            <Tab.Screen name="What Doesn't Work" component={SettingsScreen} />
+                            <Tab.Screen name="What Doesn't Work" children={()=> <NotWorks navigation={navigation}></NotWorks>} />
                         </Tab.Navigator>
                     </NavigationContainer>
                 {/* <Button onPress={onPressSwitch} title="Switch user!"/> */}
@@ -162,13 +184,16 @@ export default function Profile({navigation}) {
 
 }
 const styles = StyleSheet.create({ 
-    loadingContainer: {
+    Container: {
         flex: 1,
         justifyContent: "flex-start",
         backgroundColor: "white",
     }, 
     avatar: { 
-        margin: 20, 
+        marginTop: 20,
+        marginLeft: 20,
+        marginRight: 20,
+        marginBottom: 20
     }, 
     titleContainer: {
         display: "flex",
@@ -201,8 +226,6 @@ const styles = StyleSheet.create({
         paddingTop: 3,
         fontFamily: "Futura-Medium"
     },
-
-
     header: { 
         flexDirection: "row", 
         alignItems: "center", 

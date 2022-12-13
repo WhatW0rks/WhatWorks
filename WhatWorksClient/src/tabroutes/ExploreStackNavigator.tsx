@@ -49,11 +49,6 @@ export default function ExploreNavigator() {
                 title: "",
                 presentation: "modal",
                 headerRight: () => (
-                    // <Button
-                    //   onPress={() => {handleClick()}}
-                    //   title="Post Review!"
-                    //   style={{marginRight: 10}}
-                    // />
                     <Button
                         onPress={() => {
                             handleClick();

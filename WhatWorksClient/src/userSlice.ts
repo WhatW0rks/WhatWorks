@@ -10,14 +10,14 @@ export interface Review {
 
 
 export interface UserState {
-  username: 'kathy123' | 'bob123';
+  username: 'kathy123' | 'ahsieh22';
   status: 'idle' | 'loading' | 'failed';
   liked: {[key: number]: Review};
   disliked: {[key: number]: Review};
 }
 
 const initialState: UserState = {
-  username: 'bob123',
+  username: 'ahsieh22',
   status: 'idle',
   liked: {}, 
   disliked: {}
@@ -52,7 +52,7 @@ export const userSlice = createSlice({
       state.disliked = newdisliked;
     }, 
     switchUser(state) { 
-      state.username === 'bob123' ? state.username = 'kathy123' : state.username= 'bob123'; 
+      state.username === 'ahsieh22' ? state.username = 'kathy123' : state.username= 'ahsieh22'; 
       state.liked = [];
       state.disliked = [];
     }

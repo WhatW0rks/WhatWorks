@@ -311,12 +311,8 @@ export default function ProductReviewForm({ route, navigation }) {
 
         // Manipulate image and save as png 
         const decompress = await ImageManipulator.manipulateAsync(
-            response.url,
-            [],
-            { compress: 0, format: ImageManipulator.SaveFormat.JPEG }
-            );
+        response.url,[],{ compress: 0, format: ImageManipulator.SaveFormat.JPEG });
         
-
         response = await fetch(decompress.uri);
 
        
