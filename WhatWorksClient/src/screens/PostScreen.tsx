@@ -11,8 +11,15 @@ const db = database;
 // React Contexts
 import ReviewContext from '../reviewSelectorContext'
 import getLink from '../cachefunctions';
+
+// types
+import { NutritionStats } from '../components/ProductReviewForm';
+
 export default function PostScreen({navigation}) {
   const {setReview, review} = React.useContext(ReviewContext);
+
+
+  
 
   // Default Data
   const [data, setData] = useState({
@@ -20,7 +27,8 @@ export default function PostScreen({navigation}) {
     user:"Loading...",
     description: "Loading...",
     imageLink: "https://upload.wikimedia.org/wikipedia/commons/4/41/Image_tagging_icon_03.svg",
-    tags: "Loading..."
+    tags: "Loading...", 
+    nutrition: {Calories: '', Fat: '', Protein: '', Fiber: '', Sugars: '', Rating: ''}
   });
 
   const fetchReview =  () => {
@@ -38,11 +46,20 @@ export default function PostScreen({navigation}) {
           user: reviewData.username,
           description: reviewData.review,
           imageLink: imgLink,
-          tags: reviewData.tags
+          tags: reviewData.tags, 
+          nutrition: { 
+            Calories: reviewData.Calories === undefined ? '' : reviewData.Calories, 
+            Protein: reviewData.Protein === undefined ? '' : reviewData.Protein, 
+            Fat: reviewData.Fat === undefined ? '' : reviewData.Fat,  
+            Fiber: reviewData.Fiber === undefined ? '' : reviewData.Fiber, 
+            Sugars: reviewData.Sugars === undefined ? '' : reviewData.Sugars,
+            Rating: reviewData.Rating === undefined ? '' : reviewData.Rating,
+          }
+         
         }
       );
       console.log("Link: " + imgLink);
-
+      
 
     } else {
       console.log("Review Missing!");
@@ -67,9 +84,9 @@ export default function PostScreen({navigation}) {
       tags={data.tags}
       link={undefined}
       navigation={navigation}
-      statistics = {[["Overall Rating", "5", "Sugar", "500mg"], 
-                     ["Calories", "180 cal","Fat", "20mg"], 
-                     ["Sodium", "200mg","",""]]}
+      statistics = {[["Overall Rating", data.nutrition.Rating, "Sugars", data.nutrition.Sugars], 
+                     ["Calories", data.nutrition.Calories,"Fat", data.nutrition.Fat], 
+                     ["Protein", data.nutrition.Protein,"Fiber",data.nutrition.Fiber]]}
     />
   );
 }

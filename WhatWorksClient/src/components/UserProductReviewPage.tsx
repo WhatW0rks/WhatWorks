@@ -51,10 +51,16 @@ interface ProductProperties {
 
 
 export default function UserProductReviewPage(props: ProductProperties) {
-    const [statsData, setStatsData] = React.useState([
-    ["Overall Rating", "5/10", "Sugar", "500mg"], 
-    ["Calories", "180 cal", "Fat", "20mg"], 
-    ["Carbs", "270g", "Protein", "30mg"]]);
+
+    function checkStats(stats: string[][]) { 
+        for (let i = 0; i < 3; i++) { 
+            if (stats[i][1].length > 0) return true; 
+            if (stats[i][3].length > 0) return true; 
+        }
+        return false; 
+    }
+   
+
     const [tagsData, setTagsData] = React.useState([""]);
 
     // tags: 
@@ -294,12 +300,13 @@ export default function UserProductReviewPage(props: ProductProperties) {
         <SafeAreaView style={styles.container}>
             <ScrollView>
                 {/* Image Container */}
+                
                 <Image style={styles.image}source={src}/>
 
                 {/* Stats Container */}
                 <View style={styles.statscontainer}>
                     <View style={styles.statColumn}>
-                        {statsData.map((v) => {
+                        {(checkStats(props.statistics)) && props.statistics.map((v) => {
                             return(
                             <View key={`${uuid.v4()}1`} style={styles.miniBlock}>
                                 <View style={styles.statTextBox}>
@@ -320,7 +327,7 @@ export default function UserProductReviewPage(props: ProductProperties) {
                 <View style={styles.headerContainer}>
                     <View style={styles.profileContainer}>
                         <Avatar size={40} rounded source={{uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}}/>
-                        <Text style={styles.profileLink}>@JaneDoe</Text>
+                        <Text style={styles.profileLink}>{props.user}</Text>
                     </View>
                     <View style={styles.titleContainer}>
                         <Text style={styles.Title}>{props.heading}</Text>

@@ -49,6 +49,15 @@ interface ProductPostProperties {
     route: any;
 }
 
+export interface NutritionStats { 
+    Fiber: string; 
+    Fat: string; 
+    Protein: string; 
+    Sugars: string; 
+    Calories: string; 
+    Rating: string; 
+}
+
 export default function ProductReviewForm({ route, navigation }) {
     let usernames = useAppSelector(selectUsername); 
 
@@ -93,42 +102,45 @@ export default function ProductReviewForm({ route, navigation }) {
     // Button Group States
     const [value, setValue] = React.useState('Light');
 
+    // Simplified Nutrition State 
+    const [nutrition, setNutrition] = React.useState<NutritionStats>({Fiber: '', Calories: '', Fat: '', Protein: '', Sugars: '', Rating: ''}); 
+
     // Stats Dropdown
-    const [selectedIndex1, setSelectedIndex1] = React.useState(new IndexPath(0));
-    const displayValue1 = Statistics[selectedIndex1.row];
-    const [inputValue1, setInputValue1] = React.useState("Select");
+    // const [selectedIndex1, setSelectedIndex1] = React.useState(new IndexPath(0));
+    // const displayValue1 = Statistics[selectedIndex1.row];
+    // const [inputValue1, setInputValue1] = React.useState("Select");
 
-    const [selectedIndex2, setSelectedIndex2] = React.useState(new IndexPath(0));
-    const displayValue2 = Statistics[selectedIndex2.row];
-    const [inputValue2, setInputValue2] = React.useState("Select");
+    // const [selectedIndex2, setSelectedIndex2] = React.useState(new IndexPath(0));
+    // const displayValue2 = Statistics[selectedIndex2.row];
+    // const [inputValue2, setInputValue2] = React.useState("Select");
 
-    const [selectedIndex3, setSelectedIndex3] = React.useState(new IndexPath(0));
-    const displayValue3 = Statistics[selectedIndex3.row];
-    const [inputValue3, setInputValue3] = React.useState("Select");
+    // const [selectedIndex3, setSelectedIndex3] = React.useState(new IndexPath(0));
+    // const displayValue3 = Statistics[selectedIndex3.row];
+    // const [inputValue3, setInputValue3] = React.useState("Select");
 
-    const [selectedIndex4, setSelectedIndex4] = React.useState(new IndexPath(0));
-    const displayValue4 = Statistics[selectedIndex4.row];
-    const [inputValue4, setInputValue4] = React.useState("Select");
+    // const [selectedIndex4, setSelectedIndex4] = React.useState(new IndexPath(0));
+    // const displayValue4 = Statistics[selectedIndex4.row];
+    // const [inputValue4, setInputValue4] = React.useState("Select");
 
-    const [selectedIndex5, setSelectedIndex5] = React.useState(new IndexPath(0));
-    const displayValue5 = Statistics[selectedIndex5.row];
-    const [inputValue5, setInputValue5] = React.useState("Select");
+    // const [selectedIndex5, setSelectedIndex5] = React.useState(new IndexPath(0));
+    // const displayValue5 = Statistics[selectedIndex5.row];
+    // const [inputValue5, setInputValue5] = React.useState("Select");
 
-    const [selectedIndex6, setSelectedIndex6] = React.useState(new IndexPath(0));
-    const displayValue6 = Statistics[selectedIndex6.row];
-    const [inputValue6, setInputValue6] = React.useState("Select");
+    // const [selectedIndex6, setSelectedIndex6] = React.useState(new IndexPath(0));
+    // const displayValue6 = Statistics[selectedIndex6.row];
+    // const [inputValue6, setInputValue6] = React.useState("Select");
 
-    const [selectedIndex7, setSelectedIndex7] = React.useState(new IndexPath(0));
-    const displayValue7 = Statistics[selectedIndex7.row];
-    const [inputValue7, setInputValue7] = React.useState("Select");
+    // const [selectedIndex7, setSelectedIndex7] = React.useState(new IndexPath(0));
+    // const displayValue7 = Statistics[selectedIndex7.row];
+    // const [inputValue7, setInputValue7] = React.useState("Select");
 
-    const [selectedIndex8, setSelectedIndex8] = React.useState(new IndexPath(0));
-    const displayValue8 = Statistics[selectedIndex8.row];
-    const [inputValue8, setInputValue8] = React.useState("Select");
+    // const [selectedIndex8, setSelectedIndex8] = React.useState(new IndexPath(0));
+    // const displayValue8 = Statistics[selectedIndex8.row];
+    // const [inputValue8, setInputValue8] = React.useState("Select");
 
-    const [selectedIndex9, setSelectedIndex9] = React.useState(new IndexPath(0));
-    const displayValue9 = Statistics[selectedIndex9.row];
-    const [inputValue9, setInputValue9] = React.useState("Select");
+    // const [selectedIndex9, setSelectedIndex9] = React.useState(new IndexPath(0));
+    // const displayValue9 = Statistics[selectedIndex9.row];
+    // const [inputValue9, setInputValue9] = React.useState("Select");
     
 
     const userArray = 
@@ -208,13 +220,43 @@ export default function ProductReviewForm({ route, navigation }) {
 
 
         // Image Guard
-        if (imageList.length === 0 || imageList.length > 1) {
+        else if (imageList.length === 0 || imageList.length > 1) {
             // Reset Image List
             // setImageList([]);
             // return;
             Alert.alert(
                 "Unable to post review",
                 "Please include an image in your review!",
+                [
+                
+                  { text: "Got it!", onPress: () => console.log("OK Pressed") }
+                ]
+              );
+        }
+
+        // Title Guard
+        else if (!title) {
+            // Reset Image List
+            // setImageList([]);
+            // return;
+            Alert.alert(
+                "Unable to post review",
+                "Please include a title in your review!",
+                [
+                
+                  { text: "Got it!", onPress: () => console.log("OK Pressed") }
+                ]
+              );
+        }
+
+        // Title Guard
+        else if (!review) {
+            // Reset Image List
+            // setImageList([]);
+            // return;
+            Alert.alert(
+                "Unable to post review",
+                "Please include a description in your review!",
                 [
                 
                   { text: "Got it!", onPress: () => console.log("OK Pressed") }
@@ -276,6 +318,8 @@ export default function ProductReviewForm({ route, navigation }) {
         
 
         response = await fetch(decompress.uri);
+
+       
         
         const blob = await response.blob();
 
@@ -299,7 +343,13 @@ export default function ProductReviewForm({ route, navigation }) {
                     title: `${title}`,
                     imageURL: `${url}`,
                     review: `${review}`,
-                    tags: `${stringfyTags}`
+                    tags: `${stringfyTags}`, 
+                    Calories: `${nutrition.Calories}`,
+                    Fat: `${nutrition.Fat}`,
+                    Fiber: `${nutrition.Fiber}`,
+                    Protein: `${nutrition.Protein}`,
+                    Sugars: `${nutrition.Sugars}`,
+                    Rating: `${nutrition.Rating}`,
                 });
                 // Write the review index
                 set(ref(db, 'TagReviews/' + randomReviewID), {
@@ -334,6 +384,7 @@ export default function ProductReviewForm({ route, navigation }) {
                             title: `${title}`,
                             imageURL: `${url}`,
                             tags: `${stringfyTags}`
+                            
                         });
                     }
                     
@@ -444,8 +495,8 @@ export default function ProductReviewForm({ route, navigation }) {
             >
                 <ListItem.Content style={{marginBottom: 30}}>
                     <View style={{width: "100%"}}>
-                        <View style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                            <Text>Rating</Text>
+                        <View style={{display: "flex", justifyContent: "flex-start", alignItems: "flex-start"}}>
+                            <Text style={{marginLeft: 20, fontSize: 15}}>Rating</Text>
                         </View>
                         
                         <ButtonToggleGroup
@@ -459,13 +510,17 @@ export default function ProductReviewForm({ route, navigation }) {
                             onSelect={val => setValue(val)}
                         />
 
-                        <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: 20}}>
-                            <Text>Statistics</Text>
+                        <View style={{display: "flex", justifyContent: "flex-start", alignItems: "flex-start", marginTop: 20, marginBottom: 8}}>
+                            <Text style={{marginLeft: 20, fontSize: 15}}>Statistics</Text>
                         </View>
 
+                        <Layout style={styles.rowContainer}>
+
                         {/* Statistic 1 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Layout style={styles.container} level='1'>
+                        <View 
+                        // style={{display: "flex", flexDirection: "row"}}
+                        >
+                            {/* <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue1}
                                     selectedIndex={selectedIndex1}
@@ -474,17 +529,21 @@ export default function ProductReviewForm({ route, navigation }) {
                                         return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
-                            </Layout>
+                            </Layout> */}
                             <Input
-                                style={{width: "46%", marginTop: 5, marginLeft: 10}}
-                                placeholder='200 mg'
-                                onChangeText={() => {}}
+                               label={() => <Text style={{fontSize: 14, color: "#37aca4", marginBottom: 5, fontWeight:"600"}}>Fat</Text>}                                 
+                               style={styles.stat}
+                               placeholder='4g'
+                               value={nutrition.Fat}
+                               onChangeText={input => setNutrition((prev) => ({...prev, Fat: input}))}
                             />
                         </View>
 
                         {/* Statistic 2 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Layout style={styles.container} level='1'>
+                        <View 
+                        // style={{display: "flex", flexDirection: "row"}}
+                        >
+                            {/* <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue2}
                                     selectedIndex={selectedIndex2}
@@ -493,16 +552,23 @@ export default function ProductReviewForm({ route, navigation }) {
                                         return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
-                            </Layout>
+                            </Layout> */}
                             <Input
-                                style={{width: "46%", marginTop: 5, marginLeft: 10}}
-                                placeholder='17 g'
+                               label={() => <Text style={{fontSize: 14, color: "#37aca4", marginBottom: 5, fontWeight:"600"}}>Fiber</Text>}                                 
+                               style={styles.stat}
+                                placeholder='7g'
+                                value={nutrition.Fiber}
+                                onChangeText={input => setNutrition((prev) => ({...prev, Fiber: input}))}
                             />
                         </View>
+                        </Layout>
 
                         {/* Statistic 3 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Layout style={styles.container} level='1'>
+                        <Layout style={styles.rowContainer}>
+                        <View 
+                        // style={{display: "flex", flexDirection: "row"}}
+                        >
+                            {/* <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue3}
                                     selectedIndex={selectedIndex3}
@@ -511,16 +577,23 @@ export default function ProductReviewForm({ route, navigation }) {
                                         return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
-                            </Layout>
+                            </Layout> */}
                             <Input
-                                style={{width: "46%", marginTop: 5, marginLeft: 10}}
-                                placeholder='66 mg'
+                               label={() => <Text style={{fontSize: 14, color: "#37aca4", marginBottom: 5, fontWeight:"600"}}>Sugars</Text>}                                 
+                               style={styles.stat}
+                                placeholder='5g'
+                                value={nutrition.Sugars}
+                                onChangeText={input => setNutrition((prev) => ({...prev, Sugars: input}))}
+                                
                             />
                         </View>
+                      
                         
                         {/* Statistic 4 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Layout style={styles.container} level='1'>
+                        <View 
+                        // style={{display: "flex", flexDirection: "row"}}
+                        >
+                            {/* <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue4}
                                     selectedIndex={selectedIndex4}
@@ -529,16 +602,25 @@ export default function ProductReviewForm({ route, navigation }) {
                                         return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
-                            </Layout>
+                            </Layout> */}
                             <Input
-                                style={{width: "46%", marginTop: 5, marginLeft: 10}}
-                                placeholder='300 mg'
+                               label={() => <Text style={{fontSize: 14, color: "#37aca4", marginBottom: 5, fontWeight:"600"}}>Protein</Text>}                                 
+                               style={styles.stat}
+                                placeholder='11g'
+                                value={nutrition.Protein}
+                                onChangeText={input => setNutrition((prev) => ({...prev, Protein: input}))}
+
                             />
                         </View>
+                        </Layout>
+
+                        <Layout style={styles.rowContainer}>
 
                         {/* Statistic 5 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Layout style={styles.container} level='1'>
+                        <View 
+                        // style={{display: "flex", flexDirection: "row"}}
+                        >
+                            {/* <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue5}
                                     selectedIndex={selectedIndex5}
@@ -547,15 +629,19 @@ export default function ProductReviewForm({ route, navigation }) {
                                         return(<SelectItem key={`${uuid.v4()}`} title={`${value}`} />)
                                     })}
                                 </Select>
-                            </Layout>
+                            </Layout> */}
                             <Input
-                                style={{width: "46%", marginTop: 5, marginLeft: 10}}
-                                placeholder='150 mg'
+                               label={() => <Text style={{fontSize: 14, color: "#37aca4", marginBottom: 5, fontWeight:"600"}}>Calories</Text>}                                 
+                               style={styles.stat}
+                                placeholder='300'
+                                value={nutrition.Calories}
+                                onChangeText={input => setNutrition((prev) => ({...prev, Calories: input}))}
                             />
                         </View>
+                        </Layout>
 
                         {/* Statistic 6 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
+                        {/* <View style={{display: "flex", flexDirection: "row"}}>
                             <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue6}
@@ -570,10 +656,10 @@ export default function ProductReviewForm({ route, navigation }) {
                                 style={{width: "46%", marginTop: 5, marginLeft: 10}}
                                 placeholder='10 g'
                             />
-                        </View>
+                        </View> */}
 
                         {/* Statistic 7 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
+                        {/* <View style={{display: "flex", flexDirection: "row"}}>
                             <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue7}
@@ -588,10 +674,10 @@ export default function ProductReviewForm({ route, navigation }) {
                                 style={{width: "46%", marginTop: 5, marginLeft: 10}}
                                 placeholder='89 mg'
                             />
-                        </View>
+                        </View> */}
 
                         {/* Statistic 8 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
+                        {/* <View style={{display: "flex", flexDirection: "row"}}>
                             <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue8}
@@ -606,10 +692,10 @@ export default function ProductReviewForm({ route, navigation }) {
                                 style={{width: "46%", marginTop: 5, marginLeft: 10}}
                                 placeholder='10 mg'
                             />
-                        </View>
+                        </View> */}
 
                         {/* Statistic 9 */}
-                        <View style={{display: "flex", flexDirection: "row"}}>
+                        {/* <View style={{display: "flex", flexDirection: "row"}}>
                             <Layout style={styles.container} level='1'>
                                 <Select
                                     value={displayValue9}
@@ -624,7 +710,7 @@ export default function ProductReviewForm({ route, navigation }) {
                                 style={{width: "46%", marginTop: 5, marginLeft: 10}}
                                 placeholder='67 mg'
                             />
-                        </View>
+                        </View> */}
 
                     </View>
                 </ListItem.Content>
@@ -764,6 +850,20 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
         color: "tomato"
-      }
+      }, 
+      rowContainer: { 
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+      }, 
+      stat: { 
+        flex: 1, 
+        margin: 2,  
+        marginTop: 5, 
+        marginLeft: 20, 
+        width: 170, 
+        paddingRight: 25,
+        
+      }, 
+      
   });
   
