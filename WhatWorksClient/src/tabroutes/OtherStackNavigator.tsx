@@ -30,12 +30,12 @@ export default function ProfileNavigator() {
             />
             <Stack.Screen
                 name="Liked"
-                component={Liked}
+                component={Nothing}
                 options={{ headerShown: true, title: "" }}
             />
             <Stack.Screen
                 name="Dislike"
-                component={Dislike}
+                component={Nothing}
                 options={{ headerShown: true, title: "" }}
             />
         </Stack.Navigator>
