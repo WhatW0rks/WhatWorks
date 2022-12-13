@@ -360,7 +360,7 @@ export default function ProductReviewForm({ route, navigation }) {
                     Fiber: `${nutrition.Fiber}`,
                     Protein: `${nutrition.Protein}`,
                     Sugars: `${nutrition.Sugars}`,
-                    Rating: `${nutrition.Rating}`,
+                    Rating: `${value}`,
                 });
                 // Write the review index
                 set(ref(db, 'TagReviews/' + randomReviewID), {
@@ -769,9 +769,9 @@ export default function ProductReviewForm({ route, navigation }) {
             </ListItem.Accordion>
 
             
-            <View style={styles.animationBottom}>
+            {/* <View style={styles.animationBottom}>
                 <Lottie style={{height: 265, width: 400}} source={require('../assets/LottieAnimations/clouds.json')} autoPlay loop></Lottie>
-            </View>
+            </View> */}
         </ScrollView>
     </SafeAreaView>
     ); 

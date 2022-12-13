@@ -94,7 +94,8 @@ export default function Liked({navigation}) {
                       }}
                     key={`${uuid.v4()}`}
                     >
-                      <CachedImage style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }} id={r[3]} navigation={navigation}/>
+                      <Image style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }}></Image>
+                      {/* <CachedImage style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }} id={r[3]} navigation={navigation}/> */}
                       <View style={{display: "flex", flexDirection:"column"}}>
                         <Text style={{marginLeft: 20, fontWeight: "bold", fontSize: 20}}>{`${r[1]}`}</Text>
                         <Text style={{marginLeft: 20, fontSize: 13}}>{`By ${r[0]}`}</Text>

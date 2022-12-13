@@ -45,9 +45,9 @@ export default function NavBarTop({navigation}) {
                 <Text style={{fontWeight: "700", fontSize: 20}}>{`${tokens}`}</Text>
             </View>
             
-            <Pressable onPress={() => console.log("Shop is pressed")}>
+            {/* <Pressable onPress={() => console.log("Shop is pressed")}>
                 <Lottie style={{height: 50, width: 50, marginLeft: 2}} ref={animationRef} loop={false} source={require('../../assets/LottieAnimations/shop.json')}></Lottie>
-            </Pressable>
+            </Pressable> */}
 
             {/* <Button
                 onPress={() => console.log("Pressed")}
