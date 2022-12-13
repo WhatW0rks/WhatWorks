@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 // Expo Fonts
 import { useFonts } from 'expo-font';
 
+// Firebase DB
 import { database } from '../firebase';
 import { onValue, ref } from "firebase/database";
 
@@ -40,15 +41,46 @@ return (
 }
 
 export default function Profile({navigation}) {
+    // Profile states
+    const [profileDisplayName, setprofileDisplayName] = React.useState("Loading...");
+    const [profileBio, setprofileBio] = React.useState("Loading...");
+    const [profileCondition, setprofileCondition] = React.useState("Loading...");
+    const [profileYOE, setprofileYOE] = React.useState("Loading...");
+    const [profileAvatar, setprofileAvatar] = React.useState('https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg');
+
+    const fetchProfileData = () => {
+        try {
+            const userIndexReviewsRoute = ref(db, 'Profiles/' + username);
+            onValue(userIndexReviewsRoute, (snapshot) => {
+              const data = snapshot.val();
+            
+              // Setting values
+              setprofileDisplayName(data.displayName);
+              setprofileBio(data.bio);
+              setprofileCondition(data.condition);
+              setprofileYOE(data.yoe);
+              setprofileAvatar(data.profilePhoto);
+      
+            });
+      
+          } catch (e) {
+            console.log("Error: ", e)
+          }
+    }
+
+    React.useEffect( () => {
+        fetchProfileData();
+    }, [])
+
+
     const dispatch = useAppDispatch(); 
     let username = useAppSelector(selectUsername); 
-    let liked = useAppSelector(selectLiked);
-    let disliked = useAppSelector(selectDisliked);
 
     const animationRef = React.useRef<Lottie>(null)
 
     // Fonts
     const [fontsLoaded] = useFonts({
+        'Futura-Light': require('../assets/fonts/futura_light.ttf'),
         'Futura-Medium': require('../assets/fonts/futura_medium.ttf'),
         'Futura-Bold': require('../assets/fonts/futura_bold.ttf'),
     });
@@ -94,27 +126,25 @@ export default function Profile({navigation}) {
 
                 {/* Profile Header Container */}
                 <View style={styles.header}>
-                    {username === 'bob123' ? 
-                    (  <Avatar size={150} avatarStyle={styles.avatar} rounded source={{uri:'https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg'}}></Avatar> )
-                    :
-                    (  <Avatar size={150} avatarStyle={styles.avatar} rounded source={{uri:'https://cdn.pixabay.com/photo/2020/09/18/05/58/lights-5580916__340.jpg'}}></Avatar>  )
-
-                    }
+                    <View style={{display: "flex", flexDirection: "column"}}>
+                        <Avatar size={150} avatarStyle={styles.avatar} rounded source={{uri: profileAvatar}}></Avatar>
+                    </View>
+                    
                     <View>
                         <View style={styles.titleContainer}>
                             <Text style={styles.title}>
-                                {username}
+                                {profileDisplayName}
                             </Text>
                         </View>
 
                         <View style={styles.profileInfoContainer}>
                             <View style={styles.profileStateMiniContainer}>
                                 <Text style={styles.profileStat}>Condition:</Text>
-                                <Text style={styles.Stat}>Acid Reflux</Text>
+                                <Text style={styles.Stat}>{profileCondition}</Text>
                             </View>
                             <View style={styles.profileStateMiniContainer}>
                                 <Text style={styles.profileStat}>Experience:</Text>
-                                <Text style={styles.Stat}>3 Years</Text>
+                                <Text style={styles.Stat}>{profileYOE}</Text>
                             </View>
                         </View>
 
@@ -132,12 +162,10 @@ export default function Profile({navigation}) {
                     </View>
                 </View>
 
-                <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 10, marginRight: 10}}>
-                    <Text style={{fontFamily: "Future-Medium", fontSize: 13}}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                        incididunt ut labore et dolore magna aliqua. 
-                        Ut enim ad minim veniam. Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                        incididunt ut labore.  
+                <View style={{display: "flex", marginLeft: 10, marginRight: 10}}>
+                    <Text style={{fontSize: 13}}>
+                        <Text style={{fontWeight: "bold"}}>{`@${username}`} </Text>
+                        {profileBio}
                     </Text>
                 </View>
 
@@ -168,7 +196,10 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     }, 
     avatar: { 
-        margin: 20, 
+        marginTop: 20,
+        marginLeft: 20,
+        marginRight: 20,
+        marginBottom: 20
     }, 
     titleContainer: {
         display: "flex",
