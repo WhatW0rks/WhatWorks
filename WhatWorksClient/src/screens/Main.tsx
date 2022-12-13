@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, SafeAreaView, Text, View, FlatList, ActivityIndicator, ScrollView} from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, FlatList, ActivityIndicator, ScrollView, RefreshControl} from 'react-native';
 
 // UUID Unique Key
 import uuid from 'react-native-uuid';
@@ -61,31 +61,22 @@ export default function Main({navigation}) {
     } catch (e) {
       console.log("Error: ", e)
     }
-  }
+  }  
 
-  // const DBQuery = (dbQuery: Query) => {
-  //   get(dbQuery).then((snapshot) => {
-  //     if (snapshot.exists()) {
-  //       const data = snapshot.val();
-        
+  // Refresh Handler
+  const [refreshing, setRefreshing] = React.useState(false);
 
-  //       let parsedData = [];
+  // OnRefresh
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
 
-  //       for (let key in data) {
-  //         if (!data.hasOwnProperty(key)) continue;
-  //         let temp = [data[key].userReviewID, data[key].title, data[key].imageURL];
-  //         parsedData.push(temp);
-  //       }
-  //       console.log("Review data in DBQuery: ", reviewData);
-  //       setReviewData(parsedData.concat(reviewData));
-  //       console.log(reviewData);
-  //     }
-  //   }).catch((error) => {
-  //     console.error(error);
-  //   });
-  // }
+    // Fetch Review Data
+    fetchReviewData();
 
-  
+    setTimeout( () => {
+        setRefreshing(false); 
+    }, 3000);
+  }, []);
 
   const newDBQuery = async (search: string) => {
 
@@ -150,18 +141,11 @@ export default function Main({navigation}) {
       return [...Object.values(parsedData)];
     })
 
-    
-    
   }
 
   const updateQuery = (search: string) => {
-    console.log("updateQuery");
     setQuery(prev => search);
     // setReviewData(prev => []);
-
-
-    
-    
 
     if (/^\s*$/.test(search)) {
       fetchReviewData();
@@ -183,7 +167,7 @@ export default function Main({navigation}) {
 
   // Render Reviews from DB
   React.useEffect(() => {
-    console.log("Use effect");
+
     // Fetch Review Data
     fetchReviewData();
     if (tag !== "") updateQuery(tag[0]?.toUpperCase() + tag.slice(1).toLowerCase().replace('_',' ').replace('&','-'));
@@ -220,7 +204,14 @@ export default function Main({navigation}) {
             <View style={styles.exploreContainer}>
              {( reviewData.length > 0) ?
               <FlatList data={reviewData}
-                style={styles.list} numColumns={3} 
+                refreshControl={
+                  <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                  />
+                }
+                style={styles.list} 
+                numColumns={3} 
                 keyExtractor={(e) => {
                   return e[0]}}
                 renderItem={({ item }) => (
