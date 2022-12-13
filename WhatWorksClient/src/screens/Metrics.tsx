@@ -119,7 +119,6 @@ export default function OtherScreen({navigation}) {
 
     return(
         <SafeAreaView style={styles.metricsContainer}>
-          
           <ScrollView>
             <View>
 

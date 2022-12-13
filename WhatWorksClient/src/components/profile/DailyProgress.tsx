@@ -13,6 +13,13 @@ import { Dialog, Portal, TextInput, Button } from 'react-native-paper';
 
 import DateView from './DateView';
 
+// Expo Fonts
+import { useFonts } from 'expo-font';
+
+// Redux
+import { selectUsername } from '../../userSlice';
+import { useAppSelector } from '../../hooks';
+
 type Props = {
     data: { x: string, y: number }[];
 }
@@ -21,7 +28,18 @@ const randomIntFromInterval = (min: number, max: number) => { // min and max inc
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
+// Component
 const DailyProgress = ({ data }: Props) => {
+
+    // Fonts
+    const [fontsLoaded] = useFonts({
+        'Futura-Light': require('../../assets/fonts/futura_light.ttf'),
+        'Futura-Medium': require('../../assets/fonts/futura_medium.ttf'),
+        'Futura-Bold': require('../../assets/fonts/futura_bold.ttf'),
+    });
+
+    let username = useAppSelector(selectUsername); 
+
     const [visible, setVisible] = useState(false);
     const [dialogData, setDialogData] = useState({
         Heartburn: "",
@@ -35,36 +53,16 @@ const DailyProgress = ({ data }: Props) => {
 
     const showDialog = () => setVisible(true);
 
-
-
-
     const submitDialog = () => {
-        console.log("submit dialog entered")
-        console.log(dialogData);
-
         try {
-            console.log("submit dialog entered0")
             const randomReviewID = new Date(dialogData.time).getDate();
-
-            console.log("submit dialog entered1")
             const dataRef = set(ref(database, "/UserTracking/JoeDoe/check/" + randomReviewID), dialogData);
-            console.log("submit dialog entered2")
-            // onValue(dataRef, (snapshot) => {
-            //     if (snapshot.exists()) {
-            //         const data = snapshot.val();
-            //         console.log(data)
-            //         // hideDialog();
-            //         // // submit data
-            //         // console.log(dialogData);
-            //     }
-            // });
 
             hideDialog();
             console.log("submit dialog exit")
         } catch (err) {
             console.error(err)
         }
-
     }
 
     return (
@@ -72,7 +70,6 @@ const DailyProgress = ({ data }: Props) => {
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>Daily Progress</Text>
                 <IconButton icon={props => <Icon name="plus-circle" {...props} color="#70a9a3" onPress={showDialog} />} />
-
             </View>
 
             <View style={styles.subContainer}>
@@ -142,11 +139,13 @@ const styles = StyleSheet.create({
     titleContainer: {
         display: "flex",
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "space-between"
     },
     title: {
         fontSize: 24,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontFamily: "Futura-Medium"
     },
     subContainer: {
         display: "flex",

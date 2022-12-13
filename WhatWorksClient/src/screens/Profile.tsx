@@ -35,25 +35,26 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function Profile({navigation}) {
     // Profile states
-    const [profileDisplayName, setprofileDisplayName] = React.useState("Loading...");
-    const [profileBio, setprofileBio] = React.useState("Loading...");
-    const [profileCondition, setprofileCondition] = React.useState("Loading...");
-    const [profileYOE, setprofileYOE] = React.useState("Loading...");
+    const [profileDisplayName, setprofileDisplayName] = React.useState("N/A");
+    const [profileBio, setprofileBio] = React.useState("N/A");
+    const [profileCondition, setprofileCondition] = React.useState("N/A");
+    const [profileYOE, setprofileYOE] = React.useState("N/A");
     const [profileAvatar, setprofileAvatar] = React.useState('https://cdn.pixabay.com/photo/2014/09/17/20/03/profile-449912__340.jpg');
 
     const fetchProfileData = () => {
         try {
             const userIndexReviewsRoute = ref(db, 'Profiles/' + username);
             onValue(userIndexReviewsRoute, (snapshot) => {
-              const data = snapshot.val();
-            
-              // Setting values
-              setprofileDisplayName(data.displayName);
-              setprofileBio(data.bio);
-              setprofileCondition(data.condition);
-              setprofileYOE(data.yoe);
-              setprofileAvatar(data.profilePhoto);
-      
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                
+                    // Setting values
+                    setprofileDisplayName(data.displayName);
+                    setprofileBio(data.bio);
+                    setprofileCondition(data.condition);
+                    setprofileYOE(data.yoe);
+                    setprofileAvatar(data.profilePhoto);
+                }
             });
       
           } catch (e) {
@@ -114,7 +115,7 @@ export default function Profile({navigation}) {
       }, [username]);
 
       return (
-        <SafeAreaView style={styles.loadingContainer}>
+        <SafeAreaView style={styles.Container}>
             <ScrollView contentContainerStyle={{flex: 1}}>
 
                 {/* Profile Header Container */}
@@ -183,7 +184,7 @@ export default function Profile({navigation}) {
 
 }
 const styles = StyleSheet.create({ 
-    loadingContainer: {
+    Container: {
         flex: 1,
         justifyContent: "flex-start",
         backgroundColor: "white",
@@ -225,8 +226,6 @@ const styles = StyleSheet.create({
         paddingTop: 3,
         fontFamily: "Futura-Medium"
     },
-
-
     header: { 
         flexDirection: "row", 
         alignItems: "center", 

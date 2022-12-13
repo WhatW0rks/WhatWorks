@@ -69,28 +69,6 @@ export default function WorksComp({navigation}) {
         }
     }
 
-    // const fetchLikedData = async() => {
-    //     try {
-    //         const userIndexReviewsRoute = ref(db, 'UserTriedData/' + username + '/' + "liked");
-    //         onValue(userIndexReviewsRoute, (snapshot) => {
-    //         const data = snapshot.val();
-
-    //         let parsedData = [];
-
-    //         // Retrieve data fields and parsing JSON object
-    //         for (let key in data) {
-    //             if (!data.hasOwnProperty(key)) continue;
-    //             let temp = [data[key].username, data[key].title, data[key].imageURL, key];
-    //             parsedData.push(temp);
-    //         }
-
-    //         setReviewData(parsedData);
-    //     });   
-    //         } catch (e) {
-    //             console.log("Error: ", e)
-    //     }
-    // }
-
         React.useEffect(() => {
         // Fetch Review Data
         animationRef.current?.play(49, 49);
@@ -104,13 +82,13 @@ export default function WorksComp({navigation}) {
             {Empty()}
 
             <View style={styles.reviewContainer}>
-                    {reviewWorksData.length != 0 ?
+                    {/* {reviewWorksData.length != 0 ?
                         <Pressable onPress={() => {
                             navigation.navigate("SubmitScreen");
                         }}>
                             <Lottie style={{height: 120, width: 120}} source={require('../../assets/LottieAnimations/upload.json')} ref={animationRef} loop={false}></Lottie>
                         </Pressable>
-                    : null}
+                    : null} */}
                     {reviewWorksData?.map((r) => {
                     return(
                         <Pressable key={`${uuid.v4()}`} onPress={async () => {
@@ -133,35 +111,7 @@ export default function WorksComp({navigation}) {
                         </Pressable>
                     );
                     })}
-                {/* </ScrollView> */}
             </View>
-
-            {/* {reviewData?.map((r) => {
-              return(
-                <Pressable key={`${uuid.v4()}`} onPress={async () => {
-                  setReview(r[3]);
-                  navigation.navigate('PostScreen');
-                }}>
-                  <View style={{
-                    width: "100%", 
-                    height: 100, 
-                    display: "flex", 
-                    justifyContent: "flex-start",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    margin: 5
-                      }}
-                    key={`${uuid.v4()}`}
-                    >
-                      <CachedImage style={{height: 100, width: 100, borderRadius: 5}} source={{ uri: `${r[2]}` }} id={r[3]} navigation={navigation}/>
-                      <View style={{display: "flex", flexDirection:"column"}}>
-                        <Text style={{marginLeft: 20, fontWeight: "bold", fontSize: 20}}>{`${r[1]}`}</Text>
-                        <Text style={{marginLeft: 20, fontSize: 13}}>{`By ${r[0]}`}</Text>
-                      </View>
-                    </View>
-                </Pressable>
-              );
-            })} */}
 
           </ScrollView>          
         </View>
