@@ -249,7 +249,7 @@ export default function ProductReviewForm({ route, navigation }) {
               );
         }
 
-        // Title Guard
+        // Desc Guard
         else if (!review) {
             // Reset Image List
             // setImageList([]);
@@ -263,6 +263,21 @@ export default function ProductReviewForm({ route, navigation }) {
                 ]
               );
         }
+
+          // Desc Guard
+          else if (works.length === 0) {
+      
+            Alert.alert(
+                "Unable to post review",
+                "Please tell us if this product worked for you!",
+                [
+                
+                  { text: "Got it!", onPress: () => console.log("OK Pressed") }
+                ]
+              );
+        }
+
+        if (!(works.length === 0 || !review || !title || imageList.length === 0 || imageList.length > 1 || Tags.length < 2 || Tags.length > 10 )) {
 
         let stringfyTags = String(Tags);
         let tagArray =  JSON.parse(JSON.stringify(Tags)) as typeof Tags;
@@ -393,6 +408,7 @@ export default function ProductReviewForm({ route, navigation }) {
             });
         }); 
         // console.log("Upload Operation Finished");
+        }
     }
 
 
@@ -400,8 +416,12 @@ export default function ProductReviewForm({ route, navigation }) {
     const onPressPostReview = async () => { 
         console.log("Post button pressed");
         await writeReviewData().then(()=> {
+            let Tags = valueTag;
+            if (Tags[0] == "") Tags.shift();
+            if (!(works.length === 0 || !review || !title || imageList.length === 0 || imageList.length > 1 || Tags.length < 2 || Tags.length > 10 )) {
             awardToken();
             navigation.goBack();
+            }
         });
     } 
 
@@ -450,7 +470,7 @@ export default function ProductReviewForm({ route, navigation }) {
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollHorizontal}>
                     {imageList?.map((uri) => {
                         return(
-                        <View>
+                        <View key={`${uuid.v4()}`}>
                             <Image key={`${uuid.v4()}`} source={{ uri: `${uri}` }} style={styles.image}/>
                             <Ionicons style={styles.close} name="ios-close-circle" size={25} onPress={() => setImageList([])} />
                         </View>);
