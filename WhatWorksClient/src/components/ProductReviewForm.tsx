@@ -407,7 +407,6 @@ export default function ProductReviewForm({ route, navigation }) {
                 console.log("Upload Operation Finished");
             });
         }); 
-        // console.log("Upload Operation Finished");
         }
     }
 

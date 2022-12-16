@@ -56,12 +56,10 @@ const generateDescription = () => {
 const dataUpload = async () => {
   await client.photos.search({ query, per_page: 40, page: 5}).then(photos => {
     let data = photos.photos;
-    // console.log("Data: ", data);
 
     // FOR EACH REVIEW
     for (let key in data) {
       let d = data[key];
-      console.log("Data: ", d);
       
       let text = generateDescription();
 
@@ -79,7 +77,6 @@ const dataUpload = async () => {
           review: `${text}`
       });
         
-      // console.log("Iterate!", d.src.original);
     }
   });
   

@@ -97,42 +97,6 @@ export default function UserProductReviewPage(props: ProductProperties) {
 
     const FetchCommentData = async () => {
         try {
-            // const userCommentRef = ref(db, 'UserCommentData/' + username + '/' + 'Comments/' + props.id);
-            // onValue(userCommentRef, (snapshot) => {
-            //     if (snapshot.exists()) {
-            //         const data = snapshot.val();
-            //         let parsedData = [];
-
-            //         // Retrieve data fields and parsing JSON object
-            //         // Clean Comments
-            //         let comments = data.Comments.split('!');
-            //         comments = comments.filter(function(x){
-            //             return x !== ""
-            //         });
-            //         // Clean Users
-            //         let users = data.Username.split('!');
-            //         users = users.filter(function(x){
-            //             return x !== ""
-            //         });
-
-            //         // Clean Dates
-            //         let dates = data.Dates.split('!');
-            //         dates = dates.filter(function(x){
-            //             return x !== ""
-            //         });
-
-            //         for (let i = 0; i < comments.length; i++) {
-            //             if (i == 3) return;
-            //             let temp = [data.ReviewID, comments[i], users[i], data.UserImageURL, dates[i]];
-            //             parsedData.push(temp);
-            //         }
-
-            //         // console.log("THE COMMENTS ARRAY: ", comments);
-            //         // console.log("THE USER ARRAY: ", users);
-            //         setCommentData(parsedData);
-            //     }
-            // });
-
             const reviewCommentRef = ref(db, 'ReviewCommentData/' + props.id);
             onValue(reviewCommentRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -263,10 +227,6 @@ export default function UserProductReviewPage(props: ProductProperties) {
     }
 
     useEffect( () => {
-        console.log("Looking at review: ", props.id);
-        console.log("States Before, OnTrying: ", OnTrying);
-        console.log("States Before, OnDidntWork: ", OnDidntWork);
-        console.log("States Before, OnWorks: ", OnWorks);
         if (props.tags !== undefined) {
             setTagsData(props.tags.split(','));
         }

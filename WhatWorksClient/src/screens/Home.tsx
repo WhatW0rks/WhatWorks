@@ -123,12 +123,7 @@ export default function LoadingScreen({navigation}) {
 
                             }})
 
-
-                        let temp = [data.title, data.review, data.username, tempTags, data.imageURL, comments, randomIDs[idIndex]];
-                        console.log("Temp: " + temp)
-
-                        console.log("THE TAGS: ", tempTags)
-                        
+                        let temp = [data.title, data.review, data.username, tempTags, data.imageURL, comments, randomIDs[idIndex]];                        
 
                         masterData.push(temp); 
                                        

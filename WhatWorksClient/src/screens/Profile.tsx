@@ -95,7 +95,6 @@ export default function Profile({navigation}) {
             const userIndexReviewsRoute = ref(db, url);
             onValue(userIndexReviewsRoute, (snapshot) => {
                 const data = snapshot.val();   
-                console.log("Just fetched!"); 
 
                 // Retrieve data for a specific user 
                 for (let key in data) {

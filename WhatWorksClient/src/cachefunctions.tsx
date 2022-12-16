@@ -10,11 +10,8 @@ export default async function getLink(remoteURI: string) {
     const metadata = await FileSystem.getInfoAsync(filesystemURI);
           
     if (metadata.exists) { 
-            console.log("Link determined: " + filesystemURI)
-   
             return(filesystemURI);        
     }
-    console.log("Link determined: " + remoteURI);
 
     return(remoteURI); 
 }

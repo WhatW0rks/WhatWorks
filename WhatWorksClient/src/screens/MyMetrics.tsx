@@ -63,12 +63,10 @@ const MyMetrics = ({navigation}) => {
             onValue(trendDataRef, (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    console.log("++++++++data", data);
 
                     if (!data) return;
 
                     const last7keys = Object.keys(data).slice(-7).sort((a: string, b: string) => Number(a) - Number(b));
-                    console.log("++++++last7keys", last7keys);
 
                     const data1 = last7keys.map(key => data[key])
                     const sanatizedData = data1.filter((item: any) => {
@@ -86,10 +84,8 @@ const MyMetrics = ({navigation}) => {
                             weekday: 'short'
                         }), y: Number(item.noOfTriggers)
                     }))
-                    console.log("++++++sanatizedData", sanatizedData);
                     setPlotData(sanatizedData);
 
-                    console.log("checking date to print the today stats")
                     console.log(new Date().getDate())
                     const statData = data1.find((item: any) => new Date(item.time).getDate() === new Date().getDate());
                     if (statData) {

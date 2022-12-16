@@ -38,7 +38,6 @@ export default function PostScreen({navigation}) {
       let reviewData = snapshot.val();
       const imgLink = await getLink(reviewData.imageURL)
       // const imgLink = link ? link : reviewData.imageURL;
-      console.log("Myyyy liiinkkkk: " + imgLink);
 
       setData(
         {
@@ -58,8 +57,6 @@ export default function PostScreen({navigation}) {
          
         }
       );
-      console.log("Link: " + imgLink);
-      
 
     } else {
       console.log("Review Missing!");

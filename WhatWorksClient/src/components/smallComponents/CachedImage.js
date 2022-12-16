@@ -128,7 +128,6 @@ class CachedImageComp extends Component {
       onPress={() => {
         this.props.appContext.setReview(this.props.id);
         this.props.appContext.setLink(this.state.imgURI);
-        console.log("hello");
 
         this.props.function();
       }}

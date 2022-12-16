@@ -107,10 +107,8 @@ export default function Main({navigation}) {
 
     const titlePath = ref(db, 'Index/');
     const titleTagQuery = query(titlePath, orderByChild('title'), startAt(search), endAt(`${search}` + "\uf7ff")); 
-    console.log("4");
 
     await get(titleTagQuery).then((snapshot) => {
-      console.log("5");
 
       if (snapshot.exists()) {
         const data = snapshot.val();
@@ -126,10 +124,6 @@ export default function Main({navigation}) {
       (error) => {
       console.error(error);
     }});
-
-    console.log("6");
-
-
 
     setReviewData((a) => 
      {console.log(parsedData);

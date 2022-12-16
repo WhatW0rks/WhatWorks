@@ -28,10 +28,8 @@ export default function HomeNavigator() {
 
     const handleInitRoute = () => {
         if (intro) {
-            console.log("Entered Intro!")
             return "Intro"
         } else {
-            console.log("Entered Homescreen!")
             return "HomeScreen"
         }
     }
