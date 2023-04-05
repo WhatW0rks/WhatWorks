@@ -106,3 +106,4 @@ WhatWorksClient/src/environment.ts
 WhatWorks/automation/environment.js
 
 # Small visual cues, and like graphs, maybe cute things, maybe good functional ways to represent best way to our user.
+.DS_Store
